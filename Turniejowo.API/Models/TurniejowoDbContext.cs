@@ -1,0 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+
+namespace Turniejowo.API.Models
+{
+    public class TurniejowoDbContext : DbContext
+    {
+        public TurniejowoDbContext(DbContextOptions options) : base(options)
+        {
+            
+        }
+    }
+}
