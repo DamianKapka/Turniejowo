@@ -10,6 +10,7 @@ namespace Turniejowo.API.Models.GenericRepository
     {
         Task<ICollection<T>> GetAll();
         Task<ICollection<T>> Find(Expression<Func<T, bool>> query);
+        Task<T> FindSingle(Expression<Func<T, bool>> query);
         Task<T> GetById(int id);
         Task Add(T item);
         Task Update(T item);

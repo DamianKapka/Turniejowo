@@ -26,6 +26,11 @@ namespace Turniejowo.API.Models.GenericRepository
             return await _context.Set<T>().Where(query).ToListAsync();
         }
 
+        public async Task<T> FindSingle(Expression<Func<T, bool>> query)
+        {
+            return await _context.Set<T>().FirstOrDefaultAsync(query);
+        }
+
         public async Task<T> GetById(int id)
         {
             return await _context.Set<T>().FindAsync(id);
