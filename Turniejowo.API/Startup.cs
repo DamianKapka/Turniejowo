@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Turniejowo.API.Models;
+using Turniejowo.API.Models.GenericRepository;
 
 namespace Turniejowo.API
 {
@@ -27,6 +28,7 @@ namespace Turniejowo.API
         {
             services.AddDbContext<TurniejowoDbContext>(opt =>
                 opt.UseSqlServer(_config.GetConnectionString("TurniejowoDB")));
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddMvc();
         }
 
