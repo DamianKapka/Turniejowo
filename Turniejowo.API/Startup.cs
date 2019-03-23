@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Turniejowo.API.Models;
 using Turniejowo.API.Models.GenericRepository;
+using Turniejowo.API.Models.Repositories;
 
 namespace Turniejowo.API
 {
@@ -28,7 +29,9 @@ namespace Turniejowo.API
         {
             services.AddDbContext<TurniejowoDbContext>(opt =>
                 opt.UseSqlServer(_config.GetConnectionString("TurniejowoDB")));
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ITournamentRepository, TournamentRepository>();
+            services.AddScoped<ITeamRepository, TeamRepository>();
             services.AddMvc();
         }
 
