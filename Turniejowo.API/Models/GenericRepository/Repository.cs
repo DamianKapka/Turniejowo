@@ -36,22 +36,19 @@ namespace Turniejowo.API.Models.GenericRepository
             return await _context.Set<T>().FindAsync(id);
         }
 
-        public async Task Add(T item)
+        public void Add(T item)
         {
-            await _context.Set<T>().AddAsync(item);
-            await _context.SaveChangesAsync();
+            _context.Set<T>().Add(item);
         }
 
-        public async Task Update(T item)
+        public void Update(T item)
         {
             _context.Entry(item).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(T item)
+        public void Delete(T item)
         {
             _context.Set<T>().Remove(item);
-            await _context.SaveChangesAsync();
         }
     }
 }
