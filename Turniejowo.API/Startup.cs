@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Turniejowo.API.Models;
 using Turniejowo.API.Models.GenericRepository;
 using Turniejowo.API.Models.Repositories;
+using Turniejowo.API.Models.UnitOfWork;
 
 namespace Turniejowo.API
 {
@@ -32,6 +33,7 @@ namespace Turniejowo.API
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITournamentRepository, TournamentRepository>();
             services.AddScoped<ITeamRepository, TeamRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddMvc();
         }
 
