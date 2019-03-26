@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -59,6 +61,57 @@ namespace Turniejowo.API.Controllers
                 }
 
                 return Ok(tournament);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTournament([FromRoute] int id, [FromBody] Tournament tournament)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var tournamentToUpdate = await _tournamentRepository.GetById(id);
+
+                if (tournamentToUpdate == null)
+                {
+                    return NotFound("Tournament doesn't exist in database");
+                }
+
+                _tournamentRepository.Update(tournament);
+                await _unitOfWork.CompleteAsync();
+
+                return Accepted();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTournament([FromRoute] int id)
+        {
+            try
+            {
+                var tournamentToDelete = await _tournamentRepository.GetById(id);
+
+                if (tournamentToDelete == null)
+                {
+                    return NotFound("Tournament doesn't exist in database");
+                }
+
+                _tournamentRepository.Delete(tournamentToDelete);
+                await _unitOfWork.CompleteAsync();
+
+                return Accepted();
             }
             catch (Exception e)
             {
