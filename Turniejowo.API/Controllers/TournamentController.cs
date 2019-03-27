@@ -53,14 +53,14 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var tournament = await _tournamentRepository.GetById(id);
+                var tournamentToFind = await _tournamentRepository.GetById(id);
 
-                if (tournament == null)
+                if (tournamentToFind == null)
                 {
                     return NotFound("Tournament doesn't exist in database");
                 }
 
-                return Ok(tournament);
+                return Ok(tournamentToFind);
             }
             catch (Exception e)
             {
@@ -139,6 +139,5 @@ namespace Turniejowo.API.Controllers
                 return BadRequest(e.Message);
             }
         }
-
     }
 }
