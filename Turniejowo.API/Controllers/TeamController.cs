@@ -103,5 +103,33 @@ namespace Turniejowo.API.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTeam([FromRoute] int id, [FromBody] Team team)
+        {
+            try
+            {
+                if (id != team.TeamId)
+                {
+                    return BadRequest("Id of edited team and updated one don't match");
+                }
+
+                if (await _teamRepository.GetById(id) == null)
+                {
+                    return BadRequest("Original team not found in database");
+                }
+
+                _teamRepository.Update(team);
+                await _unitOfWork.CompleteAsync();
+
+                return Accepted();
+            }
+            catch (Exception e)
+            {
+               return  BadRequest($"{e.Message}");
+            }
+        }
+
+
     }
 }

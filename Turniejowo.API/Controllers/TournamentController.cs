@@ -77,10 +77,8 @@ namespace Turniejowo.API.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-
-                var tournamentToUpdate = await _tournamentRepository.GetById(id);
-
-                if (tournamentToUpdate == null)
+                
+                if (await _tournamentRepository.GetById(id) == null)
                 {
                     return NotFound("Tournament doesn't exist in database");
                 }
