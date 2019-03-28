@@ -123,11 +123,16 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
+                if(await _tournamentRepository.GetById(id) == null)
+                {
+                    BadRequest("No such tournament in database");
+                }
+
                 var teams = await _teamRepository.Find(team => team.TournamentId == id);
 
                 if (teams == null)
                 {
-                    return NotFound("Tournament doesn't exist in database");
+                    return NotFound("No teams for tournament");
                 }
 
                 return Ok(teams);

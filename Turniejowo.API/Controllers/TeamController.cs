@@ -16,12 +16,14 @@ namespace Turniejowo.API.Controllers
     {
         private readonly ITournamentRepository _tournamentRepository;
         private readonly ITeamRepository _teamRepository;
+        private readonly IPlayerRepository _playerRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public TeamController(ITournamentRepository tournamentRepository,ITeamRepository teamRepository,IUnitOfWork unitOfWork)
+        public TeamController(ITournamentRepository tournamentRepository,ITeamRepository teamRepository,IPlayerRepository playerRepository,IUnitOfWork unitOfWork)
         {
             _tournamentRepository = tournamentRepository;
             _teamRepository = teamRepository;
+            _playerRepository = playerRepository;
             _unitOfWork = unitOfWork;
         }
 
@@ -130,6 +132,30 @@ namespace Turniejowo.API.Controllers
             }
         }
 
+        [HttpGet]
+        [Route(@"{id}\Players")]
+        public async Task<IActionResult> GetPlayersForTeam([FromRoute] int id)
+        {
+            try
+            {
+                if (await _teamRepository.GetById(id) == null)
+                {
+                    BadRequest("No such team in database");
+                }
 
+                var players = await _playerRepository.Find(player => player.TeamId == id);
+
+                if (players == null)
+                {
+                    return NotFound("No player for tournament");
+                }
+
+                return Ok(players);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }

@@ -33,7 +33,8 @@ namespace Turniejowo.API
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITournamentRepository, TournamentRepository>();
             services.AddScoped<ITeamRepository, TeamRepository>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IPlayerRepository, PlayerRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();           
             services.AddMvc();
         }
 
