@@ -25,5 +25,7 @@ namespace Turniejowo.API.Models
         public User Creator { get; set; }
 
         public bool IsFinished { get; set; }
+
+        public ICollection<Team> Teams { get; set; }
     }
 }
