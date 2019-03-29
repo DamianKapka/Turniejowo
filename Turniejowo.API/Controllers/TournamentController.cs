@@ -27,6 +27,27 @@ namespace Turniejowo.API.Controllers
             _teamRepository = teamRepository;
         }
 
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById([FromRoute] int id)
+        {
+            try
+            {
+                var tournamentToFind = await _tournamentRepository.GetById(id);
+
+                if (tournamentToFind == null)
+                {
+                    return NotFound("Tournament doesn't exist in database");
+                }
+
+                return Ok(tournamentToFind);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddNewTournament([FromBody] Tournament tournament)
         {
@@ -48,19 +69,22 @@ namespace Turniejowo.API.Controllers
             }
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById([FromRoute] int id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTournament([FromRoute] int id)
         {
             try
             {
-                var tournamentToFind = await _tournamentRepository.GetById(id);
+                var tournamentToDelete = await _tournamentRepository.GetById(id);
 
-                if (tournamentToFind == null)
+                if (tournamentToDelete == null)
                 {
                     return NotFound("Tournament doesn't exist in database");
                 }
 
-                return Ok(tournamentToFind);
+                _tournamentRepository.Delete(tournamentToDelete);
+                await _unitOfWork.CompleteAsync();
+
+                return Accepted();
             }
             catch (Exception e)
             {
@@ -84,29 +108,6 @@ namespace Turniejowo.API.Controllers
                 }
 
                 _tournamentRepository.Update(tournament);
-                await _unitOfWork.CompleteAsync();
-
-                return Accepted();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTournament([FromRoute] int id)
-        {
-            try
-            {
-                var tournamentToDelete = await _tournamentRepository.GetById(id);
-
-                if (tournamentToDelete == null)
-                {
-                    return NotFound("Tournament doesn't exist in database");
-                }
-
-                _tournamentRepository.Delete(tournamentToDelete);
                 await _unitOfWork.CompleteAsync();
 
                 return Accepted();

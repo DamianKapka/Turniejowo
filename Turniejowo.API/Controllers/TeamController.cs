@@ -28,7 +28,7 @@ namespace Turniejowo.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetTeamById([FromRoute] int id)
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace Turniejowo.API.Controllers
                 _teamRepository.Add(team);
                 await _unitOfWork.CompleteAsync();
 
-                return CreatedAtAction("GetTeamById", new {id = team.TeamId}, team);
+                return CreatedAtAction("GetById", new {id = team.TeamId}, team);
             }
             catch (Exception e)
             {
