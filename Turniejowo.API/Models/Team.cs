@@ -19,7 +19,5 @@ namespace Turniejowo.API.Models
         public int TournamentId { get; set; }
 
         public Tournament Tournament { get; set; }
-
-        public ICollection<Player> Players { get; set; }
     }
 }

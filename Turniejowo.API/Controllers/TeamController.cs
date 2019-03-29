@@ -133,7 +133,7 @@ namespace Turniejowo.API.Controllers
         }
 
         [HttpGet]
-        [Route(@"{id}\Players")]
+        [Route(@"{id}/players")]
         public async Task<IActionResult> GetPlayersForTeam([FromRoute] int id)
         {
             try
