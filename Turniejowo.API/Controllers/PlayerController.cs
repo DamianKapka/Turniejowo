@@ -114,11 +114,6 @@ namespace Turniejowo.API.Controllers
                     return BadRequest("Id of edited player and updated one don't match");
                 }
 
-                if (await _playerRepository.GetById(id) == null)
-                {
-                    return BadRequest("Original player not found in database");
-                }
-
                 _playerRepository.Update(player);
                 await _unitOfWork.CompleteAsync();
 

@@ -102,11 +102,6 @@ namespace Turniejowo.API.Controllers
                     return BadRequest(ModelState);
                 }
                 
-                if (await _tournamentRepository.GetById(id) == null)
-                {
-                    return NotFound("Tournament doesn't exist in database");
-                }
-
                 _tournamentRepository.Update(tournament);
                 await _unitOfWork.CompleteAsync();
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Turniejowo.API.Models;
 using Turniejowo.API.Models.Repositories;
 using Turniejowo.API.Models.UnitOfWork;
@@ -116,16 +117,12 @@ namespace Turniejowo.API.Controllers
                     return BadRequest("Id of edited team and updated one don't match");
                 }
 
-                if (await _teamRepository.GetById(id) == null)
-                {
-                    return BadRequest("Original team not found in database");
-                }
-
                 _teamRepository.Update(team);
                 await _unitOfWork.CompleteAsync();
 
                 return Accepted();
             }
+
             catch (Exception e)
             {
                return  BadRequest($"{e.Message}");

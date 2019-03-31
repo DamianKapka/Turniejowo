@@ -43,7 +43,7 @@ namespace Turniejowo.API.Models.GenericRepository
 
         public void Update(T item)
         {
-            _context.Entry(item).State = EntityState.Modified;
+            _context.Update(item);
         }
 
         public void Delete(T item)
