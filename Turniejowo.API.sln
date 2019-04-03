@@ -5,9 +5,7 @@ VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Turniejowo.API", "Turniejowo.API\Turniejowo.API.csproj", "{F69296A9-68DD-444F-A575-81FDD034FD49}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Turniejowo.API.IntegrationTests", "Turniejowo.API.IntegrationTests\Turniejowo.API.IntegrationTests.csproj", "{0E8D8F12-2C66-49C3-8BED-630D8F5003EE}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Turniejowo.API.UnitTests", "Turniejowo.API.UnitTests\Turniejowo.API.UnitTests.csproj", "{9A0D5A31-F8CC-448C-B21D-6739F035F692}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Turniejowo.API.UnitTests", "Turniejowo.API.UnitTests\Turniejowo.API.UnitTests.csproj", "{9A0D5A31-F8CC-448C-B21D-6739F035F692}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +17,6 @@ Global
 		{F69296A9-68DD-444F-A575-81FDD034FD49}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F69296A9-68DD-444F-A575-81FDD034FD49}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F69296A9-68DD-444F-A575-81FDD034FD49}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0E8D8F12-2C66-49C3-8BED-630D8F5003EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0E8D8F12-2C66-49C3-8BED-630D8F5003EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0E8D8F12-2C66-49C3-8BED-630D8F5003EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0E8D8F12-2C66-49C3-8BED-630D8F5003EE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9A0D5A31-F8CC-448C-B21D-6739F035F692}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9A0D5A31-F8CC-448C-B21D-6739F035F692}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A0D5A31-F8CC-448C-B21D-6739F035F692}.Release|Any CPU.ActiveCfg = Release|Any CPU
