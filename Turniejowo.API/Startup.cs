@@ -18,6 +18,7 @@ namespace Turniejowo.API
     public class Startup
     {
         private readonly IConfiguration _config;
+        private readonly string myCORSPolicy = "_myCORSPolicy";
 
         public Startup(IConfiguration config)
         {
@@ -34,14 +35,23 @@ namespace Turniejowo.API
             services.AddScoped<ITournamentRepository, TournamentRepository>();
             services.AddScoped<ITeamRepository, TeamRepository>();
             services.AddScoped<IPlayerRepository, PlayerRepository>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();           
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddCors(options =>
+            {
+                options.AddPolicy(myCORSPolicy, builder =>
+                {
+                    builder.WithOrigins().AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                });
+            });
             services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseMvcWithDefaultRoute();
+            app.UseCors(myCORSPolicy);
+            app.UseHttpsRedirection();
+            app.UseMvc();
         }
     }
 }

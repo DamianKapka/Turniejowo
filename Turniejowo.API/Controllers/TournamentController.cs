@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Turniejowo.API.Models;
@@ -26,7 +27,6 @@ namespace Turniejowo.API.Controllers
             _tournamentRepository = tournamentRepository;
             _teamRepository = teamRepository;
         }
-
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
