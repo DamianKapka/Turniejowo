@@ -15,6 +15,6 @@ namespace Turniejowo.API.Models
 
         [Required] public string Name { get; set; }
 
-        public ICollection<Tournament> Tournaments { get; set; }
+        public List<Tournament> Tournaments { get; set; }
     }
 }

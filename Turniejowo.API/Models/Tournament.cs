@@ -24,6 +24,13 @@ namespace Turniejowo.API.Models
 
         public User Creator { get; set; }
 
-        public bool IsFinished { get; set; }
+        public DateTime Date { get; set; }
+
+        public int AmountOfTeams { get; set; }
+
+        public int EntryFee { get; set; }
+
+        public string Localization { get; set; }
+
     }
 }
