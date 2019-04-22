@@ -13,7 +13,11 @@ namespace Turniejowo.API.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int UserId { get; set; }
 
-        [Required] public string Name { get; set; }
+        [Required] public string FullName { get; set; }
+
+        [Required] public string Login { get; set; }
+
+        [Required] public string Phone { get; set; }
 
         [Required]
         [DataType(DataType.EmailAddress)]
