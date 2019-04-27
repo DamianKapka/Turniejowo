@@ -67,8 +67,8 @@ namespace Turniejowo.API
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = true,
-                    ValidateAudience = true
+                    ValidateIssuer = false,
+                    ValidateAudience = false
                 };
             });
         }
