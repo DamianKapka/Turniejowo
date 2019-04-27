@@ -15,7 +15,7 @@ namespace Turniejowo.API.Models
 
         [Required] public string FullName { get; set; }
 
-        [Required] public string Login { get; set; }
+        public string Token { get; set; }
 
         [Required] public string Phone { get; set; }
 
