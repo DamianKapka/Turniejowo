@@ -21,15 +21,15 @@ namespace Turniejowo.API.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly AppSettings _appSettings;
+        private readonly IUserRepository userRepository;
+        private readonly IUnitOfWork unitOfWork;
+        private readonly AppSettings appSettings;
 
         public UserController(IUserRepository userRepository, IUnitOfWork unitOfWork,IOptions<AppSettings> appSettings)
         {
-            _userRepository = userRepository;
-            _unitOfWork = unitOfWork;
-            _appSettings = appSettings.Value;
+            this.userRepository = userRepository;
+            this.unitOfWork = unitOfWork;
+            this.appSettings = appSettings.Value;
         }
 
         [HttpGet("{id}")]
@@ -37,11 +37,11 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var user = await _userRepository.FindSingle(x => x.UserId == id);
+                var user = await userRepository.FindSingle(x => x.UserId == id);
 
                 if (user == null)
                 {
-                    return BadRequest("User does no exist");
+                    return NotFound("User does no exist");
                 }
 
                 return Ok(user);
@@ -63,13 +63,13 @@ namespace Turniejowo.API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                if (await _userRepository.FindSingle(x => x.Email == user.Email) != null)
+                if (await userRepository.FindSingle(x => x.Email == user.Email) != null)
                 {
                     return Conflict("Account with that e-mail already exists in database.");
                 }
 
-                _userRepository.Add(user);
-                await _unitOfWork.CompleteAsync();
+                userRepository.Add(user);
+                await unitOfWork.CompleteAsync();
 
                 return CreatedAtAction("GetById", new {id = user.UserId}, user);
             }
@@ -85,7 +85,7 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var user = await _userRepository.FindSingle(x =>
+                var user = await userRepository.FindSingle(x =>
                     x.Email == credentials.Login && x.Password == credentials.Password);
 
                 if (user == null)
@@ -94,7 +94,7 @@ namespace Turniejowo.API.Controllers
                 }
 
                 var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+                var key = Encoding.ASCII.GetBytes(appSettings.Secret);
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(

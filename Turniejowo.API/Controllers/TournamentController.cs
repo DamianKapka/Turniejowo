@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Turniejowo.API.Models;
 using Turniejowo.API.Models.Repositories;
@@ -19,17 +14,17 @@ namespace Turniejowo.API.Controllers
     [ApiController]
     public class TournamentController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly ITournamentRepository _tournamentRepository;
-        private readonly ITeamRepository _teamRepository;
-        private readonly IPlayerRepository _playerRepository;
+        private readonly IUnitOfWork unitOfWork;
+        private readonly ITournamentRepository tournamentRepository;
+        private readonly ITeamRepository teamRepository;
+        private readonly IPlayerRepository playerRepository;
 
         public TournamentController(IUnitOfWork unitOfWork, ITournamentRepository tournamentRepository, ITeamRepository teamRepository, IPlayerRepository playerRepository)
         {
-            _unitOfWork = unitOfWork;
-            _tournamentRepository = tournamentRepository;
-            _teamRepository = teamRepository;
-            _playerRepository = playerRepository;
+            this.unitOfWork = unitOfWork;
+            this.tournamentRepository = tournamentRepository;
+            this.teamRepository = teamRepository;
+            this.playerRepository = playerRepository;
         }
 
         [AllowAnonymous]
@@ -38,7 +33,7 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var tournamentToFind = await _tournamentRepository.GetById(id);
+                var tournamentToFind = await tournamentRepository.GetById(id);
 
                 if (tournamentToFind == null)
                 {
@@ -63,8 +58,8 @@ namespace Turniejowo.API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                _tournamentRepository.Add(tournament);
-                await _unitOfWork.CompleteAsync();
+                tournamentRepository.Add(tournament);
+                await unitOfWork.CompleteAsync();
 
                 return CreatedAtAction("GetById", new {id = tournament.TournamentId}, tournament);
             }
@@ -79,15 +74,15 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var tournamentToDelete = await _tournamentRepository.GetById(id);
+                var tournamentToDelete = await tournamentRepository.GetById(id);
 
                 if (tournamentToDelete == null)
                 {
                     return NotFound("Tournament doesn't exist in database");
                 }
 
-                _tournamentRepository.Delete(tournamentToDelete);
-                await _unitOfWork.CompleteAsync();
+                tournamentRepository.Delete(tournamentToDelete);
+                await unitOfWork.CompleteAsync();
 
                 return Accepted();
             }
@@ -107,8 +102,8 @@ namespace Turniejowo.API.Controllers
                     return BadRequest(ModelState);
                 }
                 
-                _tournamentRepository.Update(tournament);
-                await _unitOfWork.CompleteAsync();
+                tournamentRepository.Update(tournament);
+                await unitOfWork.CompleteAsync();
 
                 return Accepted();
             }
@@ -124,12 +119,12 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                if(await _tournamentRepository.GetById(id) == null)
+                if(await tournamentRepository.GetById(id) == null)
                 {
                     BadRequest("No such tournament in database");
                 }
 
-                var teams = await _teamRepository.Find(team => team.TournamentId == id);
+                var teams = await teamRepository.Find(team => team.TournamentId == id);
 
                 if (teams == null)
                 {
@@ -150,15 +145,15 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                if (await _tournamentRepository.GetById(id) == null)
+                if (await tournamentRepository.GetById(id) == null)
                 {
                     return NotFound("No such tournament in database");
                 }
 
-                var teams = await _teamRepository.Find(t => t.TournamentId == id);
+                var teams = await teamRepository.Find(t => t.TournamentId == id);
 
                 var players =
-                    await _playerRepository.Find(p => teams.Select(t => t.TeamId).Contains(p.TeamId));
+                    await playerRepository.Find(p => teams.Select(t => t.TeamId).Contains(p.TeamId));
 
                 return Ok(players);
             }

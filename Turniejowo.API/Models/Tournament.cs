@@ -14,22 +14,31 @@ namespace Turniejowo.API.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int TournamentId { get; set; }
 
+        [Required]
+        public string Name { get; set; }
+
         [ForeignKey("Discipline")]
         public int DisciplineId { get; set; }
 
+        [Required]
         public Discipline Discipline { get; set; }
 
         [ForeignKey("Creator")]
         public int CreatorId { get; set; }
 
+        [Required]
         public User Creator { get; set; }
 
+        [Required]
         public DateTime Date { get; set; }
 
+        [Required]
         public int AmountOfTeams { get; set; }
 
+        [Required]
         public int EntryFee { get; set; }
 
+        [Required]
         public string Localization { get; set; }
 
     }

@@ -15,17 +15,17 @@ namespace Turniejowo.API.Controllers
     [ApiController]
     public class TeamController : ControllerBase
     {
-        private readonly ITournamentRepository _tournamentRepository;
-        private readonly ITeamRepository _teamRepository;
-        private readonly IPlayerRepository _playerRepository;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly ITournamentRepository tournamentRepository;
+        private readonly ITeamRepository teamRepository;
+        private readonly IPlayerRepository playerRepository;
+        private readonly IUnitOfWork unitOfWork;
 
         public TeamController(ITournamentRepository tournamentRepository,ITeamRepository teamRepository,IPlayerRepository playerRepository,IUnitOfWork unitOfWork)
         {
-            _tournamentRepository = tournamentRepository;
-            _teamRepository = teamRepository;
-            _playerRepository = playerRepository;
-            _unitOfWork = unitOfWork;
+            this.tournamentRepository = tournamentRepository;
+            this.teamRepository = teamRepository;
+            this.playerRepository = playerRepository;
+            this.unitOfWork = unitOfWork;
         }
 
         [HttpGet("{id}")]
@@ -33,7 +33,7 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var teamToFind = await _teamRepository.GetById(id);
+                var teamToFind = await teamRepository.GetById(id);
 
                 if (teamToFind == null)
                 {
@@ -58,7 +58,7 @@ namespace Turniejowo.API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var tournamentForTeam = await _tournamentRepository.GetById(team.TournamentId);
+                var tournamentForTeam = await tournamentRepository.GetById(team.TournamentId);
 
                 if (tournamentForTeam == null)
                 {
@@ -66,15 +66,15 @@ namespace Turniejowo.API.Controllers
                 }
 
                 var teamNameExistsForTournament =
-                    await _teamRepository.FindSingle(t => t.TournamentId == team.TournamentId && t.Name == team.Name);
+                    await teamRepository.FindSingle(t => t.TournamentId == team.TournamentId && t.Name == team.Name);
 
                 if (teamNameExistsForTournament != null)
                 {
                     return BadRequest("Team Name for the tournament already exists");
                 }
 
-                _teamRepository.Add(team);
-                await _unitOfWork.CompleteAsync();
+                teamRepository.Add(team);
+                await unitOfWork.CompleteAsync();
 
                 return CreatedAtAction("GetById", new {id = team.TeamId}, team);
             }
@@ -89,15 +89,15 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var teamToDelete = await _teamRepository.GetById(id);
+                var teamToDelete = await teamRepository.GetById(id);
 
                 if (teamToDelete == null)
                 {
                     return NotFound("Team doesn't exist in database");
                 }
 
-                _teamRepository.Delete(teamToDelete);
-                await _unitOfWork.CompleteAsync();
+                teamRepository.Delete(teamToDelete);
+                await unitOfWork.CompleteAsync();
 
                 return Accepted();
             }
@@ -117,8 +117,8 @@ namespace Turniejowo.API.Controllers
                     return BadRequest("Id of edited team and updated one don't match");
                 }
 
-                _teamRepository.Update(team);
-                await _unitOfWork.CompleteAsync();
+                teamRepository.Update(team);
+                await unitOfWork.CompleteAsync();
 
                 return Accepted();
             }
@@ -135,12 +135,12 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                if (await _teamRepository.GetById(id) == null)
+                if (await teamRepository.GetById(id) == null)
                 {
                     BadRequest("No such team in database");
                 }
 
-                var players = await _playerRepository.Find(player => player.TeamId == id);
+                var players = await playerRepository.Find(player => player.TeamId == id);
 
                 if (players == null)
                 {

@@ -14,15 +14,15 @@ namespace Turniejowo.API.Controllers
     [ApiController]
     public class PlayerController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly ITeamRepository _teamRepository;
-        private readonly IPlayerRepository _playerRepository;
+        private readonly IUnitOfWork unitOfWork;
+        private readonly ITeamRepository teamRepository;
+        private readonly IPlayerRepository playerRepository;
 
         public PlayerController(IUnitOfWork unitOfWork,ITeamRepository teamRepository,IPlayerRepository playerRepository)
         {
-            _unitOfWork = unitOfWork;
-            _teamRepository = teamRepository;
-            _playerRepository = playerRepository;
+            this.unitOfWork = unitOfWork;
+            this.teamRepository = teamRepository;
+            this.playerRepository = playerRepository;
         }
 
         [HttpGet("{id}")]
@@ -30,7 +30,7 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var playerToFind = await _playerRepository.GetById(id);
+                var playerToFind = await playerRepository.GetById(id);
 
                 if (playerToFind == null)
                 {
@@ -55,7 +55,7 @@ namespace Turniejowo.API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var teamForPlayer = await _teamRepository.GetById(player.TeamId);
+                var teamForPlayer = await teamRepository.GetById(player.TeamId);
 
                 if (teamForPlayer == null)
                 {
@@ -63,15 +63,15 @@ namespace Turniejowo.API.Controllers
                 }
 
                 var playerNameExistsForTeam =
-                    await _playerRepository.FindSingle(p => p.TeamId == player.TeamId && p.FName == player.FName && p.LName == player.LName);
+                    await playerRepository.FindSingle(p => p.TeamId == player.TeamId && p.FName == player.FName && p.LName == player.LName);
 
                 if (playerNameExistsForTeam != null)
                 {
                     return BadRequest("Player name for the team already exists");
                 }
 
-                _playerRepository.Add(player);
-                await _unitOfWork.CompleteAsync();
+                playerRepository.Add(player);
+                await unitOfWork.CompleteAsync();
 
                 return CreatedAtAction("GetById", new { id = player.TeamId }, player);
             }
@@ -86,15 +86,15 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var playerToDelete = await _playerRepository.GetById(id);
+                var playerToDelete = await playerRepository.GetById(id);
 
                 if (playerToDelete == null)
                 {
                     return NotFound("Player doesn't exist in database");
                 }
 
-                _playerRepository.Delete(playerToDelete);
-                await _unitOfWork.CompleteAsync();
+                playerRepository.Delete(playerToDelete);
+                await unitOfWork.CompleteAsync();
 
                 return Accepted();
             }
@@ -114,8 +114,8 @@ namespace Turniejowo.API.Controllers
                     return BadRequest("Id of edited player and updated one don't match");
                 }
 
-                _playerRepository.Update(player);
-                await _unitOfWork.CompleteAsync();
+                playerRepository.Update(player);
+                await unitOfWork.CompleteAsync();
 
                 return Accepted();
             }
