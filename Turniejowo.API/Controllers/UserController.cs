@@ -32,6 +32,7 @@ namespace Turniejowo.API.Controllers
             this.appSettings = appSettings.Value;
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -43,6 +44,8 @@ namespace Turniejowo.API.Controllers
                 {
                     return NotFound("User does no exist");
                 }
+
+                user.Password = null;
 
                 return Ok(user);
             }

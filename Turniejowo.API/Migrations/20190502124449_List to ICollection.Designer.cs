@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Turniejowo.API.Models;
 
 namespace Turniejowo.API.Migrations
 {
     [DbContext(typeof(TurniejowoDbContext))]
-    partial class TurniejowoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190502124449_List to ICollection")]
+    partial class ListtoICollection
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -162,7 +164,7 @@ namespace Turniejowo.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Turniejowo.API.Models.Discipline", "Discipline")
-                        .WithMany()
+                        .WithMany("Tournaments")
                         .HasForeignKey("DisciplineId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

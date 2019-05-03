@@ -27,6 +27,6 @@ namespace Turniejowo.API.Models
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        public List<Tournament> Tournaments { get; set; }
+        public ICollection<Tournament> Tournaments { get; set; }
     }
 }

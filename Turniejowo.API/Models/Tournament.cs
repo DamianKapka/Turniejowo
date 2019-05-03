@@ -20,13 +20,11 @@ namespace Turniejowo.API.Models
         [ForeignKey("Discipline")]
         public int DisciplineId { get; set; }
 
-        [Required]
         public Discipline Discipline { get; set; }
 
         [ForeignKey("Creator")]
         public int CreatorId { get; set; }
 
-        [Required]
         public User Creator { get; set; }
 
         [Required]
@@ -40,6 +38,5 @@ namespace Turniejowo.API.Models
 
         [Required]
         public string Localization { get; set; }
-
     }
 }

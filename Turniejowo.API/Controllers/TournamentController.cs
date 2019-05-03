@@ -34,7 +34,7 @@ namespace Turniejowo.API.Controllers
             try
             {
                 var tournamentToFind = await tournamentRepository.GetById(id);
-
+                
                 if (tournamentToFind == null)
                 {
                     return NotFound("Tournament doesn't exist in database");
@@ -114,6 +114,7 @@ namespace Turniejowo.API.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [Route("{id}/teams")]
         public async Task<IActionResult> GetTeamsForTournament([FromRoute] int id)
         {
@@ -139,6 +140,7 @@ namespace Turniejowo.API.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route("{id}/players")]
         public async Task<IActionResult> GetPlayersForTournament([FromRoute] int id)

@@ -14,7 +14,5 @@ namespace Turniejowo.API.Models
         public int DisciplineId { get; set; }
 
         [Required] public string Name { get; set; }
-
-        public List<Tournament> Tournaments { get; set; }
     }
 }
