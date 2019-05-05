@@ -143,7 +143,7 @@ namespace Turniejowo.API.Controllers
         [AllowAnonymous]
         [HttpGet]
         [Route("{id}/players")]
-        public async Task<IActionResult> GetPlayersForTournament([FromRoute] int id)
+        public async Task<IActionResult> GetPlayersForTournament([FromRoute] int id,[FromQuery] bool groupedbyteam)
         {
             try
             {
@@ -156,6 +156,13 @@ namespace Turniejowo.API.Controllers
 
                 var players =
                     await playerRepository.Find(p => teams.Select(t => t.TeamId).Contains(p.TeamId));
+
+                if (groupedbyteam)
+                {
+                    var playersGrouped = (players.Select(p => new { p.PlayerId,p.FName, p.LName, p.Team.Name}).GroupBy(g => g.Name).ToDictionary(d => d.Key, d => d));
+                   
+                    return Ok(playersGrouped);
+                }
 
                 return Ok(players);
             }
