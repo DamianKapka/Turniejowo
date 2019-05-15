@@ -22,19 +22,21 @@ namespace Turniejowo.API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserRepository userRepository;
+        private readonly ITournamentRepository tournamentRepository;
         private readonly IUnitOfWork unitOfWork;
         private readonly AppSettings appSettings;
 
-        public UserController(IUserRepository userRepository, IUnitOfWork unitOfWork,IOptions<AppSettings> appSettings)
+        public UserController(IUserRepository userRepository,ITournamentRepository tournamentRepository, IUnitOfWork unitOfWork,IOptions<AppSettings> appSettings)
         {
             this.userRepository = userRepository;
+            this.tournamentRepository = tournamentRepository;
             this.unitOfWork = unitOfWork;
             this.appSettings = appSettings.Value;
         }
 
         [AllowAnonymous]
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById([FromRoute]int id)
         {
             try
             {
@@ -55,9 +57,29 @@ namespace Turniejowo.API.Controllers
             }
         }
 
+        [HttpGet("{id}/tournaments")]
+        public async Task<IActionResult> GetUserTournaments([FromRoute]int id)
+        {
+            try
+            {
+                var tournaments = await tournamentRepository.Find(t => t.CreatorId == id);
+
+                if(tournamentRepository == null || tournaments.Count == 0)
+                {
+                    return NoContent();
+                }
+
+                return Ok(tournaments);
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] User user)
+        public async Task<IActionResult> Register([FromBody] User user)
         {
             try
             {
@@ -84,7 +106,7 @@ namespace Turniejowo.API.Controllers
 
         [AllowAnonymous]
         [HttpPost("{authenticate}")]
-        public async Task<IActionResult> Authenticate(Credentials credentials)
+        public async Task<IActionResult> Authenticate([FromBody]Credentials credentials)
         {
             try
             {
