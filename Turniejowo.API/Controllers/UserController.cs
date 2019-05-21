@@ -126,6 +126,7 @@ namespace Turniejowo.API.Controllers
                         new[]
                         {
                             new Claim(ClaimTypes.Name, user.UserId.ToString()), 
+                            new Claim(ClaimTypes.Actor, user.FullName),
                         }),
                     Expires = DateTime.UtcNow.AddDays(1),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),SecurityAlgorithms.HmacSha256Signature)
