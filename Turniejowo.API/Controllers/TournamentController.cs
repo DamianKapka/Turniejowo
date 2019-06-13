@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Turniejowo.API.Models;
+using Turniejowo.API.Models.DTO;
 using Turniejowo.API.Models.Repositories;
 using Turniejowo.API.Models.UnitOfWork;
 
@@ -158,7 +159,7 @@ namespace Turniejowo.API.Controllers
                 var players =
                     await playerRepository.Find(p => teams.Select(t => t.TeamId).Contains(p.TeamId));
 
-                var teamsWithPlayers = new Dictionary<string, Player[]>();
+                var teamsWithPlayers = new List<TeamWithPlayers>();
 
                 if (groupedbyteam)
                 {
@@ -166,7 +167,11 @@ namespace Turniejowo.API.Controllers
                     {
                         var teamplayers = players.Where(p => p.TeamId == team.TeamId).ToArray();
 
-                        teamsWithPlayers.Add(team.Name, teamplayers);
+                        teamsWithPlayers.Add(new TeamWithPlayers()
+                        {
+                            Team = team,
+                            Players = teamplayers
+                        });
                     }
                     return Ok(teamsWithPlayers);
                 }
