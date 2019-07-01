@@ -39,6 +39,7 @@ namespace Turniejowo.API
             services.AddScoped<ITournamentRepository, TournamentRepository>();
             services.AddScoped<ITeamRepository, TeamRepository>();
             services.AddScoped<IPlayerRepository, PlayerRepository>();
+            services.AddScoped<IMatchRepository, MatchRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddCors(options =>
             {
