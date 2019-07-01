@@ -27,5 +27,8 @@ namespace Turniejowo.API.Models
         public int Loses { get; set; }
 
         public int Points { get; set; }
+
+        public virtual ICollection<Match> HomeMatches{ get; set; }
+        public virtual ICollection<Match> GuestMatches{ get; set; }
     }
 }
