@@ -18,13 +18,15 @@ namespace Turniejowo.API.Controllers
         private readonly ITournamentRepository tournamentRepository;
         private readonly ITeamRepository teamRepository;
         private readonly IPlayerRepository playerRepository;
+        private readonly IMatchRepository matchRepository;
         private readonly IUnitOfWork unitOfWork;
 
-        public TeamController(ITournamentRepository tournamentRepository,ITeamRepository teamRepository,IPlayerRepository playerRepository,IUnitOfWork unitOfWork)
+        public TeamController(ITournamentRepository tournamentRepository,ITeamRepository teamRepository,IPlayerRepository playerRepository,IUnitOfWork unitOfWork,IMatchRepository matchRepository)
         {
             this.tournamentRepository = tournamentRepository;
             this.teamRepository = teamRepository;
             this.playerRepository = playerRepository;
+            this.matchRepository = matchRepository;
             this.unitOfWork = unitOfWork;
         }
 
@@ -137,7 +139,7 @@ namespace Turniejowo.API.Controllers
             {
                 if (await teamRepository.GetById(id) == null)
                 {
-                    BadRequest("No such team in database");
+                    return BadRequest("No such team in database");
                 }
 
                 var players = await playerRepository.Find(player => player.TeamId == id);
@@ -148,6 +150,27 @@ namespace Turniejowo.API.Controllers
                 }
 
                 return Ok(players);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route(@"{id}/matches")]
+        public async Task<IActionResult> GetMatchesForTeam([FromRoute]int id)
+        {
+            try
+            {
+                var matches = await matchRepository.Find(m => m.HomeTeamId == id || m.GuestTeamId == id);
+
+                if (matches == null)
+                {
+                    return NotFound("No matches for that team");
+                }
+
+                return Ok(matches);
             }
             catch (Exception e)
             {

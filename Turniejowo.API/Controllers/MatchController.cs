@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Turniejowo.API.Models;
 using Turniejowo.API.Models.Repositories;
 
 namespace Turniejowo.API.Controllers
@@ -18,17 +20,39 @@ namespace Turniejowo.API.Controllers
             this.matchRepository = matchRepository;
         }
 
-        [HttpGet]
+        [HttpGet()]
         public async Task<IActionResult> GetAll()
         {
-            var matches = await matchRepository.GetAll();
-
-            if(matches == null)
+            try
             {
-                return NoContent();
-            }
+                var matches = await matchRepository.GetAll();
 
-            return Ok(matches);
+                if (matches == null)
+                {
+                    return NoContent();
+                }
+
+                return Ok(matches);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> Get([FromRoute] int id)
+        {
+            try
+            {
+                var match = await matchRepository.FindSingle(m => m.MatchId == id);
+
+                return Ok(match);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }
