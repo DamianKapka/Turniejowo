@@ -89,12 +89,16 @@ namespace Turniejowo.API
             var swaggerOptions = new SwaggerOptions();
             _config.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
 
-            app.UseSwagger(options =>{ options.RouteTemplate = swaggerOptions.JsonRoute;});
+            app.UseSwagger(options => { options.RouteTemplate = swaggerOptions.JsonRoute; });
             app.UseSwaggerUI(options => { options.SwaggerEndpoint(swaggerOptions.UIEndpoint, swaggerOptions.Description); });
             app.UseCors(myCORSPolicy);
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseMvc();
+            app.Run(async context =>
+            {
+                context.Response.Redirect("swagger/index.html");
+            });
         }
     }
 }
