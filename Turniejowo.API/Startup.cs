@@ -72,11 +72,25 @@ namespace Turniejowo.API
                     ValidateAudience = false
                 };
             });
+
+            services.AddSwaggerGen(x =>
+            {
+                x.SwaggerDoc("turniejowo", new Swashbuckle.AspNetCore.Swagger.Info
+                {
+                    Title = "Turniejowo API",
+                    Version = "v1"
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            var swaggerOptions = new SwaggerOptions();
+            _config.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
+
+            app.UseSwagger(options =>{ options.RouteTemplate = swaggerOptions.JsonRoute;});
+            app.UseSwaggerUI(options => { options.SwaggerEndpoint(swaggerOptions.UIEndpoint, swaggerOptions.Description); });
             app.UseCors(myCORSPolicy);
             app.UseHttpsRedirection();
             app.UseAuthentication();

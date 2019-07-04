@@ -72,7 +72,7 @@ namespace Turniejowo.API.Controllers
 
                 if (await teamRepository.FindSingle(x => x.TeamId == match.HomeTeamId) == null || await teamRepository.FindSingle(y => y.TeamId == match.GuestTeamId) == null)
                 {
-                    return BadRequest("One of teams doeas not exist");
+                    return BadRequest("One of teams does not exist");
                 }
 
                 matchRepository.Add(match);
@@ -85,8 +85,8 @@ namespace Turniejowo.API.Controllers
             }
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Edit([FromBody] Match match)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Edit([FromRoute] int id,[FromBody] Match match)
         {
             try
             {
@@ -95,15 +95,44 @@ namespace Turniejowo.API.Controllers
                     return BadRequest("Match model invalid");
                 }
 
-                if (matchRepository.FindSingle(x => x.MatchId == match.MatchId) == null)
+                if (await matchRepository.FindSingle(x => x.MatchId == id) == null)
                 {
-                    return BadRequest("No such match");
+                    return BadRequest("No such match in database");
                 }
 
                 matchRepository.Update(match);
                 await unitOfWork.CompleteAsync();
 
                 return Accepted();
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Match model invalid");
+                }
+
+                var matchToDel = await matchRepository.FindSingle(x => x.MatchId == id);
+
+                if (matchToDel == null)
+                {
+                    return BadRequest("No such match in database");
+                }
+
+                matchRepository.Delete(matchToDel);
+                await unitOfWork.CompleteAsync();
+
+                return Accepted();
+
             }
             catch(Exception e)
             {
