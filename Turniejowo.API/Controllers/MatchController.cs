@@ -95,10 +95,14 @@ namespace Turniejowo.API.Controllers
                     return BadRequest("Match model invalid");
                 }
 
-                if (await matchRepository.FindSingle(x => x.MatchId == id) == null)
+                var matchToEdit = await Task<Match>.Run(() => matchRepository.FindSingle(x => x.MatchId == id));
+
+                if (matchToEdit == null)
                 {
                     return BadRequest("No such match in database");
                 }
+
+                matchRepository.ClearEntryState(matchToEdit);
 
                 matchRepository.Update(match);
                 await unitOfWork.CompleteAsync();

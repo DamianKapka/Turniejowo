@@ -50,5 +50,10 @@ namespace Turniejowo.API.Models.GenericRepository
         {
             _context.Set<T>().Remove(item);
         }
+
+        public void ClearEntryState(T obj)
+        {
+            _context.Entry(obj).State = EntityState.Detached;
+        }
     }
 }

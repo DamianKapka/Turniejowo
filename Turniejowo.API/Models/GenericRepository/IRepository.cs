@@ -15,5 +15,6 @@ namespace Turniejowo.API.Models.GenericRepository
         void Add(T item);
         void Update(T item);
         void Delete(T item);
+        void ClearEntryState(T obj);
     }
 }
