@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Turniejowo.API.Contracts.Requests;
 using Turniejowo.API.Helpers;
 using Turniejowo.API.Models;
 using Turniejowo.API.Models.Repositories;

@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Turniejowo.API.Contracts.Responses;
 using Turniejowo.API.Models;
-using Turniejowo.API.Models.DTO;
 using Turniejowo.API.Models.Repositories;
 using Turniejowo.API.Models.UnitOfWork;
 

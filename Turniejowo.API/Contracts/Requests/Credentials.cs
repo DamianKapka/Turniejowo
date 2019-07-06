@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Turniejowo.API.Models
+namespace Turniejowo.API.Contracts.Requests
 {
     public class Credentials
     {
