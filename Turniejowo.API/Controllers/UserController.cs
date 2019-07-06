@@ -56,27 +56,7 @@ namespace Turniejowo.API.Controllers
                 return BadRequest(e.Message);
             }
         }
-
-        [HttpGet("{id}/tournaments")]
-        public async Task<IActionResult> GetUserTournaments([FromRoute]int id)
-        {
-            try
-            {
-                var tournaments = await tournamentRepository.Find(t => t.CreatorId == id);
-
-                if(tournaments.Count == 0)
-                {
-                    return NoContent();
-                }
-
-                return Ok(tournaments);
-            }
-            catch(Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
+      
         [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Register([FromBody] User user)
@@ -138,6 +118,26 @@ namespace Turniejowo.API.Controllers
                 user.Password = null;
 
                 return Ok(user);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet("{id}/tournaments")]
+        public async Task<IActionResult> GetUserTournaments([FromRoute]int id)
+        {
+            try
+            {
+                var tournaments = await tournamentRepository.Find(t => t.CreatorId == id);
+
+                if (tournaments.Count == 0)
+                {
+                    return NoContent();
+                }
+
+                return Ok(tournaments);
             }
             catch (Exception e)
             {

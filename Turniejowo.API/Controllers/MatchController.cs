@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Turniejowo.API.Models;
 using Turniejowo.API.Models.Repositories;
 using Turniejowo.API.Models.UnitOfWork;
+using Turniejowo.API.Services;
 
 namespace Turniejowo.API.Controllers
 {
@@ -17,14 +18,16 @@ namespace Turniejowo.API.Controllers
         private readonly IMatchRepository matchRepository;
         private readonly IUnitOfWork unitOfWork;
 
-        public MatchController(IMatchRepository matchRepository,IUnitOfWork unitOfWork,ITeamRepository teamRepository)
+        public MatchController(IMatchRepository matchRepository,IUnitOfWork unitOfWork,
+                               ITeamRepository teamRepository)
         {
             this.matchRepository = matchRepository;
             this.unitOfWork = unitOfWork;
             this.teamRepository = teamRepository;
         }
 
-        [HttpGet()]
+        [AllowAnonymous]
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -44,6 +47,7 @@ namespace Turniejowo.API.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {

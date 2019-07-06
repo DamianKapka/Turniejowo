@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Turniejowo.API.Models.Repositories;
 using Turniejowo.API.Models.UnitOfWork;
+using Turniejowo.API.Services;
 
 namespace Turniejowo.API.Installers
 {
@@ -19,6 +20,10 @@ namespace Turniejowo.API.Installers
             services.AddScoped<IPlayerRepository, PlayerRepository>();
             services.AddScoped<IMatchRepository, MatchRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            services.AddScoped<IMatchService, MatchService>();
+            services.AddScoped<IPlayerService, PlayerService>();
+
         }
     }
 }

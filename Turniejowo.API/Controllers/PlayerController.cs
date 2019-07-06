@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Turniejowo.API.Models;
 using Turniejowo.API.Models.Repositories;
 using Turniejowo.API.Models.UnitOfWork;
+using Turniejowo.API.Services;
 
 namespace Turniejowo.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PlayerController : ControllerBase
@@ -18,7 +21,8 @@ namespace Turniejowo.API.Controllers
         private readonly ITeamRepository teamRepository;
         private readonly IPlayerRepository playerRepository;
 
-        public PlayerController(IUnitOfWork unitOfWork,ITeamRepository teamRepository,IPlayerRepository playerRepository)
+        public PlayerController(IUnitOfWork unitOfWork,ITeamRepository teamRepository,
+                                IPlayerRepository playerRepository)
         {
             this.unitOfWork = unitOfWork;
             this.teamRepository = teamRepository;
@@ -81,6 +85,27 @@ namespace Turniejowo.API.Controllers
             }
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdatePlayer([FromRoute] int id, [FromBody] Player player)
+        {
+            try
+            {
+                if (id != player.TeamId)
+                {
+                    return BadRequest("Id of edited player and updated one don't match");
+                }
+
+                playerRepository.Update(player);
+                await unitOfWork.CompleteAsync();
+
+                return Accepted();
+            }
+            catch (Exception e)
+            {
+                return BadRequest($"{e.Message}");
+            }
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePlayer([FromRoute] int id)
         {
@@ -102,27 +127,6 @@ namespace Turniejowo.API.Controllers
             {
                 return BadRequest(e.Message);
             }
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePlayer([FromRoute] int id, [FromBody] Player player)
-        {
-            try
-            {
-                if (id != player.TeamId)
-                {
-                    return BadRequest("Id of edited player and updated one don't match");
-                }
-
-                playerRepository.Update(player);
-                await unitOfWork.CompleteAsync();
-
-                return Accepted();
-            }
-            catch (Exception e)
-            {
-                return BadRequest($"{e.Message}");
-            }
-        }
+        }       
     }
 }

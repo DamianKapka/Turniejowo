@@ -71,6 +71,27 @@ namespace Turniejowo.API.Controllers
             }
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTournament([FromRoute] int id, [FromBody] Tournament tournament)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                tournamentRepository.Update(tournament);
+                await unitOfWork.CompleteAsync();
+
+                return Accepted();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTournament([FromRoute] int id)
         {
@@ -93,28 +114,7 @@ namespace Turniejowo.API.Controllers
                 return BadRequest(e.Message);
             }
         }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTournament([FromRoute] int id, [FromBody] Tournament tournament)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-                
-                tournamentRepository.Update(tournament);
-                await unitOfWork.CompleteAsync();
-
-                return Accepted();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
+     
         [HttpGet]
         [AllowAnonymous]
         [Route("{id}/teams")]

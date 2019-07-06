@@ -86,6 +86,28 @@ namespace Turniejowo.API.Controllers
             }
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTeam([FromRoute] int id, [FromBody] Team team)
+        {
+            try
+            {
+                if (id != team.TeamId)
+                {
+                    return Conflict();
+                }
+
+                teamRepository.Update(team);
+                await unitOfWork.CompleteAsync();
+
+                return Accepted();
+            }
+
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTeam([FromRoute] int id)
         {
@@ -106,28 +128,6 @@ namespace Turniejowo.API.Controllers
             catch (Exception e)
             {
                 return BadRequest(e.Message);
-            }
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTeam([FromRoute] int id, [FromBody] Team team)
-        {
-            try
-            {
-                if (id != team.TeamId)
-                {
-                    return Conflict();
-                }
-
-                teamRepository.Update(team);
-                await unitOfWork.CompleteAsync();
-
-                return Accepted();
-            }
-
-            catch (Exception e)
-            {
-               return  BadRequest(e.Message);
             }
         }
 
