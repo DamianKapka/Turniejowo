@@ -39,7 +39,7 @@ namespace Turniejowo.API.Controllers
 
                 if (teamToFind == null)
                 {
-                    return NotFound("Team doesn't exist in database");
+                    return NotFound();
                 }
 
                 return Ok(teamToFind);
@@ -64,7 +64,7 @@ namespace Turniejowo.API.Controllers
 
                 if (tournamentForTeam == null)
                 {
-                    return NotFound("Such tournament doesn't exist");
+                    return NotFound();
                 }
 
                 var teamNameExistsForTournament =
@@ -72,7 +72,7 @@ namespace Turniejowo.API.Controllers
 
                 if (teamNameExistsForTournament != null)
                 {
-                    return BadRequest("Team Name for the tournament already exists");
+                    return Conflict();
                 }
 
                 teamRepository.Add(team);
@@ -95,7 +95,7 @@ namespace Turniejowo.API.Controllers
 
                 if (teamToDelete == null)
                 {
-                    return NotFound("Team doesn't exist in database");
+                    return NotFound();
                 }
 
                 teamRepository.Delete(teamToDelete);
@@ -116,7 +116,7 @@ namespace Turniejowo.API.Controllers
             {
                 if (id != team.TeamId)
                 {
-                    return BadRequest("Id of edited team and updated one don't match");
+                    return Conflict();
                 }
 
                 teamRepository.Update(team);
@@ -127,7 +127,7 @@ namespace Turniejowo.API.Controllers
 
             catch (Exception e)
             {
-               return  BadRequest($"{e.Message}");
+               return  BadRequest(e.Message);
             }
         }
 
@@ -139,14 +139,14 @@ namespace Turniejowo.API.Controllers
             {
                 if (await teamRepository.GetById(id) == null)
                 {
-                    return BadRequest("No such team in database");
+                    return NotFound();
                 }
 
                 var players = await playerRepository.Find(player => player.TeamId == id);
 
                 if (players == null)
                 {
-                    return NotFound("No player for tournament");
+                    return NotFound();
                 }
 
                 return Ok(players);

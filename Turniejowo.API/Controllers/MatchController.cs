@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
 using Turniejowo.API.Models;
 using Turniejowo.API.Models.Repositories;
@@ -10,6 +8,7 @@ using Turniejowo.API.Models.UnitOfWork;
 
 namespace Turniejowo.API.Controllers
 {
+    [Authorize]
     [Route("/api/[controller]")]
     [ApiController]
     public class MatchController : ControllerBase
@@ -34,7 +33,7 @@ namespace Turniejowo.API.Controllers
 
                 if (matches == null)
                 {
-                    return NoContent();
+                    return NotFound();
                 }
 
                 return Ok(matches);
@@ -52,6 +51,11 @@ namespace Turniejowo.API.Controllers
             {
                 var match = await matchRepository.FindSingle(m => m.MatchId == id);
 
+                if(match == null)
+                {
+                    return NotFound();
+                }
+
                 return Ok(match);
             }
             catch (Exception e)
@@ -67,12 +71,12 @@ namespace Turniejowo.API.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Match model invalid");
+                    return BadRequest(ModelState);
                 }
 
                 if (await teamRepository.FindSingle(x => x.TeamId == match.HomeTeamId) == null || await teamRepository.FindSingle(y => y.TeamId == match.GuestTeamId) == null)
                 {
-                    return BadRequest("One of teams does not exist");
+                    return NotFound();
                 }
 
                 matchRepository.Add(match);
@@ -92,12 +96,12 @@ namespace Turniejowo.API.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Match model invalid");
+                    return BadRequest(ModelState);
                 }
 
                 if (await matchRepository.FindSingle(x => x.MatchId == id) == null)
                 {
-                    return BadRequest("No such match in database");
+                    return NotFound();
                 }
 
                 matchRepository.Update(match);
@@ -118,14 +122,14 @@ namespace Turniejowo.API.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Match model invalid");
+                    return BadRequest(ModelState);
                 }
 
                 var matchToDel = await matchRepository.FindSingle(x => x.MatchId == id);
 
                 if (matchToDel == null)
                 {
-                    return BadRequest("No such match in database");
+                    return NotFound();
                 }
 
                 matchRepository.Delete(matchToDel);

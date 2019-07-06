@@ -39,7 +39,7 @@ namespace Turniejowo.API.Controllers
                 
                 if (tournamentToFind == null)
                 {
-                    return NotFound("Tournament doesn't exist in database");
+                    return NotFound();
                 }
 
                 return Ok(tournamentToFind);
@@ -80,7 +80,7 @@ namespace Turniejowo.API.Controllers
 
                 if (tournamentToDelete == null)
                 {
-                    return NotFound("Tournament doesn't exist in database");
+                    return NotFound();
                 }
 
                 tournamentRepository.Delete(tournamentToDelete);
@@ -124,14 +124,14 @@ namespace Turniejowo.API.Controllers
             {
                 if(await tournamentRepository.GetById(id) == null)
                 {
-                    BadRequest("No such tournament in database");
+                    NotFound();
                 }
 
                 var teams = await teamRepository.Find(team => team.TournamentId == id);
 
                 if (teams == null)
                 {
-                    return NotFound("No teams for tournament");
+                    return NotFound();
                 }
 
                 return Ok(teams);
@@ -151,7 +151,7 @@ namespace Turniejowo.API.Controllers
             {
                 if (await tournamentRepository.GetById(id) == null)
                 {
-                    return NotFound("No such tournament in database");
+                    return NotFound();
                 }
 
                 var teams = await teamRepository.Find(t => t.TournamentId == id);

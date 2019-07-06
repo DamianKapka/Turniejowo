@@ -44,7 +44,7 @@ namespace Turniejowo.API.Controllers
 
                 if (user == null)
                 {
-                    return NotFound("User does no exist");
+                    return NotFound();
                 }
 
                 user.Password = null;
@@ -64,7 +64,7 @@ namespace Turniejowo.API.Controllers
             {
                 var tournaments = await tournamentRepository.Find(t => t.CreatorId == id);
 
-                if(tournamentRepository == null || tournaments.Count == 0)
+                if(tournaments.Count == 0)
                 {
                     return NoContent();
                 }
@@ -90,7 +90,7 @@ namespace Turniejowo.API.Controllers
 
                 if (await userRepository.FindSingle(x => x.Email == user.Email) != null)
                 {
-                    return Conflict("Account with that e-mail already exists in database.");
+                    return Conflict();
                 }
 
                 userRepository.Add(user);

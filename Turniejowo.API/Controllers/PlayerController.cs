@@ -34,7 +34,7 @@ namespace Turniejowo.API.Controllers
 
                 if (playerToFind == null)
                 {
-                    return NotFound("Player doesn't exist in database");
+                    return NotFound();
                 }
 
                 return Ok(playerToFind);
@@ -59,7 +59,7 @@ namespace Turniejowo.API.Controllers
 
                 if (teamForPlayer == null)
                 {
-                    return NotFound("Such team doesn't exist");
+                    return NotFound();
                 }
 
                 var playerNameExistsForTeam =
@@ -67,7 +67,7 @@ namespace Turniejowo.API.Controllers
 
                 if (playerNameExistsForTeam != null)
                 {
-                    return BadRequest("Player name for the team already exists");
+                    return Conflict();
                 }
 
                 playerRepository.Add(player);
@@ -90,7 +90,7 @@ namespace Turniejowo.API.Controllers
 
                 if (playerToDelete == null)
                 {
-                    return NotFound("Player doesn't exist in database");
+                    return NotFound();
                 }
 
                 playerRepository.Delete(playerToDelete);
