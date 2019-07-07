@@ -13,7 +13,7 @@ namespace Turniejowo.API.Services
 
         void AddNewUser(User user);
 
-        void AuthenticateUser(Credentials credentials);
+        User AssignJwtToken(User user);
 
         Task<ICollection<Tournament>> GetUserTournaments(int id);
     }

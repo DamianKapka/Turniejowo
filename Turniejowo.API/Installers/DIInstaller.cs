@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Turniejowo.API.Models.Repositories;
 using Turniejowo.API.Models.UnitOfWork;
@@ -21,9 +17,11 @@ namespace Turniejowo.API.Installers
             services.AddScoped<IMatchRepository, MatchRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            services.AddScoped<IMatchService, MatchService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITournamentService, TournamentService>();
+            services.AddScoped<ITeamService, TeamService>();
             services.AddScoped<IPlayerService, PlayerService>();
-
+            services.AddScoped<IMatchService, MatchService>();
         }
     }
 }

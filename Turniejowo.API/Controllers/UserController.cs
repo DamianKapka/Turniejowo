@@ -41,7 +41,7 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var user = await userRepository.FindSingle(x => x.UserId == id);
+                var user = await userRepository.GetById(id);
 
                 if (user == null)
                 {

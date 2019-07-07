@@ -159,10 +159,9 @@ namespace Turniejowo.API.Controllers
                 var players =
                     await playerRepository.Find(p => teams.Select(t => t.TeamId).Contains(p.TeamId));
 
-                var teamsWithPlayers = new List<TeamWithPlayers>();
-
                 if (groupedbyteam)
                 {
+                    var teamsWithPlayers = new List<TeamWithPlayers>();
                     foreach (var team in teams)
                     {
                         var teamplayers = players.Where(p => p.TeamId == team.TeamId).ToArray();
