@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Turniejowo.API.Exceptions;
 using Turniejowo.API.Models;
 using Turniejowo.API.Repositories;
+using Turniejowo.API.Services;
 using Turniejowo.API.UnitOfWork;
 
 namespace Turniejowo.API.Controllers
@@ -15,19 +17,11 @@ namespace Turniejowo.API.Controllers
     [ApiController]
     public class TeamController : ControllerBase
     {
-        private readonly ITournamentRepository tournamentRepository;
-        private readonly ITeamRepository teamRepository;
-        private readonly IPlayerRepository playerRepository;
-        private readonly IMatchRepository matchRepository;
-        private readonly IUnitOfWork unitOfWork;
+        private readonly ITeamService teamService;
 
-        public TeamController(ITournamentRepository tournamentRepository,ITeamRepository teamRepository,IPlayerRepository playerRepository,IUnitOfWork unitOfWork,IMatchRepository matchRepository)
+        public TeamController(ITeamService teamService)
         {
-            this.tournamentRepository = tournamentRepository;
-            this.teamRepository = teamRepository;
-            this.playerRepository = playerRepository;
-            this.matchRepository = matchRepository;
-            this.unitOfWork = unitOfWork;
+            this.teamService = teamService;
         }
 
         [HttpGet("{id}")]
@@ -35,14 +29,13 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var teamToFind = await teamRepository.GetById(id);
-
-                if (teamToFind == null)
-                {
-                    return NotFound();
-                }
+                var teamToFind = await teamService.GetTeamById(id);
 
                 return Ok(teamToFind);
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
             }
             catch (Exception e)
             {
@@ -60,25 +53,17 @@ namespace Turniejowo.API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var tournamentForTeam = await tournamentRepository.GetById(team.TournamentId);
-
-                if (tournamentForTeam == null)
-                {
-                    return NotFound();
-                }
-
-                var teamNameExistsForTournament =
-                    await teamRepository.FindSingle(t => t.TournamentId == team.TournamentId && t.Name == team.Name);
-
-                if (teamNameExistsForTournament != null)
-                {
-                    return Conflict();
-                }
-
-                teamRepository.Add(team);
-                await unitOfWork.CompleteAsync();
+                await teamService.AddNewTeam(team);
 
                 return CreatedAtAction("GetById", new {id = team.TeamId}, team);
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
+            }
+            catch (AlreadyInDatabaseException)
+            {
+                return Conflict();
             }
             catch (Exception e)
             {
@@ -96,12 +81,14 @@ namespace Turniejowo.API.Controllers
                     return Conflict();
                 }
 
-                teamRepository.Update(team);
-                await unitOfWork.CompleteAsync();
+                await teamService.EditTeam(team);
 
                 return Accepted();
             }
-
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
+            }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
@@ -113,17 +100,13 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var teamToDelete = await teamRepository.GetById(id);
-
-                if (teamToDelete == null)
-                {
-                    return NotFound();
-                }
-
-                teamRepository.Delete(teamToDelete);
-                await unitOfWork.CompleteAsync();
+                await teamService.DeleteTeam(id);
 
                 return Accepted();
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
             }
             catch (Exception e)
             {
@@ -137,19 +120,13 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                if (await teamRepository.GetById(id) == null)
-                {
-                    return NotFound();
-                }
-
-                var players = await playerRepository.Find(player => player.TeamId == id);
-
-                if (players == null)
-                {
-                    return NotFound();
-                }
+                var players = await teamService.GetTeamById(id);
 
                 return Ok(players);
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
             }
             catch (Exception e)
             {
@@ -163,14 +140,13 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var matches = await matchRepository.Find(m => m.HomeTeamId == id || m.GuestTeamId == id);
-
-                if (matches == null)
-                {
-                    return NotFound("No matches for that team");
-                }
+                var matches = await teamService.GetTeamMatches(id);
 
                 return Ok(matches);
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
             }
             catch (Exception e)
             {

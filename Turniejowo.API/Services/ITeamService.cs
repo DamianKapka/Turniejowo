@@ -10,11 +10,11 @@ namespace Turniejowo.API.Services
     {
         Task<Team> GetTeamById(int id);
 
-        void AddNewTeam(Team team);
+        Task AddNewTeam(Team team);
 
-        void EditTeam(Team team);
+        Task EditTeam(Team team);
 
-        void DeleteTeam(int id);
+        Task DeleteTeam(int id);
 
         Task<ICollection<Player>> GetTeamPlayers(int id);
 
