@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace Turniejowo.API.Models.GenericRepository
+namespace Turniejowo.API.GenericRepository
 {
     public interface IRepository<T>
     {

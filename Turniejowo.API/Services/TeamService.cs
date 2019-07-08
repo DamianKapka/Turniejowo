@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Turniejowo.API.Models;
-using Turniejowo.API.Models.Repositories;
-using Turniejowo.API.Models.UnitOfWork;
+using Turniejowo.API.Repositories;
+using Turniejowo.API.UnitOfWork;
 
 namespace Turniejowo.API.Services
 {

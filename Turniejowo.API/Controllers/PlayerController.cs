@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Turniejowo.API.Models;
-using Turniejowo.API.Models.Repositories;
-using Turniejowo.API.Models.UnitOfWork;
+using Turniejowo.API.Repositories;
 using Turniejowo.API.Services;
+using Turniejowo.API.UnitOfWork;
 
 namespace Turniejowo.API.Controllers
 {

@@ -4,8 +4,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Turniejowo.API.Models;
 
-namespace Turniejowo.API.Models.GenericRepository
+namespace Turniejowo.API.GenericRepository
 {
     public class Repository<T> : IRepository<T> where T : class
     {

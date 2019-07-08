@@ -10,8 +10,8 @@ using Microsoft.IdentityModel.Tokens;
 using Turniejowo.API.Contracts.Requests;
 using Turniejowo.API.Helpers;
 using Turniejowo.API.Models;
-using Turniejowo.API.Models.Repositories;
-using Turniejowo.API.Models.UnitOfWork;
+using Turniejowo.API.Repositories;
+using Turniejowo.API.UnitOfWork;
 
 namespace Turniejowo.API.Services
 {
