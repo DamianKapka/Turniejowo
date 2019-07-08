@@ -10,10 +10,10 @@ namespace Turniejowo.API.Services
     {
         Task<Player> GetPlayerById(int id);
 
-        void AddNewPlayer(Player player);
+        Task AddNewPlayer(Player player);
 
-        void EditPlayer(Player player);
+        Task EditPlayer(Player player);
 
-        void DeletePlayer(int id);        
+        Task DeletePlayer(int id);        
     }
 }

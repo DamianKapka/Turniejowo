@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Turniejowo.API.Exceptions;
 using Turniejowo.API.Models;
 using Turniejowo.API.Repositories;
 using Turniejowo.API.Services;
@@ -12,21 +13,15 @@ using Turniejowo.API.UnitOfWork;
 
 namespace Turniejowo.API.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PlayerController : ControllerBase
     {
-        private readonly IUnitOfWork unitOfWork;
-        private readonly ITeamRepository teamRepository;
-        private readonly IPlayerRepository playerRepository;
+        private readonly IPlayerService playerService;
 
-        public PlayerController(IUnitOfWork unitOfWork,ITeamRepository teamRepository,
-                                IPlayerRepository playerRepository)
+        public PlayerController(IPlayerService playerService)
         {
-            this.unitOfWork = unitOfWork;
-            this.teamRepository = teamRepository;
-            this.playerRepository = playerRepository;
+            this.playerService = playerService;
         }
 
         [HttpGet("{id}")]
@@ -34,14 +29,13 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var playerToFind = await playerRepository.GetById(id);
+                var player = await playerService.GetPlayerById(id);
 
-                if (playerToFind == null)
-                {
-                    return NotFound();
-                }
-
-                return Ok(playerToFind);
+                return Ok(player);
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
             }
             catch (Exception e)
             {
@@ -59,25 +53,17 @@ namespace Turniejowo.API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var teamForPlayer = await teamRepository.GetById(player.TeamId);
+                await playerService.AddNewPlayer(player);
 
-                if (teamForPlayer == null)
-                {
-                    return NotFound();
-                }
-
-                var playerNameExistsForTeam =
-                    await playerRepository.FindSingle(p => p.TeamId == player.TeamId && p.FName == player.FName && p.LName == player.LName);
-
-                if (playerNameExistsForTeam != null)
-                {
-                    return Conflict();
-                }
-
-                playerRepository.Add(player);
-                await unitOfWork.CompleteAsync();
-
-                return CreatedAtAction("GetById", new { id = player.TeamId }, player);
+                return CreatedAtAction("GetById", new {id = player.TeamId}, player);
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
+            }
+            catch (AlreadyInDatabaseException)
+            {
+                return Conflict();
             }
             catch (Exception e)
             {
@@ -90,15 +76,18 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                if (id != player.TeamId)
+                if (id != player.PlayerId)
                 {
                     return BadRequest("Id of edited player and updated one don't match");
                 }
 
-                playerRepository.Update(player);
-                await unitOfWork.CompleteAsync();
+                await playerService.EditPlayer(player);
 
                 return Accepted();
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
             }
             catch (Exception e)
             {
@@ -111,17 +100,13 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var playerToDelete = await playerRepository.GetById(id);
-
-                if (playerToDelete == null)
-                {
-                    return NotFound();
-                }
-
-                playerRepository.Delete(playerToDelete);
-                await unitOfWork.CompleteAsync();
+                await playerService.DeletePlayer(id);
 
                 return Accepted();
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
             }
             catch (Exception e)
             {

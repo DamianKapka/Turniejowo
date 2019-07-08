@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Turniejowo.API.Exceptions;
 using Turniejowo.API.Models;
 using Turniejowo.API.Repositories;
 using Turniejowo.API.UnitOfWork;
@@ -21,24 +22,63 @@ namespace Turniejowo.API.Services
             this.playerRepository = playerRepository;
         }
 
-        public void AddNewPlayer(Player player)
+        public async Task AddNewPlayer(Player player)
         {
-            throw new NotImplementedException();
+            var teamForPlayer = await teamRepository.GetById(player.TeamId);
+
+            if (teamForPlayer == null)
+            {
+                throw new NotFoundInDatabaseException();
+            }
+
+            var playerNameExistsForTeam =
+                await playerRepository.FindSingle(p => p.TeamId == player.TeamId && p.FName == player.FName && p.LName == player.LName);
+
+            if (playerNameExistsForTeam != null)
+            {
+                throw new AlreadyInDatabaseException();
+            }
+
+            playerRepository.Add(player);
+            await unitOfWork.CompleteAsync();
         }
 
-        public void DeletePlayer(int id)
+        public async Task DeletePlayer(int id)
         {
-            throw new NotImplementedException();
+            var playerToDelete = await playerRepository.GetById(id);
+
+            if (playerToDelete == null)
+            {
+                throw new NotFoundInDatabaseException();
+            }
+
+            playerRepository.Delete(playerToDelete);
+            await unitOfWork.CompleteAsync();
         }
 
-        public void EditPlayer(Player player)
+        public async Task EditPlayer(Player player)
         {
-            throw new NotImplementedException();
+            var playerToEdit = await playerRepository.GetById(player.PlayerId);
+
+            if (playerToEdit== null)
+            {
+                throw new NotFoundInDatabaseException();
+            }
+
+            playerRepository.ClearEntryState(playerToEdit);
+
+            playerRepository.Update(player);
+            await unitOfWork.CompleteAsync();
         }
 
         public async Task<Player> GetPlayerById(int id)
         {
             var player = await playerRepository.GetById(id);
+
+            if (player == null)
+            {
+                throw new NotFoundInDatabaseException();
+            }
 
             return player;
         }
