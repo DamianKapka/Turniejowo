@@ -12,10 +12,10 @@ namespace Turniejowo.API.Services
 
         Task<Match> GetMatchById(int id);
 
-        void AddNewMatch(Match match);
+        Task AddNewMatch(Match match);
 
-        void EditMatch(Match match);
+        Task EditMatch(Match match);
 
-        void DeleteMatch(int id);
+        Task DeleteMatch(int id);
     }
 }

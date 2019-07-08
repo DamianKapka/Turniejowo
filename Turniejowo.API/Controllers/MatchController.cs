@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using Turniejowo.API.Exceptions;
 using Turniejowo.API.Models;
 using Turniejowo.API.Repositories;
 using Turniejowo.API.Services;
@@ -9,37 +10,28 @@ using Turniejowo.API.UnitOfWork;
 
 namespace Turniejowo.API.Controllers
 {
-    [Authorize]
     [Route("/api/[controller]")]
     [ApiController]
     public class MatchController : ControllerBase
     {
-        private readonly ITeamRepository teamRepository;
-        private readonly IMatchRepository matchRepository;
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IMatchService matchService;
 
-        public MatchController(IMatchRepository matchRepository,IUnitOfWork unitOfWork,
-                               ITeamRepository teamRepository)
+        public MatchController(IMatchService matchService)
         {
-            this.matchRepository = matchRepository;
-            this.unitOfWork = unitOfWork;
-            this.teamRepository = teamRepository;
+            this.matchService = matchService;
         }
 
-        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             try
             {
-                var matches = await matchRepository.GetAll();
-
-                if (matches == null)
-                {
-                    return NotFound();
-                }
-
+                var matches = await matchService.GetAllMatches();
                 return Ok(matches);
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
             }
             catch (Exception e)
             {
@@ -47,20 +39,18 @@ namespace Turniejowo.API.Controllers
             }
         }
 
-        [AllowAnonymous]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
             try
             {
-                var match = await matchRepository.FindSingle(m => m.MatchId == id);
-
-                if(match == null)
-                {
-                    return NotFound();
-                }
+                var match = await matchService.GetMatchById(id);
 
                 return Ok(match);
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
             }
             catch (Exception e)
             {
@@ -78,14 +68,13 @@ namespace Turniejowo.API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                if (await teamRepository.FindSingle(x => x.TeamId == match.HomeTeamId) == null || await teamRepository.FindSingle(y => y.TeamId == match.GuestTeamId) == null)
-                {
-                    return NotFound();
-                }
+                await matchService.AddNewMatch(match);
 
-                matchRepository.Add(match);
-                await unitOfWork.CompleteAsync();
-                return CreatedAtAction("Get",new { id = match.MatchId }, match);
+                return CreatedAtAction("Get", new {id = match.MatchId}, match);
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
             }
             catch(Exception e)
             {
@@ -103,19 +92,13 @@ namespace Turniejowo.API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var matchToEdit = await Task<Match>.Run(() => matchRepository.FindSingle(x => x.MatchId == id));
-
-                if (matchToEdit == null)
-                {
-                    return NotFound();
-                }
-
-                matchRepository.ClearEntryState(matchToEdit);
-
-                matchRepository.Update(match);
-                await unitOfWork.CompleteAsync();
+                await matchService.EditMatch(match);
 
                 return Accepted();
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
             }
             catch(Exception e)
             {
@@ -133,18 +116,13 @@ namespace Turniejowo.API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var matchToDel = await matchRepository.FindSingle(x => x.MatchId == id);
-
-                if (matchToDel == null)
-                {
-                    return NotFound();
-                }
-
-                matchRepository.Delete(matchToDel);
-                await unitOfWork.CompleteAsync();
+                await matchService.DeleteMatch(id);
 
                 return Accepted();
-
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
             }
             catch(Exception e)
             {
