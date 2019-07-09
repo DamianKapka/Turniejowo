@@ -11,11 +11,11 @@ namespace Turniejowo.API.Services
     {
         Task<Tournament> GetTournamentById(int id);
 
-        void AddNewTournament(Tournament tournament);
+        Task AddNewTournament(Tournament tournament);
 
-        void EditTournament(Tournament tournament);
+        Task EditTournament(Tournament tournament);
 
-        void DeleteTournament(Tournament tournament);
+        Task DeleteTournament(int id);
 
         Task<ICollection<Team>> GetTournamentTeams(int id);
 
