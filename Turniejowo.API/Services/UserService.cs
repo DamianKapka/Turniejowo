@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Turniejowo.API.Contracts.Requests;
+using Turniejowo.API.Exceptions;
 using Turniejowo.API.Helpers;
 using Turniejowo.API.Models;
 using Turniejowo.API.Repositories;
@@ -34,12 +35,37 @@ namespace Turniejowo.API.Services
         public async Task<User> GetUserById(int id)
         {
             var user = await userRepository.GetById(id);
+
+            if (user == null)
+            {
+                throw new NotFoundInDatabaseException();
+            }
+
             return user;
         }
 
-        public void AddNewUser(User user)
+        public async Task AddNewUser(User user)
         {
-            throw new NotImplementedException();
+            if (await userRepository.FindSingle(x => x.Email == user.Email) != null)
+            {
+                throw new AlreadyInDatabaseException();
+            }
+
+            userRepository.Add(user);
+            await unitOfWork.CompleteAsync();
+        }
+
+        public async Task<User> AuthenticateCredentials(Credentials credentials)
+        {
+            var user = await userRepository.FindSingle(
+                u => u.Email == credentials.Login && u.Password == credentials.Password);
+
+            if (user == null)
+            {
+                throw new NotFoundInDatabaseException();
+            }
+
+            return user;
         }
 
         public User AssignJwtToken(User user)
@@ -70,6 +96,11 @@ namespace Turniejowo.API.Services
         public async Task<ICollection<Tournament>> GetUserTournaments(int id)
         {
             var tournaments = await tournamentRepository.Find(t => t.CreatorId == id);
+
+            if (tournaments == null)
+            {
+                throw new NotFoundInDatabaseException();
+            }
 
             return tournaments;
         }

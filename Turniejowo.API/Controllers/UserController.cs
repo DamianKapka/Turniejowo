@@ -10,9 +10,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Turniejowo.API.Contracts.Requests;
+using Turniejowo.API.Exceptions;
 using Turniejowo.API.Helpers;
 using Turniejowo.API.Models;
 using Turniejowo.API.Repositories;
+using Turniejowo.API.Services;
 using Turniejowo.API.UnitOfWork;
 
 namespace Turniejowo.API.Controllers
@@ -22,17 +24,11 @@ namespace Turniejowo.API.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserRepository userRepository;
-        private readonly ITournamentRepository tournamentRepository;
-        private readonly IUnitOfWork unitOfWork;
-        private readonly AppSettings appSettings;
+        private readonly IUserService userService;
 
-        public UserController(IUserRepository userRepository,ITournamentRepository tournamentRepository, IUnitOfWork unitOfWork,IOptions<AppSettings> appSettings)
+        public UserController(IUserService userService)
         {
-            this.userRepository = userRepository;
-            this.tournamentRepository = tournamentRepository;
-            this.unitOfWork = unitOfWork;
-            this.appSettings = appSettings.Value;
+            this.userService = userService;
         }
 
         [AllowAnonymous]
@@ -41,16 +37,15 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var user = await userRepository.GetById(id);
-
-                if (user == null)
-                {
-                    return NotFound();
-                }
+                var user = await userService.GetUserById(id);
 
                 user.Password = null;
 
                 return Ok(user);
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
             }
             catch (Exception e)
             {
@@ -69,15 +64,13 @@ namespace Turniejowo.API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                if (await userRepository.FindSingle(x => x.Email == user.Email) != null)
-                {
-                    return Conflict();
-                }
-
-                userRepository.Add(user);
-                await unitOfWork.CompleteAsync();
+                await userService.AddNewUser(user);
 
                 return CreatedAtAction("GetById", new {id = user.UserId}, user);
+            }
+            catch (AlreadyInDatabaseException)
+            {
+                return Conflict();
             }
             catch (Exception e)
             {
@@ -91,34 +84,17 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var user = await userRepository.FindSingle(x =>
-                    x.Email == credentials.Login && x.Password == credentials.Password);
+                var authenticatedUser = await userService.AuthenticateCredentials(credentials);
 
-                if (user == null)
-                {
-                    return Unauthorized("Credentials invalid");
-                }
-
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-                var tokenDescriptor = new SecurityTokenDescriptor
-                {
-                    Subject = new ClaimsIdentity(
-                        new[]
-                        {
-                            new Claim(ClaimTypes.Name, user.UserId.ToString()), 
-                            new Claim(ClaimTypes.Actor, user.FullName),
-                        }),
-                    Expires = DateTime.UtcNow.AddDays(1),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),SecurityAlgorithms.HmacSha256Signature)
-                };
-
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-                user.Token = tokenHandler.WriteToken(token);
+                var user = userService.AssignJwtToken(authenticatedUser);
 
                 user.Password = null;
 
                 return Ok(user);
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return Unauthorized();
             }
             catch (Exception e)
             {
@@ -131,14 +107,13 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var tournaments = await tournamentRepository.Find(t => t.CreatorId == id);
-
-                if (tournaments.Count == 0)
-                {
-                    return NoContent();
-                }
+                var tournaments = await userService.GetUserTournaments(id);
 
                 return Ok(tournaments);
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
             }
             catch (Exception e)
             {

@@ -11,7 +11,9 @@ namespace Turniejowo.API.Services
     {
         Task<User> GetUserById(int id);
 
-        void AddNewUser(User user);
+        Task AddNewUser(User user);
+
+        Task<User> AuthenticateCredentials(Credentials credentials);
 
         User AssignJwtToken(User user);
 
