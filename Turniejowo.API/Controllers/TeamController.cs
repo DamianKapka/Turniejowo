@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ using Turniejowo.API.UnitOfWork;
 
 namespace Turniejowo.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TeamController : ControllerBase
@@ -24,6 +26,7 @@ namespace Turniejowo.API.Controllers
             this.teamService = teamService;
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
@@ -114,6 +117,7 @@ namespace Turniejowo.API.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route(@"{id}/players")]
         public async Task<IActionResult> GetPlayersForTeam([FromRoute] int id)
@@ -134,6 +138,7 @@ namespace Turniejowo.API.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route(@"{id}/matches")]
         public async Task<IActionResult> GetMatchesForTeam([FromRoute]int id)

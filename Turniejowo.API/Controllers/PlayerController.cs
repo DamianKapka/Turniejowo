@@ -13,6 +13,7 @@ using Turniejowo.API.UnitOfWork;
 
 namespace Turniejowo.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PlayerController : ControllerBase
@@ -24,6 +25,7 @@ namespace Turniejowo.API.Controllers
             this.playerService = playerService;
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {

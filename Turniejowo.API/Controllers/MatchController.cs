@@ -10,6 +10,7 @@ using Turniejowo.API.UnitOfWork;
 
 namespace Turniejowo.API.Controllers
 {
+    [Authorize]
     [Route("/api/[controller]")]
     [ApiController]
     public class MatchController : ControllerBase
@@ -39,6 +40,7 @@ namespace Turniejowo.API.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
