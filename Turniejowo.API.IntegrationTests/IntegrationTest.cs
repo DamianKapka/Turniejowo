@@ -68,7 +68,68 @@ namespace Turniejowo.API.IntegrationTests
 
         protected async Task InsertDummyData()
         {
+            var usrResponse = await TestClient.PostAsJsonAsync("api/user", new User()
+            {
+                Email = "test2@test.com",
+                FullName = "test test",
+                Password = "testPw",
+                Phone = "123456789",
+            });
 
+            var trnResponse = await TestClient.PostAsJsonAsync("api/tournament", new Tournament()
+            {
+                Name = "testTourney",
+                AmountOfTeams = 1,
+                CreatorId = 1,
+                Date = DateTime.Now,
+                DisciplineId = 3,
+                EntryFee = 20,
+                Localization = "testLocalization"
+            });
+
+            var tmResponse = await TestClient.PostAsJsonAsync("api/team", new Team()
+            {
+                TournamentId = 1,
+                Name = "testteam1",
+                Points = 0,
+                Wins = 0,
+                Loses = 0,
+                Matches = 0,
+            });
+
+            var tm2Response = await TestClient.PostAsJsonAsync("api/team", new Team()
+            {
+                TournamentId = 1,
+                Name = "testteam2",
+                Points = 0,
+                Wins = 0,
+                Loses = 0,
+                Matches = 0
+            });
+
+            var plResponse = await TestClient.PostAsJsonAsync("api/player", new Player()
+            {
+                FName = "testPlayerrr",
+                LName = "testPlayerrr",
+                TeamId = 1,
+                Points = 0,
+            });
+
+            var pl2Response = await TestClient.PostAsJsonAsync("api/player", new Player()
+            {
+                FName = "testPlayerr",
+                LName = "testPlayerr",
+                TeamId = 2,
+                Points = 0,
+            });
+
+            var mtResponse = await TestClient.PostAsJsonAsync("api/match", new Match()
+            {
+                HomeTeamId = 1,
+                GuestTeamId = 2,
+                GuestTeamPoints = 3,
+                HomeTeamPoints = 2,
+            });
         }
     }
 }

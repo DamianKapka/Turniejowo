@@ -38,10 +38,13 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
         {
             //Arrange 
             await AuthenticateAsync();
+            await InsertDummyData();
 
             //Act
+            var response = await TestClient.GetAsync("api/match");
 
             //Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
     }
 }
