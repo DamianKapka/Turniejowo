@@ -55,6 +55,11 @@ namespace Turniejowo.API.Services
                 throw new NotFoundInDatabaseException();
             }
 
+            if (await teamRepository.FindSingle(x => x.TeamId == match.HomeTeamId) == null || await teamRepository.FindSingle(y => y.TeamId == match.GuestTeamId) == null)
+            {
+                throw new NotFoundInDatabaseException();
+            }
+
             matchRepository.ClearEntryState(matchToEdit);
 
             matchRepository.Update(match);
@@ -76,6 +81,11 @@ namespace Turniejowo.API.Services
         public async Task<Match> GetMatchById(int id)
         {
             var match = await matchRepository.GetById(id);
+
+            if (match == null)
+            {
+                throw new NotFoundInDatabaseException();
+            }
 
             return match;
         }

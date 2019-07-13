@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Turniejowo.API.Models
 {
@@ -28,7 +29,9 @@ namespace Turniejowo.API.Models
 
         public int Points { get; set; }
 
+        [JsonIgnore]
         public virtual ICollection<Match> HomeMatches{ get; set; }
+        [JsonIgnore]
         public virtual ICollection<Match> GuestMatches{ get; set; }
     }
 }

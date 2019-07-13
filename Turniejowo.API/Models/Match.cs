@@ -13,16 +13,20 @@ namespace Turniejowo.API.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int MatchId { get; set; }
 
+        [Required]
         public int? HomeTeamId { get; set; }
 
         public virtual Team HomeTeam { get; set; }
 
+        [Required]
         public int? GuestTeamId { get; set; }
 
         public virtual Team GuestTeam { get; set; }
 
+        [Required]
         public int HomeTeamPoints { get; set; }
 
+        [Required]
         public int GuestTeamPoints { get; set; }
     }
 }

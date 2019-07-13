@@ -89,6 +89,11 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
+                if (id != match.MatchId)
+                {
+                    return Conflict();
+                }
+
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
@@ -113,11 +118,6 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-
                 await matchService.DeleteMatch(id);
 
                 return Accepted();
