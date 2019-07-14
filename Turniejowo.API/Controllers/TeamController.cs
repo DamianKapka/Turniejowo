@@ -123,7 +123,7 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var players = await teamService.GetTeamById(id);
+                var players = await teamService.GetTeamPlayers(id);
 
                 return Ok(players);
             }

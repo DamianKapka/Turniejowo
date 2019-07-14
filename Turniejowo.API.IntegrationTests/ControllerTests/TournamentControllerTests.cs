@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Turniejowo.API.Models;
 using Xunit;
 
 namespace Turniejowo.API.IntegrationTests.ControllerTests
 {
-    public class TeamControllerTests : IntegrationTest
+    public class TournamentControllerTests : IntegrationTest
     {
         #region Add Tests
         [Fact]
@@ -18,12 +20,13 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             await InsertDummyData();
 
             //Act
-            var response = await TestClient.PostAsJsonAsync("api/team", new Team()
+            var response = await TestClient.PostAsJsonAsync("api/tournament", new Tournament()
             {
-                Matches = 0,
-                Points = 0,
-                TournamentId = 1,
-                Wins = 0,
+                Name = "test",
+                AmountOfTeams = 5,
+                CreatorId = 1,
+                Date = DateTime.Now,
+                DisciplineId = 3,
             });
 
             //Assert
@@ -31,21 +34,22 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
         }
 
         [Fact]
-        public async Task Add_NoTournamentForTeam_Returns404()
+        public async Task Add_NoUserForTournament_Returns404()
         {
             //Arrange 
             await AuthenticateAsync();
             await InsertDummyData();
 
             //Act
-            var response = await TestClient.PostAsJsonAsync("api/team", new Team()
+            var response = await TestClient.PostAsJsonAsync("api/tournament", new Tournament()
             {
-                Name = "testTeam",
-                Loses = 0,
-                Matches = 0,
-                Points = 0,
-                TournamentId = 2,
-                Wins = 0,
+                Name = "test",
+                AmountOfTeams = 5,
+                CreatorId = 1337,
+                Date = DateTime.Now,
+                DisciplineId = 3,
+                EntryFee = 0,
+                Localization = "testLocalization 11/11",
             });
 
             //Assert
@@ -53,21 +57,22 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
         }
 
         [Fact]
-        public async Task Add_ProperTeam_Returns201()
+        public async Task Add_ProperTournament_Returns201()
         {
             //Arrange 
             await AuthenticateAsync();
             await InsertDummyData();
 
             //Act
-            var response = await TestClient.PostAsJsonAsync("api/team", new Team()
+            var response = await TestClient.PostAsJsonAsync("api/tournament", new Tournament()
             {
-                Name = "testTeam",
-                Loses = 0,
-                Matches = 0,
-                Points = 0,
-                TournamentId = 1,
-                Wins = 0,
+                Name = "test",
+                AmountOfTeams = 5,
+                CreatorId = 1,
+                Date = DateTime.Now,
+                DisciplineId = 3,
+                EntryFee = 0,
+                Localization = "testLocalization 11/11",
             });
 
             //Assert
@@ -77,15 +82,18 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
         [Fact]
         public async Task Add_WithoutToken_Returns401()
         {
+            //Arrange 
+
             //Act
-            var response = await TestClient.PostAsJsonAsync("api/team", new Team()
+            var response = await TestClient.PostAsJsonAsync("api/tournament", new Tournament()
             {
-                Name = "testTeam",
-                Loses = 0,
-                Matches = 0,
-                Points = 0,
-                TournamentId = 2,
-                Wins = 0,
+                Name = "test",
+                AmountOfTeams = 5,
+                CreatorId = 2,
+                Date = DateTime.Now,
+                DisciplineId = 3,
+                EntryFee = 0,
+                Localization = "testLocalization 11/11",
             });
 
             //Assert
@@ -93,27 +101,27 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
         }
 
         [Fact]
-        public async Task Add_SameTeamInTheTournament_Returns409()
+        public async Task Add_SameTournamentForUser_Returns409()
         {
             //Arrange 
             await AuthenticateAsync();
             await InsertDummyData();
 
             //Act
-            var response = await TestClient.PostAsJsonAsync("api/team", new Team()
+            var response = await TestClient.PostAsJsonAsync("api/tournament", new Tournament()
             {
-                TournamentId = 1,
-                Name = "testteam1",
-                Points = 0,
-                Wins = 0,
-                Loses = 0,
-                Matches = 0,
+                Name = "testTourney",
+                AmountOfTeams = 1,
+                CreatorId = 1,
+                Date = DateTime.Now,
+                DisciplineId = 3,
+                EntryFee = 20,
+                Localization = "testLocalization"
             });
 
             //Assert
             Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
         }
-
         #endregion
 
         #region Delete Tests
@@ -125,7 +133,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             await InsertDummyData();
 
             //Act
-            var response = await TestClient.DeleteAsync("/api/team/3");
+            var response = await TestClient.DeleteAsync("/api/tournament/3");
 
             //Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -139,7 +147,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             await InsertDummyData();
 
             //Act
-            var response = await TestClient.DeleteAsync("/api/team/1");
+            var response = await TestClient.DeleteAsync("/api/tournament/1");
 
             //Assert
             Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
@@ -151,7 +159,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             //Arrange
 
             //Act
-            var response = await TestClient.DeleteAsync("/api/team/1");
+            var response = await TestClient.DeleteAsync("/api/tournament/1");
 
             //Assert
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
@@ -168,15 +176,16 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             await InsertDummyData();
 
             //Act
-            var response = await TestClient.PutAsJsonAsync("api/team/1", new Team()
+            var response = await TestClient.PutAsJsonAsync("api/tournament/1", new Tournament()
             {
-                TeamId = 2,
-                TournamentId = 1,
-                Name = "testteam1",
-                Points = 0,
-                Wins = 0,
-                Loses = 0,
-                Matches = 0,
+                TournamentId = 2,
+                Name = "testTourney",
+                AmountOfTeams = 1,
+                CreatorId = 1,
+                Date = DateTime.Now,
+                DisciplineId = 3,
+                EntryFee = 20,
+                Localization = "testLocalization"
             });
 
             //Assert
@@ -191,13 +200,15 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             await InsertDummyData();
 
             //Act
-            var response = await TestClient.PutAsJsonAsync("api/team/1", new Team()
+            var response = await TestClient.PutAsJsonAsync("api/tournament/1", new Tournament()
             {
                 TournamentId = 1,
-                Points = 0,
-                Wins = 0,
-                Loses = 0,
-                Matches = 0,
+                AmountOfTeams = 1,
+                CreatorId = 1,
+                Date = DateTime.Now,
+                DisciplineId = 3,
+                EntryFee = 20,
+                Localization = "testLocalization"
             });
 
             //Assert
@@ -205,22 +216,23 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
         }
 
         [Fact]
-        public async Task Edit_NoTournamentForTeam_Returns404()
+        public async Task Edit_NoUserForTournament_Returns404()
         {
             //Arrange
             await AuthenticateAsync();
             await InsertDummyData();
 
             //Act
-            var response = await TestClient.PutAsJsonAsync("api/team/1", new Team()
+            var response = await TestClient.PutAsJsonAsync("api/tournament/1", new Tournament()
             {
-                TeamId = 1,
-                TournamentId = 3,
-                Name = "testteam1",
-                Points = 0,
-                Wins = 0,
-                Loses = 0,
-                Matches = 0,
+                TournamentId = 1,
+                Name = "testTourney",
+                AmountOfTeams = 1,
+                CreatorId = 3,
+                Date = DateTime.Now,
+                DisciplineId = 3,
+                EntryFee = 20,
+                Localization = "testLocalization"
             });
 
             //Assert
@@ -235,15 +247,16 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             await InsertDummyData();
 
             //Act
-            var response = await TestClient.PutAsJsonAsync("api/team/1", new Team()
+            var response = await TestClient.PutAsJsonAsync("api/tournament/1", new Tournament()
             {
-                TeamId = 1,
                 TournamentId = 1,
-                Name = "testteam1",
-                Points = 0,
-                Wins = 0,
-                Loses = 0,
-                Matches = 0,
+                Name = "testTourney",
+                AmountOfTeams = 1,
+                CreatorId = 1,
+                Date = DateTime.Now,
+                DisciplineId = 3,
+                EntryFee = 20,
+                Localization = "testLocalization"
             });
 
             //Assert
@@ -256,15 +269,16 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             //Arrange
 
             //Act
-            var response = await TestClient.PutAsJsonAsync("api/team/1", new Team()
+            var response = await TestClient.PutAsJsonAsync("api/tournament/1", new Tournament()
             {
-                TeamId = 2,
-                TournamentId = 1,
-                Name = "testteam1",
-                Points = 0,
-                Wins = 0,
-                Loses = 0,
-                Matches = 0,
+                TournamentId = 2,
+                Name = "testTourney",
+                AmountOfTeams = 1,
+                CreatorId = 1,
+                Date = DateTime.Now,
+                DisciplineId = 3,
+                EntryFee = 20,
+                Localization = "testLocalization"
             });
 
             //Assert
@@ -281,8 +295,8 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             await InsertDummyData();
 
             //Act
-            var response = await TestClient.GetAsync("api/team/1");
-            var responseContent = await response.Content.ReadAsAsync<Team>();
+            var response = await TestClient.GetAsync("api/tournament/1");
+            var responseContent = await response.Content.ReadAsAsync<Tournament>();
 
             //Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -290,19 +304,19 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
         }
 
         [Fact]
-        public async Task Get_WithOutAuth_Returns401()
+        public async Task Get_WithOutAuth_DoesNotReturn401()
         {
             //Arrange
 
             //Act
-            var response = await TestClient.GetAsync("api/team/1");
+            var response = await TestClient.GetAsync("api/tournament/1");
 
             //Assert
-            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+            Assert.NotEqual(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
         [Fact]
-        public async Task Get_WithTeam_Returns200()
+        public async Task Get_WithTournament_Returns200()
         {
             //Arrange 
             await AuthenticateAsync();
@@ -310,7 +324,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
 
 
             //Act 
-            var response = await TestClient.GetAsync("api/team/1");
+            var response = await TestClient.GetAsync("api/tournament/1");
 
             //Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -323,95 +337,94 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             await AuthenticateAsync();
             await InsertDummyData();
 
-
             //Act 
-            var response = await TestClient.GetAsync("api/team/5");
+            var response = await TestClient.GetAsync("api/tournament/5");
 
             //Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
         #endregion
 
-        #region GetPlayerForTeam Tests
+        #region GetTeamsForTournament Tests
 
         [Fact]
-        public async Task GetPlayersForTeam_WithoutToken_DoesNotReturn401()
+        public async Task GetTeamsForTournament_WithoutToken_DoesNotReturn401()
         {
             //Arrange
             await InsertDummyData();
 
             //Act
-            var response = await TestClient.GetAsync("api/team/1/players");
+            var response = await TestClient.GetAsync("api/tournament/1/teams");
 
             //Assert
             Assert.NotEqual(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
         [Fact]
-        public async Task GetPlayersForTeam_WithTeams_Returns200()
+        public async Task GetTeamsForTournament_WithTeams_Returns200()
         {
             //Arrange 
             await AuthenticateAsync();
             await InsertDummyData();
 
             //Act
-            var response = await TestClient.GetAsync("api/team/1/players");
+            var response = await TestClient.GetAsync("api/tournament/1/teams");
 
             //Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
         [Fact]
-        public async Task GetPlayersForTeam_WithoutTeams_Returns404()
+        public async Task GetPlayersForTeam_WithoutTournaments_Returns404()
         {
             //Arrange 
             await AuthenticateAsync();
 
             //Act
-            var response = await TestClient.GetAsync("api/team/1/players");
+            var response = await TestClient.GetAsync("api/tournament/1/teams");
 
             //Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
         #endregion
 
-        #region GetMatchesForTeam Tests
+        #region GetPlayersForTournament Tests
 
         [Fact]
-        public async Task GetMatchesForTeam_WithoutToken_DoesNotReturn401()
+        public async Task GetMatchesForTournament_WithoutToken_DoesNotReturn401()
         {
             //Arrange
             await InsertDummyData();
 
             //Act
-            var response = await TestClient.GetAsync("api/team/1/matches");
+            var response = await TestClient.GetAsync("api/tournament/1/players");
 
             //Assert
             Assert.NotEqual(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
         [Fact]
-        public async Task GetMatchesForTeam_WithTeams_Returns200()
+        public async Task GetPlayersForTournamentWithPlayers_Returns200()
         {
             //Arrange 
             await AuthenticateAsync();
             await InsertDummyData();
 
             //Act
-            var response = await TestClient.GetAsync("api/team/1/matches");
+            var response = await TestClient.GetAsync("api/tournament/1/players");
 
             //Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
         [Fact]
-        public async Task GetMatchesForTeam_WithoutTeams_Returns404()
+        public async Task GetPlayersForTournament_WithoutPlayers_Returns404()
         {
             //Arrange 
             await AuthenticateAsync();
 
             //Act
-            var response = await TestClient.GetAsync("api/team/1/matches");
+            var response = await TestClient.GetAsync("api/tournament/1/players");
 
             //Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);

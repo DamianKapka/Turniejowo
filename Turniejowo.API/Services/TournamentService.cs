@@ -15,13 +15,15 @@ namespace Turniejowo.API.Services
         private readonly ITournamentRepository tournamentRepository;
         private readonly ITeamRepository teamRepository;
         private readonly IPlayerRepository playerRepository;
+        private readonly IUserRepository userRepository;
 
-        public TournamentService(IUnitOfWork unitOfWork, ITournamentRepository tournamentRepository, ITeamRepository teamRepository, IPlayerRepository playerRepository)
+        public TournamentService(IUnitOfWork unitOfWork, ITournamentRepository tournamentRepository, ITeamRepository teamRepository, IPlayerRepository playerRepository, IUserRepository userRepository)
         {
             this.unitOfWork = unitOfWork;
             this.tournamentRepository = tournamentRepository;
             this.teamRepository = teamRepository;
             this.playerRepository = playerRepository;
+            this.userRepository = userRepository;
         }
 
         public async Task<Tournament> GetTournamentById(int id)
@@ -38,6 +40,11 @@ namespace Turniejowo.API.Services
 
         public async Task AddNewTournament(Tournament tournament)
         {
+            if (await userRepository.GetById(tournament.CreatorId) == null)
+            {
+                throw new NotFoundInDatabaseException();
+            }
+
             var tournamentToAdd = await tournamentRepository.FindSingle(x => x.Name == tournament.Name);
 
             if (tournamentToAdd != null)
@@ -51,6 +58,11 @@ namespace Turniejowo.API.Services
 
         public async Task EditTournament(Tournament tournament)
         {
+            if (await userRepository.GetById(tournament.CreatorId) == null)
+            {
+                throw new NotFoundInDatabaseException();
+            }
+
             var tournamentToEdit = await tournamentRepository.FindSingle(x => x.TournamentId == tournament.TournamentId);
 
             if (tournamentToEdit == null)
@@ -92,6 +104,11 @@ namespace Turniejowo.API.Services
         public async Task<ICollection<Player>> GetTournamentPlayers(int id)
         {
             var teams = await teamRepository.Find(t => t.TournamentId == id);
+
+            if (teams.Count == 0)
+            {
+                throw new NotFoundInDatabaseException();
+            }
 
             var players =
                 await playerRepository.Find(p => teams.Select(t => t.TeamId).Contains(p.TeamId));

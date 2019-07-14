@@ -59,6 +59,10 @@ namespace Turniejowo.API.Controllers
 
                 return CreatedAtAction("GetById", new {id = tournament.TournamentId}, tournament);
             }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
+            }
             catch (AlreadyInDatabaseException)
             {
                 return Conflict();
@@ -74,6 +78,11 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
+                if (id != tournament.TournamentId)
+                {
+                    return Conflict();
+                }
+
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
