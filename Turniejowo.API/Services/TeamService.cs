@@ -60,6 +60,11 @@ namespace Turniejowo.API.Services
 
         public async Task EditTeam(Team team)
         {
+            if (await tournamentRepository.GetById(team.TournamentId) == null)
+            {
+                throw new NotFoundInDatabaseException();
+            }
+
             var teamToEdit = await teamRepository.GetById(team.TeamId);
 
             if (teamToEdit == null)

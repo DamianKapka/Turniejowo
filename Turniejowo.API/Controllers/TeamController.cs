@@ -26,7 +26,6 @@ namespace Turniejowo.API.Controllers
             this.teamService = teamService;
         }
 
-        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {

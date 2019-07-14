@@ -21,12 +21,16 @@ namespace Turniejowo.API.Models
 
         public Tournament Tournament { get; set; }
 
+        [Required]
         public int Matches { get; set; }
 
+        [Required]
         public int Wins { get; set; }
 
+        [Required]
         public int Loses { get; set; }
 
+        [Required]
         public int Points { get; set; }
 
         [JsonIgnore]

@@ -301,7 +301,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
         }
 
         [Fact]
-        public async Task Get_WithWringId_Returns404()
+        public async Task Get_WithWrongId_Returns404()
         {
             //Arrange 
             await AuthenticateAsync();
