@@ -25,7 +25,6 @@ namespace Turniejowo.API.Controllers
             this.playerService = playerService;
         }
 
-        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
@@ -80,7 +79,7 @@ namespace Turniejowo.API.Controllers
             {
                 if (id != player.PlayerId)
                 {
-                    return BadRequest("Id of edited player and updated one don't match");
+                    return Conflict();
                 }
 
                 await playerService.EditPlayer(player);

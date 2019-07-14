@@ -74,7 +74,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
 
         #region Get Tests
         [Fact]
-        public async Task Get_WithoutPosts_Returns404()
+        public async Task Get_WithoutMatch_Returns404()
         {
             //Arrange
             await AuthenticateAsync();
@@ -112,6 +112,20 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             //Assert
             Assert.Equal(HttpStatusCode.OK,response.StatusCode);
             Assert.NotNull(responseContent);
+        }
+
+        [Fact]
+        public async Task Get_WithWrongId_Returns404()
+        {
+            //Arrange 
+            await AuthenticateAsync();
+            await InsertDummyData();
+
+            //Act
+            var response = await TestClient.GetAsync("api/match/3");
+
+            //Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
         #endregion
 
@@ -179,7 +193,6 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             //Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
-
         #endregion
 
         #region Edit Tests
