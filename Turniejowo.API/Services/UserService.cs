@@ -97,7 +97,7 @@ namespace Turniejowo.API.Services
         {
             var tournaments = await tournamentRepository.Find(t => t.CreatorId == id);
 
-            if (tournaments == null)
+            if (tournaments.Count == 0)
             {
                 throw new NotFoundInDatabaseException();
             }
