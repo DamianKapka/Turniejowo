@@ -25,9 +25,9 @@ namespace Turniejowo.API.Services
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<Team> GetTeamById(int id)
+        public async Task<Team> GetTeamByIdAsync(int id)
         {
-            var team = await teamRepository.GetById(id);
+            var team = await teamRepository.GetByIdAsync(id);
 
             if (team == null)
             {
@@ -37,9 +37,9 @@ namespace Turniejowo.API.Services
             return team;
         }
 
-        public async Task AddNewTeam(Team team)
+        public async Task AddNewTeamAsync(Team team)
         {
-            var tournamentForTeam = await tournamentRepository.GetById(team.TournamentId);
+            var tournamentForTeam = await tournamentRepository.GetByIdAsync(team.TournamentId);
 
             if (tournamentForTeam == null)
             {
@@ -47,7 +47,7 @@ namespace Turniejowo.API.Services
             }
 
             var teamNameExistsForTournament =
-                await teamRepository.FindSingle(t => t.TournamentId == team.TournamentId && t.Name == team.Name);
+                await teamRepository.FindSingleAsync(t => t.TournamentId == team.TournamentId && t.Name == team.Name);
 
             if (teamNameExistsForTournament != null)
             {
@@ -58,14 +58,14 @@ namespace Turniejowo.API.Services
             await unitOfWork.CompleteAsync();
         }
 
-        public async Task EditTeam(Team team)
+        public async Task EditTeamAsync(Team team)
         {
-            if (await tournamentRepository.GetById(team.TournamentId) == null)
+            if (await tournamentRepository.GetByIdAsync(team.TournamentId) == null)
             {
                 throw new NotFoundInDatabaseException();
             }
 
-            var teamToEdit = await teamRepository.GetById(team.TeamId);
+            var teamToEdit = await teamRepository.GetByIdAsync(team.TeamId);
 
             if (teamToEdit == null)
             {
@@ -78,9 +78,9 @@ namespace Turniejowo.API.Services
             await unitOfWork.CompleteAsync();
         }
 
-        public async Task DeleteTeam(int id)
+        public async Task DeleteTeamAsync(int id)
         {
-            var teamToDelete = await teamRepository.GetById(id);
+            var teamToDelete = await teamRepository.GetByIdAsync(id);
 
             if (teamToDelete == null)
             {
@@ -91,9 +91,9 @@ namespace Turniejowo.API.Services
             await unitOfWork.CompleteAsync();
         }
 
-        public async Task<ICollection<Player>> GetTeamPlayers(int id)
+        public async Task<ICollection<Player>> GetTeamPlayersAsync(int id)
         {
-            var players = await playerRepository.Find(player => player.TeamId == id);
+            var players = await playerRepository.FindAsync(player => player.TeamId == id);
 
             if (players.Count == 0)
             {
@@ -103,9 +103,9 @@ namespace Turniejowo.API.Services
             return players;
         }
 
-        public async Task<ICollection<Match>> GetTeamMatches(int id)
+        public async Task<ICollection<Match>> GetTeamMatchesAsync(int id)
         {
-            var matches = await matchRepository.Find(m => m.HomeTeamId == id || m.GuestTeamId == id);
+            var matches = await matchRepository.FindAsync(m => m.HomeTeamId == id || m.GuestTeamId == id);
 
             if (matches.Count == 0)
             {

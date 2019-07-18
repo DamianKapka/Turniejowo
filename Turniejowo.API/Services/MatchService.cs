@@ -22,9 +22,9 @@ namespace Turniejowo.API.Services
             this.teamRepository = teamRepository;
         }
 
-        public async Task AddNewMatch(Match match)
+        public async Task AddNewMatchAsync(Match match)
         {
-            if (await teamRepository.FindSingle(x => x.TeamId == match.HomeTeamId) == null || await teamRepository.FindSingle(y => y.TeamId == match.GuestTeamId) == null)
+            if (await teamRepository.FindSingleAsync(x => x.TeamId == match.HomeTeamId) == null || await teamRepository.FindSingleAsync(y => y.TeamId == match.GuestTeamId) == null)
             {
                 throw new NotFoundInDatabaseException();
             }
@@ -33,9 +33,9 @@ namespace Turniejowo.API.Services
             await unitOfWork.CompleteAsync();
         }
         
-        public async Task DeleteMatch(int id)
+        public async Task DeleteMatchAsync(int id)
         {
-            var matchToDel = await matchRepository.FindSingle(x => x.MatchId == id);
+            var matchToDel = await matchRepository.FindSingleAsync(x => x.MatchId == id);
 
             if (matchToDel == null)
             {
@@ -46,16 +46,16 @@ namespace Turniejowo.API.Services
             await unitOfWork.CompleteAsync();
         }
 
-        public async Task EditMatch(Match match)
+        public async Task EditMatchAsync(Match match)
         {
-            var matchToEdit = await matchRepository.FindSingle(x => x.MatchId == match.MatchId);
+            var matchToEdit = await matchRepository.FindSingleAsync(x => x.MatchId == match.MatchId);
 
             if (matchToEdit == null)
             {
                 throw new NotFoundInDatabaseException();
             }
 
-            if (await teamRepository.FindSingle(x => x.TeamId == match.HomeTeamId) == null || await teamRepository.FindSingle(y => y.TeamId == match.GuestTeamId) == null)
+            if (await teamRepository.FindSingleAsync(x => x.TeamId == match.HomeTeamId) == null || await teamRepository.FindSingleAsync(y => y.TeamId == match.GuestTeamId) == null)
             {
                 throw new NotFoundInDatabaseException();
             }
@@ -66,9 +66,9 @@ namespace Turniejowo.API.Services
             await unitOfWork.CompleteAsync();
         }
 
-        public async Task<ICollection<Match>> GetAllMatches()
+        public async Task<ICollection<Match>> GetAllMatchesAsync()
         {
-            var matches = await matchRepository.GetAll();
+            var matches = await matchRepository.GetAllAsync();
 
             if (matches.Count == 0)
             {
@@ -78,9 +78,9 @@ namespace Turniejowo.API.Services
             return matches;
         }
 
-        public async Task<Match> GetMatchById(int id)
+        public async Task<Match> GetMatchByIdAsync(int id)
         {
-            var match = await matchRepository.GetById(id);
+            var match = await matchRepository.GetByIdAsync(id);
 
             if (match == null)
             {

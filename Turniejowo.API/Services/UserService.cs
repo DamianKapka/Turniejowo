@@ -32,9 +32,9 @@ namespace Turniejowo.API.Services
             this.appSettings = appSettings.Value;
         }
 
-        public async Task<User> GetUserById(int id)
+        public async Task<User> GetUserByIdAsync(int id)
         {
-            var user = await userRepository.GetById(id);
+            var user = await userRepository.GetByIdAsync(id);
 
             if (user == null)
             {
@@ -44,9 +44,9 @@ namespace Turniejowo.API.Services
             return user;
         }
 
-        public async Task AddNewUser(User user)
+        public async Task AddNewUserAsync(User user)
         {
-            if (await userRepository.FindSingle(x => x.Email == user.Email) != null)
+            if (await userRepository.FindSingleAsync(x => x.Email == user.Email) != null)
             {
                 throw new AlreadyInDatabaseException();
             }
@@ -55,9 +55,9 @@ namespace Turniejowo.API.Services
             await unitOfWork.CompleteAsync();
         }
 
-        public async Task<User> AuthenticateCredentials(Credentials credentials)
+        public async Task<User> AuthenticateCredentialsAsync(Credentials credentials)
         {
-            var user = await userRepository.FindSingle(
+            var user = await userRepository.FindSingleAsync(
                 u => u.Email == credentials.Login && u.Password == credentials.Password);
 
             if (user == null)
@@ -93,9 +93,9 @@ namespace Turniejowo.API.Services
             return user;
         }
 
-        public async Task<ICollection<Tournament>> GetUserTournaments(int id)
+        public async Task<ICollection<Tournament>> GetUserTournamentsAsync(int id)
         {
-            var tournaments = await tournamentRepository.Find(t => t.CreatorId == id);
+            var tournaments = await tournamentRepository.FindAsync(t => t.CreatorId == id);
 
             if (tournaments.Count == 0)
             {

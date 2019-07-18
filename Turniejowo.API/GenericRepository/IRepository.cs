@@ -7,10 +7,10 @@ namespace Turniejowo.API.GenericRepository
 {
     public interface IRepository<T>
     {
-        Task<ICollection<T>> GetAll();
-        Task<ICollection<T>> Find(Expression<Func<T, bool>> query);
-        Task<T> FindSingle(Expression<Func<T, bool>> query);
-        Task<T> GetById(int id);
+        Task<ICollection<T>> GetAllAsync();
+        Task<ICollection<T>> FindAsync(Expression<Func<T, bool>> query);
+        Task<T> FindSingleAsync(Expression<Func<T, bool>> query);
+        Task<T> GetByIdAsync(int id);
         void Add(T item);
         void Update(T item);
         void Delete(T item);

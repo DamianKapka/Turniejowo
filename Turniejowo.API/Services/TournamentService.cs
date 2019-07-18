@@ -26,9 +26,9 @@ namespace Turniejowo.API.Services
             this.userRepository = userRepository;
         }
 
-        public async Task<Tournament> GetTournamentById(int id)
+        public async Task<Tournament> GetTournamentByIdAsync(int id)
         {
-            var tournament = await tournamentRepository.GetById(id);
+            var tournament = await tournamentRepository.GetByIdAsync(id);
 
             if (tournament == null)
             {
@@ -38,14 +38,14 @@ namespace Turniejowo.API.Services
             return tournament;
         }
 
-        public async Task AddNewTournament(Tournament tournament)
+        public async Task AddNewTournamentAsync(Tournament tournament)
         {
-            if (await userRepository.GetById(tournament.CreatorId) == null)
+            if (await userRepository.GetByIdAsync(tournament.CreatorId) == null)
             {
                 throw new NotFoundInDatabaseException();
             }
 
-            var tournamentToAdd = await tournamentRepository.FindSingle(x => x.Name == tournament.Name);
+            var tournamentToAdd = await tournamentRepository.FindSingleAsync(x => x.Name == tournament.Name);
 
             if (tournamentToAdd != null)
             {
@@ -56,14 +56,14 @@ namespace Turniejowo.API.Services
             await unitOfWork.CompleteAsync();
         }
 
-        public async Task EditTournament(Tournament tournament)
+        public async Task EditTournamentAsync(Tournament tournament)
         {
-            if (await userRepository.GetById(tournament.CreatorId) == null)
+            if (await userRepository.GetByIdAsync(tournament.CreatorId) == null)
             {
                 throw new NotFoundInDatabaseException();
             }
 
-            var tournamentToEdit = await tournamentRepository.FindSingle(x => x.TournamentId == tournament.TournamentId);
+            var tournamentToEdit = await tournamentRepository.FindSingleAsync(x => x.TournamentId == tournament.TournamentId);
 
             if (tournamentToEdit == null)
             {
@@ -76,9 +76,9 @@ namespace Turniejowo.API.Services
             await unitOfWork.CompleteAsync();
         }
 
-        public async Task DeleteTournament(int id)
+        public async Task DeleteTournamentAsync(int id)
         {
-            var tournamentToDelete = await tournamentRepository.GetById(id);
+            var tournamentToDelete = await tournamentRepository.GetByIdAsync(id);
 
             if (tournamentToDelete == null)
             {
@@ -89,9 +89,9 @@ namespace Turniejowo.API.Services
             await unitOfWork.CompleteAsync();
         }
 
-        public async Task<ICollection<Team>> GetTournamentTeams(int id)
+        public async Task<ICollection<Team>> GetTournamentTeamsAsync(int id)
         {
-            var teams = await teamRepository.Find(team => team.TournamentId == id);
+            var teams = await teamRepository.FindAsync(team => team.TournamentId == id);
 
             if (teams.Count == 0)
             {
@@ -101,9 +101,9 @@ namespace Turniejowo.API.Services
             return teams;
         }
 
-        public async Task<ICollection<Player>> GetTournamentPlayers(int id)
+        public async Task<ICollection<Player>> GetTournamentPlayersAsync(int id)
         {
-            var teams = await teamRepository.Find(t => t.TournamentId == id);
+            var teams = await teamRepository.FindAsync(t => t.TournamentId == id);
 
             if (teams.Count == 0)
             {
@@ -111,7 +111,7 @@ namespace Turniejowo.API.Services
             }
 
             var players =
-                await playerRepository.Find(p => teams.Select(t => t.TeamId).Contains(p.TeamId));
+                await playerRepository.FindAsync(p => teams.Select(t => t.TeamId).Contains(p.TeamId));
 
             if (players.Count == 0)
             {
@@ -121,9 +121,9 @@ namespace Turniejowo.API.Services
             return players;
         }
 
-        public async Task<IDictionary<Team,List<Player>>> GetTournamentPlayersGroupedByTeam(int id)
+        public async Task<IDictionary<Team,List<Player>>> GetTournamentPlayersGroupedByTeamAsync(int id)
         {
-            var players = await GetTournamentPlayers(id);
+            var players = await GetTournamentPlayersAsync(id);
 
             if (players.Count == 0)
             {

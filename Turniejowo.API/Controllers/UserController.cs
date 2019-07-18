@@ -36,7 +36,7 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var user = await userService.GetUserById(id);
+                var user = await userService.GetUserByIdAsync(id);
 
                 user.Password = null;
 
@@ -63,7 +63,7 @@ namespace Turniejowo.API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                await userService.AddNewUser(user);
+                await userService.AddNewUserAsync(user);
 
                 return CreatedAtAction("GetById", new {id = user.UserId}, user);
             }
@@ -83,7 +83,7 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var authenticatedUser = await userService.AuthenticateCredentials(credentials);
+                var authenticatedUser = await userService.AuthenticateCredentialsAsync(credentials);
 
                 var user = userService.AssignJwtToken(authenticatedUser);
 
@@ -106,7 +106,7 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var tournaments = await userService.GetUserTournaments(id);
+                var tournaments = await userService.GetUserTournamentsAsync(id);
 
                 return Ok(tournaments);
             }

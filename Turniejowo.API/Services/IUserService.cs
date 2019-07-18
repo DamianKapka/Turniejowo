@@ -9,14 +9,14 @@ namespace Turniejowo.API.Services
 {
     public interface IUserService
     {
-        Task<User> GetUserById(int id);
+        Task<User> GetUserByIdAsync(int id);
 
-        Task AddNewUser(User user);
+        Task AddNewUserAsync(User user);
 
-        Task<User> AuthenticateCredentials(Credentials credentials);
+        Task<User> AuthenticateCredentialsAsync(Credentials credentials);
 
         User AssignJwtToken(User user);
 
-        Task<ICollection<Tournament>> GetUserTournaments(int id);
+        Task<ICollection<Tournament>> GetUserTournamentsAsync(int id);
     }
 }

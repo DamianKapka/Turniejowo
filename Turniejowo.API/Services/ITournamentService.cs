@@ -9,18 +9,18 @@ namespace Turniejowo.API.Services
 {
     public interface ITournamentService
     {
-        Task<Tournament> GetTournamentById(int id);
+        Task<Tournament> GetTournamentByIdAsync(int id);
 
-        Task AddNewTournament(Tournament tournament);
+        Task AddNewTournamentAsync(Tournament tournament);
 
-        Task EditTournament(Tournament tournament);
+        Task EditTournamentAsync(Tournament tournament);
 
-        Task DeleteTournament(int id);
+        Task DeleteTournamentAsync(int id);
 
-        Task<ICollection<Team>> GetTournamentTeams(int id);
+        Task<ICollection<Team>> GetTournamentTeamsAsync(int id);
 
-        Task<ICollection<Player>> GetTournamentPlayers(int id);
+        Task<ICollection<Player>> GetTournamentPlayersAsync(int id);
 
-        Task<IDictionary<Team, List<Player>>> GetTournamentPlayersGroupedByTeam(int id);
+        Task<IDictionary<Team, List<Player>>> GetTournamentPlayersGroupedByTeamAsync(int id);
     }
 }

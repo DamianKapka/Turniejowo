@@ -22,9 +22,9 @@ namespace Turniejowo.API.Services
             this.playerRepository = playerRepository;
         }
 
-        public async Task AddNewPlayer(Player player)
+        public async Task AddNewPlayerAsync(Player player)
         {
-            var teamForPlayer = await teamRepository.GetById(player.TeamId);
+            var teamForPlayer = await teamRepository.GetByIdAsync(player.TeamId);
 
             if (teamForPlayer == null)
             {
@@ -32,7 +32,7 @@ namespace Turniejowo.API.Services
             }
 
             var playerNameExistsForTeam =
-                await playerRepository.FindSingle(p => p.TeamId == player.TeamId && p.FName == player.FName && p.LName == player.LName);
+                await playerRepository.FindSingleAsync(p => p.TeamId == player.TeamId && p.FName == player.FName && p.LName == player.LName);
 
             if (playerNameExistsForTeam != null)
             {
@@ -43,9 +43,9 @@ namespace Turniejowo.API.Services
             await unitOfWork.CompleteAsync();
         }
 
-        public async Task DeletePlayer(int id)
+        public async Task DeletePlayerAsync(int id)
         {
-            var playerToDelete = await playerRepository.GetById(id);
+            var playerToDelete = await playerRepository.GetByIdAsync(id);
 
             if (playerToDelete == null)
             {
@@ -56,16 +56,16 @@ namespace Turniejowo.API.Services
             await unitOfWork.CompleteAsync();
         }
 
-        public async Task EditPlayer(Player player)
+        public async Task EditPlayerAsync(Player player)
         {
-            var playerTeam = await teamRepository.GetById(player.TeamId);
+            var playerTeam = await teamRepository.GetByIdAsync(player.TeamId);
 
             if (playerTeam == null)
             {
                 throw new NotFoundInDatabaseException();
             }
 
-            var playerToEdit = await playerRepository.GetById(player.PlayerId);
+            var playerToEdit = await playerRepository.GetByIdAsync(player.PlayerId);
 
             if (playerToEdit== null)
             {
@@ -78,9 +78,9 @@ namespace Turniejowo.API.Services
             await unitOfWork.CompleteAsync();
         }
 
-        public async Task<Player> GetPlayerById(int id)
+        public async Task<Player> GetPlayerByIdAsync(int id)
         {
-            var player = await playerRepository.GetById(id);
+            var player = await playerRepository.GetByIdAsync(id);
 
             if (player == null)
             {

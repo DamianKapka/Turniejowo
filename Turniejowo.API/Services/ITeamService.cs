@@ -8,16 +8,16 @@ namespace Turniejowo.API.Services
 {
     public interface ITeamService
     {
-        Task<Team> GetTeamById(int id);
+        Task<Team> GetTeamByIdAsync(int id);
 
-        Task AddNewTeam(Team team);
+        Task AddNewTeamAsync(Team team);
 
-        Task EditTeam(Team team);
+        Task EditTeamAsync(Team team);
 
-        Task DeleteTeam(int id);
+        Task DeleteTeamAsync(int id);
 
-        Task<ICollection<Player>> GetTeamPlayers(int id);
+        Task<ICollection<Player>> GetTeamPlayersAsync(int id);
 
-        Task<ICollection<Match>> GetTeamMatches(int id);
+        Task<ICollection<Match>> GetTeamMatchesAsync(int id);
     }
 }

@@ -8,14 +8,14 @@ namespace Turniejowo.API.Services
 {
     public interface IMatchService
     {
-        Task<ICollection<Match>> GetAllMatches();
+        Task<ICollection<Match>> GetAllMatchesAsync();
 
-        Task<Match> GetMatchById(int id);
+        Task<Match> GetMatchByIdAsync(int id);
 
-        Task AddNewMatch(Match match);
+        Task AddNewMatchAsync(Match match);
 
-        Task EditMatch(Match match);
+        Task EditMatchAsync(Match match);
 
-        Task DeleteMatch(int id);
+        Task DeleteMatchAsync(int id);
     }
 }

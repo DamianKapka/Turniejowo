@@ -31,7 +31,7 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var tournamentToFind = await tournamentService.GetTournamentById(id);
+                var tournamentToFind = await tournamentService.GetTournamentByIdAsync(id);
 
                 return Ok(tournamentToFind);
             }
@@ -55,7 +55,7 @@ namespace Turniejowo.API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                await tournamentService.AddNewTournament(tournament);
+                await tournamentService.AddNewTournamentAsync(tournament);
 
                 return CreatedAtAction("GetById", new {id = tournament.TournamentId}, tournament);
             }
@@ -88,7 +88,7 @@ namespace Turniejowo.API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                await tournamentService.EditTournament(tournament);
+                await tournamentService.EditTournamentAsync(tournament);
 
                 return Accepted();
             }
@@ -107,7 +107,7 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                await tournamentService.DeleteTournament(id);
+                await tournamentService.DeleteTournamentAsync(id);
 
                 return Accepted();
             }
@@ -128,7 +128,7 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var teams = await tournamentService.GetTournamentTeams(id);
+                var teams = await tournamentService.GetTournamentTeamsAsync(id);
 
                 return Ok(teams);
             }
@@ -151,11 +151,11 @@ namespace Turniejowo.API.Controllers
             {
                 if (groupedbyteam)
                 {
-                    var groupedPlayers = await tournamentService.GetTournamentPlayersGroupedByTeam(id);
+                    var groupedPlayers = await tournamentService.GetTournamentPlayersGroupedByTeamAsync(id);
                     return Ok(groupedPlayers);
                 }
 
-                var players = await tournamentService.GetTournamentPlayers(id);
+                var players = await tournamentService.GetTournamentPlayersAsync(id);
                 return Ok(players);
             }
             catch (NotFoundInDatabaseException)

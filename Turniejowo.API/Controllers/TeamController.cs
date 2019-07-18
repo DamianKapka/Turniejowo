@@ -31,7 +31,7 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var teamToFind = await teamService.GetTeamById(id);
+                var teamToFind = await teamService.GetTeamByIdAsync(id);
 
                 return Ok(teamToFind);
             }
@@ -55,7 +55,7 @@ namespace Turniejowo.API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                await teamService.AddNewTeam(team);
+                await teamService.AddNewTeamAsync(team);
 
                 return CreatedAtAction("GetById", new {id = team.TeamId}, team);
             }
@@ -83,7 +83,7 @@ namespace Turniejowo.API.Controllers
                     return Conflict();
                 }
 
-                await teamService.EditTeam(team);
+                await teamService.EditTeamAsync(team);
 
                 return Accepted();
             }
@@ -102,7 +102,7 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                await teamService.DeleteTeam(id);
+                await teamService.DeleteTeamAsync(id);
 
                 return Accepted();
             }
@@ -123,7 +123,7 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var players = await teamService.GetTeamPlayers(id);
+                var players = await teamService.GetTeamPlayersAsync(id);
 
                 return Ok(players);
             }
@@ -144,7 +144,7 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var matches = await teamService.GetTeamMatches(id);
+                var matches = await teamService.GetTeamMatchesAsync(id);
 
                 return Ok(matches);
             }

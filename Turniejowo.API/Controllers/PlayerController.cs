@@ -30,7 +30,7 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var player = await playerService.GetPlayerById(id);
+                var player = await playerService.GetPlayerByIdAsync(id);
 
                 return Ok(player);
             }
@@ -54,7 +54,7 @@ namespace Turniejowo.API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                await playerService.AddNewPlayer(player);
+                await playerService.AddNewPlayerAsync(player);
 
                 return CreatedAtAction("GetById", new {id = player.TeamId}, player);
             }
@@ -82,7 +82,7 @@ namespace Turniejowo.API.Controllers
                     return Conflict();
                 }
 
-                await playerService.EditPlayer(player);
+                await playerService.EditPlayerAsync(player);
 
                 return Accepted();
             }
@@ -101,7 +101,7 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                await playerService.DeletePlayer(id);
+                await playerService.DeletePlayerAsync(id);
 
                 return Accepted();
             }

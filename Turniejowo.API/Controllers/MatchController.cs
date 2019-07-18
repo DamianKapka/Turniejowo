@@ -27,7 +27,7 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var matches = await matchService.GetAllMatches();
+                var matches = await matchService.GetAllMatchesAsync();
                 return Ok(matches);
             }
             catch (NotFoundInDatabaseException)
@@ -46,7 +46,7 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var match = await matchService.GetMatchById(id);
+                var match = await matchService.GetMatchByIdAsync(id);
 
                 return Ok(match);
             }
@@ -70,7 +70,7 @@ namespace Turniejowo.API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                await matchService.AddNewMatch(match);
+                await matchService.AddNewMatchAsync(match);
 
                 return CreatedAtAction("Get", new {id = match.MatchId}, match);
             }
@@ -99,7 +99,7 @@ namespace Turniejowo.API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                await matchService.EditMatch(match);
+                await matchService.EditMatchAsync(match);
 
                 return Accepted();
             }
@@ -118,7 +118,7 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                await matchService.DeleteMatch(id);
+                await matchService.DeleteMatchAsync(id);
 
                 return Accepted();
             }

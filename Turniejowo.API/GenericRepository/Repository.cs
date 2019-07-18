@@ -17,22 +17,22 @@ namespace Turniejowo.API.GenericRepository
             _context = context;
         }
 
-        public async Task<ICollection<T>> GetAll()
+        public async Task<ICollection<T>> GetAllAsync()
         {
             return await _context.Set<T>().ToListAsync();
         }
 
-        public async Task<ICollection<T>> Find(Expression<Func<T, bool>> query)
+        public async Task<ICollection<T>> FindAsync(Expression<Func<T, bool>> query)
         {
             return await _context.Set<T>().Where(query).ToListAsync();
         }
 
-        public async Task<T> FindSingle(Expression<Func<T, bool>> query)
+        public async Task<T> FindSingleAsync(Expression<Func<T, bool>> query)
         {
             return await _context.Set<T>().FirstOrDefaultAsync(query);
         }
 
-        public async Task<T> GetById(int id)
+        public async Task<T> GetByIdAsync(int id)
         {
             return await _context.Set<T>().FindAsync(id);
         }

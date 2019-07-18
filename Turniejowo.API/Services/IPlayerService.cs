@@ -8,12 +8,12 @@ namespace Turniejowo.API.Services
 {
     public interface IPlayerService
     {
-        Task<Player> GetPlayerById(int id);
+        Task<Player> GetPlayerByIdAsync(int id);
 
-        Task AddNewPlayer(Player player);
+        Task AddNewPlayerAsync(Player player);
 
-        Task EditPlayer(Player player);
+        Task EditPlayerAsync(Player player);
 
-        Task DeletePlayer(int id);        
+        Task DeletePlayerAsync(int id);        
     }
 }
