@@ -44,14 +44,14 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
         }
 
         [Fact]
-        public async Task Get_WithoutToken_Returns401()
+        public async Task Get_WithoutToken_DoesNotReturns401()
         {
             //Act 
             var response = await TestClient.GetAsync("api/user/1");
 
 
             //Assert
-            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+            Assert.NotEqual(HttpStatusCode.Unauthorized, response.StatusCode);
         }
         #endregion
 
