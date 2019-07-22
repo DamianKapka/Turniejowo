@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Turniejowo.API.Installers
 {
-    public class SwaggerInstalle : IInstaller
+    public class SwaggerInstaller : IInstaller
     {
         public void Install(IServiceCollection services, IConfiguration config)
         {
@@ -16,7 +16,7 @@ namespace Turniejowo.API.Installers
                 x.SwaggerDoc("turniejowo", new Swashbuckle.AspNetCore.Swagger.Info
                 {
                     Title = "Turniejowo API",
-                    Version = "v1.12"
+                    Version = "v1.13"
                 });
             });
         }
