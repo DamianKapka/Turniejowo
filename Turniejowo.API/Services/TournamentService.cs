@@ -121,7 +121,7 @@ namespace Turniejowo.API.Services
             return players;
         }
 
-        public async Task<IDictionary<Team,List<Player>>> GetTournamentPlayersGroupedByTeamAsync(int id)
+        public async Task<List<TeamWithPlayers>> GetTournamentPlayersGroupedByTeamAsync(int id)
         {
             var players = await GetTournamentPlayersAsync(id);
 
@@ -130,9 +130,18 @@ namespace Turniejowo.API.Services
                 throw new NotFoundInDatabaseException();
             }
 
-            var playersGrouped = players.GroupBy(p => p.Team).ToDictionary(x => x.Key, y => y.ToList<Player>());
+            var listOfTeamsWithPlayers = new List<TeamWithPlayers>();
 
-            return playersGrouped;
+            foreach (var group in players.GroupBy(p => p.Team))
+            {
+                listOfTeamsWithPlayers.Add(new TeamWithPlayers()
+                {
+                    Team = group.Key,
+                    Players = group.ToArray()
+                });
+            }
+
+            return listOfTeamsWithPlayers;
         }
     }
 }
