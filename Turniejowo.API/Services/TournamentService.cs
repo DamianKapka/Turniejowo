@@ -16,14 +16,18 @@ namespace Turniejowo.API.Services
         private readonly ITeamRepository teamRepository;
         private readonly IPlayerRepository playerRepository;
         private readonly IUserRepository userRepository;
+        private readonly IMatchRepository matchRepository;
 
-        public TournamentService(IUnitOfWork unitOfWork, ITournamentRepository tournamentRepository, ITeamRepository teamRepository, IPlayerRepository playerRepository, IUserRepository userRepository)
+        public TournamentService(IUnitOfWork unitOfWork, ITournamentRepository tournamentRepository, 
+                                 ITeamRepository teamRepository, IPlayerRepository playerRepository, 
+                                 IUserRepository userRepository, IMatchRepository matchRepository)
         {
             this.unitOfWork = unitOfWork;
             this.tournamentRepository = tournamentRepository;
             this.teamRepository = teamRepository;
             this.playerRepository = playerRepository;
             this.userRepository = userRepository;
+            this.matchRepository = matchRepository;
         }
 
         public async Task<Tournament> GetTournamentByIdAsync(int id)
@@ -142,6 +146,19 @@ namespace Turniejowo.API.Services
             }
 
             return listOfTeamsWithPlayers;
+        }
+
+        public async Task<ICollection<Match>> GetTournamentMatchesAsync(int id)
+        {
+            var matches =
+                await matchRepository.FindAsync(m => m.HomeTeam.TournamentId == id && m.GuestTeam.TournamentId == id);
+
+            if (matches.Count == 0)
+            {
+                throw new NotFoundInDatabaseException();
+            }
+
+            return matches;
         }
     }
 }

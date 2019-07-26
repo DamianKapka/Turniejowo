@@ -391,7 +391,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
         #region GetPlayersForTournament Tests
 
         [Fact]
-        public async Task GetMatchesForTournament_WithoutToken_DoesNotReturn401()
+        public async Task GetPlayersForTournament_WithoutToken_DoesNotReturn401()
         {
             //Arrange
             await InsertDummyData();
@@ -425,6 +425,35 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
 
             //Act
             var response = await TestClient.GetAsync("api/tournament/1/players");
+
+            //Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+        #endregion
+
+        #region GetMatchesForTournament Tests
+
+        [Fact]
+        public async Task GetMatchesForTournament_WithoutToken_DoesNotReturn401()
+        {
+            //Arrange
+            await InsertDummyData();
+
+            //Act
+            var response = await TestClient.GetAsync("/api/tournament/1/matches");
+
+            //Assert
+            Assert.NotEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetMatchesForTournament_WithoutMatches_Returns404()
+        {
+            //Arrange
+            await AuthenticateAsync();
+
+            //Act
+            var response = await TestClient.GetAsync("/api/tournament/1/matches");
 
             //Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
