@@ -127,21 +127,23 @@ namespace Turniejowo.API.Services
 
         public async Task<List<TeamWithPlayers>> GetTournamentPlayersGroupedByTeamAsync(int id)
         {
-            var players = await GetTournamentPlayersAsync(id);
+            var teams = await GetTournamentTeamsAsync(id);
 
-            if (players.Count == 0)
+            if (teams.Count == 0)
             {
                 throw new NotFoundInDatabaseException();
             }
 
             var listOfTeamsWithPlayers = new List<TeamWithPlayers>();
 
-            foreach (var group in players.GroupBy(p => p.Team))
+            foreach (var team in teams)
             {
+                var players = await playerRepository.FindAsync(p => p.TeamId == team.TeamId);
+
                 listOfTeamsWithPlayers.Add(new TeamWithPlayers()
                 {
-                    Team = group.Key,
-                    Players = group.ToArray()
+                    Team = team,
+                    Players = players.ToArray()
                 });
             }
 
