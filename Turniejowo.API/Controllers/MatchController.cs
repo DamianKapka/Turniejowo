@@ -65,6 +65,11 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
+                if (match.HomeTeamId == match.GuestTeamId)
+                {
+                    return Conflict();
+                }
+
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
@@ -89,7 +94,7 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                if (id != match.MatchId)
+                if ((id != match.MatchId) || (match.HomeTeamId == match.GuestTeamId))
                 {
                     return Conflict();
                 }

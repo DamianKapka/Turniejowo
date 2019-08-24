@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Turniejowo.API.Models;
 
 namespace Turniejowo.API.Migrations
 {
     [DbContext(typeof(TurniejowoDbContext))]
-    partial class TurniejowoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190824204131_DateTime and IsFinished added to Match")]
+    partial class DateTimeandIsFinishedaddedtoMatch
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,7 +53,7 @@ namespace Turniejowo.API.Migrations
 
                     b.Property<bool>("IsFinished");
 
-                    b.Property<DateTime>("MatchDateTime");
+                    b.Property<DateTime>("TournamentDateTime");
 
                     b.HasKey("MatchId");
 

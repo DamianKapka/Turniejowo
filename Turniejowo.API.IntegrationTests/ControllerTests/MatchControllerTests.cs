@@ -130,6 +130,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
         #endregion
 
         #region Add Tests
+
         [Fact]
         public async Task Add_WithoutToken_Returns401()
         {
@@ -140,6 +141,26 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
 
             //Assert
             Assert.Equal(HttpStatusCode.Unauthorized,response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Add_SameIdTwoTeams_Returns409()
+        {
+            //Arrange
+            await AuthenticateAsync();
+            await InsertDummyData();
+
+            //Act
+            var response = await TestClient.PostAsJsonAsync("api/match", new Match()
+            {
+                GuestTeamId = 2,
+                HomeTeamId = 2,
+                HomeTeamPoints = 20,
+                GuestTeamPoints = 30
+            });
+
+            //Assert
+            Assert.Equal(HttpStatusCode.Conflict,response.StatusCode);
         }
 
         [Fact]
@@ -225,6 +246,28 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
 
             //Arrange
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Edit_SameIdTwoTeams_Returns409()
+        {
+            //Arrange 
+            await AuthenticateAsync();
+            await InsertDummyData();
+
+
+            //Act
+            var response = await TestClient.PutAsJsonAsync("api/match/1", new Match()
+            {
+                MatchId = 1,
+                GuestTeamId = 1,
+                HomeTeamId = 1,
+                HomeTeamPoints = 20,
+                GuestTeamPoints = 30
+            });
+
+            //Assert
+            Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
         }
 
         [Fact]
