@@ -162,5 +162,28 @@ namespace Turniejowo.API.Services
 
             return matches;
         }
+
+        public async Task<List<DateWithMatches>> GetTournamentMatchesGroupedByDateAsync(int id)
+        {
+            var matches = await GetTournamentMatchesAsync(id);
+
+            if (matches.Count == 0)
+            {
+                throw new NotFoundInDatabaseException();
+            }
+
+            var listOfDateWithMatches = new List<DateWithMatches>();
+
+            foreach (var match in matches.GroupBy(x => x.MatchDateTime.Date))
+            {
+                listOfDateWithMatches.Add(new DateWithMatches()
+                {
+                    DateTime = match.Key,
+                    Matches = match.ToArray()
+                });
+            }
+
+            return listOfDateWithMatches;
+        }
     }
 }

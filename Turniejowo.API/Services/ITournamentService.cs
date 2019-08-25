@@ -24,5 +24,7 @@ namespace Turniejowo.API.Services
         Task<List<TeamWithPlayers>> GetTournamentPlayersGroupedByTeamAsync(int id);
 
         Task<ICollection<Match>> GetTournamentMatchesAsync(int id);
+
+        Task<List<DateWithMatches>> GetTournamentMatchesGroupedByDateAsync(int id);
     }
 }

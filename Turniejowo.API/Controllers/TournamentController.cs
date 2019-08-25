@@ -171,10 +171,16 @@ namespace Turniejowo.API.Controllers
         [AllowAnonymous]
         [HttpGet]
         [Route("{id}/matches")]
-        public async Task<IActionResult> GetMatchesForTournament([FromRoute] int id)
+        public async Task<IActionResult> GetMatchesForTournament([FromRoute] int id, [FromQuery]bool groupedByDateTime)
         {
             try
             {
+                if (groupedByDateTime)
+                {
+                    var groupedMatches = await tournamentService.GetTournamentMatchesGroupedByDateAsync(id);
+                    return Ok(groupedMatches);
+                }
+
                 var matches = await tournamentService.GetTournamentMatchesAsync(id);
 
                 return Ok(matches);
