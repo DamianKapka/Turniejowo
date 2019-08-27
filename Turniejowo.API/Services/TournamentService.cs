@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Turniejowo.API.Contracts.Responses;
 using Turniejowo.API.Exceptions;
+using Turniejowo.API.MappingProfiles;
 using Turniejowo.API.Models;
 using Turniejowo.API.Repositories;
 using Turniejowo.API.UnitOfWork;
@@ -17,10 +18,11 @@ namespace Turniejowo.API.Services
         private readonly IPlayerRepository playerRepository;
         private readonly IUserRepository userRepository;
         private readonly IMatchRepository matchRepository;
+        private readonly ICustomMappingProfile customMapping;
 
         public TournamentService(IUnitOfWork unitOfWork, ITournamentRepository tournamentRepository, 
                                  ITeamRepository teamRepository, IPlayerRepository playerRepository, 
-                                 IUserRepository userRepository, IMatchRepository matchRepository)
+                                 IUserRepository userRepository, IMatchRepository matchRepository, ICustomMappingProfile customMapping)
         {
             this.unitOfWork = unitOfWork;
             this.tournamentRepository = tournamentRepository;
@@ -28,6 +30,7 @@ namespace Turniejowo.API.Services
             this.playerRepository = playerRepository;
             this.userRepository = userRepository;
             this.matchRepository = matchRepository;
+            this.customMapping = customMapping;
         }
 
         public async Task<Tournament> GetTournamentByIdAsync(int id)
@@ -179,7 +182,7 @@ namespace Turniejowo.API.Services
                 listOfDateWithMatches.Add(new DateWithMatches()
                 {
                     DateTime = match.Key,
-                    Matches = match.ToArray()
+                    Matches = await customMapping.MatchToMatchResponseMap(match.ToArray())
                 });
             }
 

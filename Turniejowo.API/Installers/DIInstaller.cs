@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Turniejowo.API.MappingProfiles;
 using Turniejowo.API.Repositories;
 using Turniejowo.API.Services;
 using Turniejowo.API.UnitOfWork;
@@ -22,6 +23,8 @@ namespace Turniejowo.API.Installers
             services.AddScoped<ITeamService, TeamService>();
             services.AddScoped<IPlayerService, PlayerService>();
             services.AddScoped<IMatchService, MatchService>();
+
+            services.AddScoped<ICustomMappingProfile, CustomMappingProfile>();
         }
     }
 }

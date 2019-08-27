@@ -9,6 +9,7 @@ namespace Turniejowo.API.Contracts.Responses
     public class DateWithMatches
     {
         public DateTime DateTime;
-        public Match[] Matches;
+        public List<MatchResponse> Matches;
     }
 }
+ 
