@@ -9,6 +9,5 @@ namespace Turniejowo.API.MappingProfiles
 {
     public interface ICustomMappingProfile
     {
-        Task<List<MatchResponse>> MatchToMatchResponseMap(Match[] matches);
     }
 }
