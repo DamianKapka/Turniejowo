@@ -18,11 +18,11 @@ namespace Turniejowo.API.Services
         private readonly IPlayerRepository playerRepository;
         private readonly IUserRepository userRepository;
         private readonly IMatchRepository matchRepository;
-        private readonly ICustomMappingProfile customMapping;
+        private readonly IMatchToMatchResponseMapper matchToMatchResponseMapper;
 
         public TournamentService(IUnitOfWork unitOfWork, ITournamentRepository tournamentRepository, 
                                  ITeamRepository teamRepository, IPlayerRepository playerRepository, 
-                                 IUserRepository userRepository, IMatchRepository matchRepository, ICustomMappingProfile customMapping)
+                                 IUserRepository userRepository, IMatchRepository matchRepository, IMatchToMatchResponseMapper matchToMatchResponseMapper)
         {
             this.unitOfWork = unitOfWork;
             this.tournamentRepository = tournamentRepository;
@@ -30,7 +30,7 @@ namespace Turniejowo.API.Services
             this.playerRepository = playerRepository;
             this.userRepository = userRepository;
             this.matchRepository = matchRepository;
-            this.customMapping = customMapping;
+            this.matchToMatchResponseMapper = matchToMatchResponseMapper;
         }
 
         public async Task<Tournament> GetTournamentByIdAsync(int id)
@@ -182,7 +182,7 @@ namespace Turniejowo.API.Services
                 listOfDateWithMatches.Add(new DateWithMatches()
                 {
                     DateTime = match.Key,
-                    Matches = await customMapping.MatchToMatchResponseMap(match.ToArray())
+                    Matches = await matchToMatchResponseMapper.Map(match.ToArray())
                 });
             }
 

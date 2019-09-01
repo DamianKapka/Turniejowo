@@ -24,7 +24,7 @@ namespace Turniejowo.API.Installers
             services.AddScoped<IPlayerService, PlayerService>();
             services.AddScoped<IMatchService, MatchService>();
 
-            services.AddScoped<ICustomMappingProfile, CustomMappingProfile>();
+            services.AddScoped<IMatchToMatchResponseMapper, MatchToMatchResponseMapper>();
         }
     }
 }

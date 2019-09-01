@@ -7,7 +7,8 @@ using Turniejowo.API.Models;
 
 namespace Turniejowo.API.MappingProfiles
 {
-    public interface ICustomMappingProfile
+    public interface ICustomMappingProfile<T, K>
     {
+        Task<List<K>> Map(T[] objToMap);
     }
 }
