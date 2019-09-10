@@ -9,6 +9,7 @@ namespace Turniejowo.API.MappingProfiles
     {
         public DomainToResponseProfile()
         {
+            CreateMap<Team, TableEntry>().ForMember(t => t.TeamName, opt => opt.MapFrom(src => src.Name));
         }
     }
 }

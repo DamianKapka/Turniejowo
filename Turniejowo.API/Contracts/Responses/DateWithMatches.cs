@@ -8,8 +8,8 @@ namespace Turniejowo.API.Contracts.Responses
 {
     public class DateWithMatches
     {
-        public DateTime DateTime;
-        public List<MatchResponse> Matches;
+        public DateTime DateTime { get; set; }
+        public List<MatchResponse> Matches { get; set; }
     }
 }
  

@@ -194,5 +194,28 @@ namespace Turniejowo.API.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("{id}/table")]
+        public async Task<IActionResult> GetTournamentTable([FromRoute] int id)
+        {
+            try
+            {
+                var table = await tournamentService.GetTournamentTable(id);
+
+                return Ok(table);
+
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
     }
 }

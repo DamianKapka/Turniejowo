@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Turniejowo.API.Contracts.Responses;
 using Turniejowo.API.Exceptions;
 using Turniejowo.API.MappingProfiles;
@@ -19,10 +23,11 @@ namespace Turniejowo.API.Services
         private readonly IUserRepository userRepository;
         private readonly IMatchRepository matchRepository;
         private readonly IMatchToMatchResponseMapper matchToMatchResponseMapper;
+        private readonly IMapper mapper;
 
         public TournamentService(IUnitOfWork unitOfWork, ITournamentRepository tournamentRepository, 
                                  ITeamRepository teamRepository, IPlayerRepository playerRepository, 
-                                 IUserRepository userRepository, IMatchRepository matchRepository, IMatchToMatchResponseMapper matchToMatchResponseMapper)
+                                 IUserRepository userRepository, IMatchRepository matchRepository, IMatchToMatchResponseMapper matchToMatchResponseMapper, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
             this.tournamentRepository = tournamentRepository;
@@ -31,6 +36,7 @@ namespace Turniejowo.API.Services
             this.userRepository = userRepository;
             this.matchRepository = matchRepository;
             this.matchToMatchResponseMapper = matchToMatchResponseMapper;
+            this.mapper = mapper;
         }
 
         public async Task<Tournament> GetTournamentByIdAsync(int id)
@@ -187,6 +193,48 @@ namespace Turniejowo.API.Services
             }
 
             return listOfDateWithMatches;
+        }
+
+        public async Task<Table> GetTournamentTable(int id)
+        {
+            var tournamentTeams = await GetTournamentTeamsAsync(id) ?? throw new NotFoundInDatabaseException();
+
+            foreach (var match in await GetTournamentMatchesAsync(id))
+            {
+                Team winner;
+                Team loser;
+
+                if (match.HomeTeamPoints > match.GuestTeamPoints)
+                {
+                    winner = tournamentTeams.First(x => x.TeamId == match.HomeTeamId);
+                    loser = tournamentTeams.First(x => x.TeamId == match.GuestTeamId);
+                    winner.Wins++;
+                    loser.Loses++;
+                    winner.Points += 3;
+                }
+                else if (match.HomeTeamPoints == match.GuestTeamPoints)
+                {
+                    winner = tournamentTeams.First(x => x.TeamId == match.HomeTeamId);
+                    loser = tournamentTeams.First(x => x.TeamId == match.GuestTeamId);
+                    winner.Points++;
+                    loser.Points++;
+                }
+                else
+                {
+                    winner = tournamentTeams.First(x => x.TeamId == match.GuestTeamId);
+                    loser = tournamentTeams.First(x => x.TeamId == match.HomeTeamId);
+                    winner.Wins++;
+                    loser.Loses++;
+                    winner.Points += 3;
+                }
+            }
+
+            var tableEntries = tournamentTeams.Select(team => mapper.Map<TableEntry>(team)).ToList().OrderByDescending(t => int.Parse(t.Points));
+
+            return new Table()
+            {
+                TableData = tableEntries.ToList()
+            };
         }
     }
 }

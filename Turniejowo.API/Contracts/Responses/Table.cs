@@ -6,9 +6,8 @@ using Turniejowo.API.Models;
 
 namespace Turniejowo.API.Contracts.Responses
 {
-    public class TeamWithPlayers
+    public class Table
     {
-        public Team Team { get; set; }
-        public Player[] Players { get; set; }
+        public List<TableEntry> TableData{ get; set; }
     }
 }
