@@ -221,10 +221,12 @@ namespace Turniejowo.API.Services
                 {
                     winner = tournamentTeams.First(x => x.TeamId == match.HomeTeamId);
                     winner.Points++;
+                    winner.Draws++;
                     winner.Matches++;
 
                     loser = tournamentTeams.First(x => x.TeamId == match.GuestTeamId);
                     loser.Points++;
+                    loser.Draws++;
                     loser.Matches++;
                 }
                 else

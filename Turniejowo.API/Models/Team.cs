@@ -28,6 +28,9 @@ namespace Turniejowo.API.Models
         public int Wins { get; set; }
 
         [Required]
+        public int Draws { get; set; }
+
+        [Required]
         public int Loses { get; set; }
 
         [Required]
