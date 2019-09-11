@@ -207,25 +207,36 @@ namespace Turniejowo.API.Services
                 if (match.HomeTeamPoints > match.GuestTeamPoints)
                 {
                     winner = tournamentTeams.First(x => x.TeamId == match.HomeTeamId);
-                    loser = tournamentTeams.First(x => x.TeamId == match.GuestTeamId);
+                    
                     winner.Wins++;
-                    loser.Loses++;
                     winner.Points += 3;
+                    winner.Matches++;
+
+                    loser = tournamentTeams.First(x => x.TeamId == match.GuestTeamId);
+                    loser.Matches++;
+                    loser.Loses++;
+                    
                 }
                 else if (match.HomeTeamPoints == match.GuestTeamPoints)
                 {
                     winner = tournamentTeams.First(x => x.TeamId == match.HomeTeamId);
-                    loser = tournamentTeams.First(x => x.TeamId == match.GuestTeamId);
                     winner.Points++;
+                    winner.Matches++;
+
+                    loser = tournamentTeams.First(x => x.TeamId == match.GuestTeamId);
                     loser.Points++;
+                    loser.Matches++;
                 }
                 else
                 {
                     winner = tournamentTeams.First(x => x.TeamId == match.GuestTeamId);
-                    loser = tournamentTeams.First(x => x.TeamId == match.HomeTeamId);
-                    winner.Wins++;
-                    loser.Loses++;
                     winner.Points += 3;
+                    winner.Wins++;
+                    winner.Matches++;
+
+                    loser = tournamentTeams.First(x => x.TeamId == match.HomeTeamId);
+                    loser.Loses++;
+                    loser.Matches++;
                 }
             }
 
