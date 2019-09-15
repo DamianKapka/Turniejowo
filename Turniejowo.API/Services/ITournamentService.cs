@@ -9,7 +9,7 @@ namespace Turniejowo.API.Services
 {
     public interface ITournamentService
     {
-        Task<Tournament> GetTournamentByIdAsync(int id);
+        Task<TournamentResponse> GetTournamentByIdAsync(int id);
 
         Task AddNewTournamentAsync(Tournament tournament);
 

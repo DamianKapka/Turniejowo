@@ -22,12 +22,15 @@ namespace Turniejowo.API.Services
         private readonly IPlayerRepository playerRepository;
         private readonly IUserRepository userRepository;
         private readonly IMatchRepository matchRepository;
+        private readonly IDisciplineRepository disciplineRepository;
         private readonly IMatchToMatchResponseMapper matchToMatchResponseMapper;
         private readonly IMapper mapper;
 
         public TournamentService(IUnitOfWork unitOfWork, ITournamentRepository tournamentRepository, 
                                  ITeamRepository teamRepository, IPlayerRepository playerRepository, 
-                                 IUserRepository userRepository, IMatchRepository matchRepository, IMatchToMatchResponseMapper matchToMatchResponseMapper, IMapper mapper)
+                                 IUserRepository userRepository, IMatchRepository matchRepository, 
+                                 IMatchToMatchResponseMapper matchToMatchResponseMapper, IMapper mapper, 
+                                 IDisciplineRepository disciplineRepository)
         {
             this.unitOfWork = unitOfWork;
             this.tournamentRepository = tournamentRepository;
@@ -37,18 +40,36 @@ namespace Turniejowo.API.Services
             this.matchRepository = matchRepository;
             this.matchToMatchResponseMapper = matchToMatchResponseMapper;
             this.mapper = mapper;
+            this.disciplineRepository = disciplineRepository;
         }
 
-        public async Task<Tournament> GetTournamentByIdAsync(int id)
+        public async Task<TournamentResponse> GetTournamentByIdAsync(int id)
         {
             var tournament = await tournamentRepository.GetByIdAsync(id);
+            var tournamentCreator = await userRepository.GetByIdAsync(tournament.CreatorId);
+            var tournamentTeams = await GetTournamentTeamsAsync(id);
+            var discipline = await disciplineRepository.FindSingleAsync(d => d.DisciplineId == tournament.DisciplineId);
 
             if (tournament == null)
             {
                 throw new NotFoundInDatabaseException();
             }
 
-            return tournament;
+            var response = new TournamentResponse()
+            {
+                TournamentId = tournament.TournamentId,
+                Name = tournament.Name,
+                AmountOfSignedTeams = tournamentTeams.Count,
+                AmountOfTeams = tournament.AmountOfTeams,
+                Date = tournament.Date,
+                EntryFee = tournament.EntryFee,
+                Localization = tournament.Localization,
+                CreatorName = tournamentCreator.FullName,
+                CreatorContact = tournamentCreator.Phone,
+                Discipline = discipline.Name
+            };
+
+            return response;
         }
 
         public async Task AddNewTournamentAsync(Tournament tournament)
