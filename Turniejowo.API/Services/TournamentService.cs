@@ -127,22 +127,12 @@ namespace Turniejowo.API.Services
         {
             var teams = await teamRepository.FindAsync(team => team.TournamentId == id);
 
-            if (teams.Count == 0)
-            {
-                throw new NotFoundInDatabaseException();
-            }
-
             return teams;
         }
 
         public async Task<ICollection<Player>> GetTournamentPlayersAsync(int id)
         {
             var teams = await teamRepository.FindAsync(t => t.TournamentId == id);
-
-            if (teams.Count == 0)
-            {
-                throw new NotFoundInDatabaseException();
-            }
 
             var players =
                 await playerRepository.FindAsync(p => teams.Select(t => t.TeamId).Contains(p.TeamId));
@@ -158,11 +148,6 @@ namespace Turniejowo.API.Services
         public async Task<List<TeamWithPlayers>> GetTournamentPlayersGroupedByTeamAsync(int id)
         {
             var teams = await GetTournamentTeamsAsync(id);
-
-            if (teams.Count == 0)
-            {
-                throw new NotFoundInDatabaseException();
-            }
 
             var listOfTeamsWithPlayers = new List<TeamWithPlayers>();
 
@@ -185,22 +170,12 @@ namespace Turniejowo.API.Services
             var matches =
                 await matchRepository.FindAsync(m => m.HomeTeam.TournamentId == id && m.GuestTeam.TournamentId == id);
 
-            if (matches.Count == 0)
-            {
-                throw new NotFoundInDatabaseException();
-            }
-
             return matches;
         }
 
         public async Task<List<DateWithMatches>> GetTournamentMatchesGroupedByDateAsync(int id)
         {
             var matches = await GetTournamentMatchesAsync(id);
-
-            if (matches.Count == 0)
-            {
-                throw new NotFoundInDatabaseException();
-            }
 
             var listOfDateWithMatches = new List<DateWithMatches>();
 

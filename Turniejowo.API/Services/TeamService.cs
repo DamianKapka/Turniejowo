@@ -95,22 +95,12 @@ namespace Turniejowo.API.Services
         {
             var players = await playerRepository.FindAsync(player => player.TeamId == id);
 
-            if (players.Count == 0)
-            {
-                throw new NotFoundInDatabaseException();
-            }
-
             return players;
         }
 
         public async Task<ICollection<Match>> GetTeamMatchesAsync(int id)
         {
             var matches = await matchRepository.FindAsync(m => m.HomeTeamId == id || m.GuestTeamId == id);
-
-            if (matches.Count == 0)
-            {
-                throw new NotFoundInDatabaseException();
-            }
 
             return matches;
         }
