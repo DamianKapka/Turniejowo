@@ -20,13 +20,13 @@ namespace Turniejowo.API.Models
                 entity.HasOne(e => e.GuestTeam)
                       .WithMany(t => t.GuestMatches)
                       .HasForeignKey(k => k.GuestTeamId)
-                      .OnDelete(DeleteBehavior.Restrict)
+                      .OnDelete(DeleteBehavior.Cascade)
                       .HasConstraintName("FK_Match_HomeTeam");
 
                 entity.HasOne(e => e.HomeTeam)
                       .WithMany(t => t.HomeMatches)
                       .HasForeignKey(k => k.HomeTeamId)
-                      .OnDelete(DeleteBehavior.Restrict)
+                      .OnDelete(DeleteBehavior.Cascade)
                       .HasConstraintName("FK_Match_GuestTeam");
             });
         }
