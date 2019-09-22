@@ -46,6 +46,18 @@ namespace Turniejowo.API.Services
             await unitOfWork.CompleteAsync();
         }
 
+        public async Task DeleteMatchesRelatedToTheTeam(int id)
+        {
+            var matches = await matchRepository.FindAsync(m => m.GuestTeamId == id || m.HomeTeamId == id);
+
+            foreach (var match in matches)
+            {
+                await DeleteMatchAsync(match.MatchId);
+            }
+
+            await unitOfWork.CompleteAsync();
+        }
+
         public async Task EditMatchAsync(Match match)
         {
             var matchToEdit = await matchRepository.FindSingleAsync(x => x.MatchId == match.MatchId);

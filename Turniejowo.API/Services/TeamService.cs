@@ -13,16 +13,18 @@ namespace Turniejowo.API.Services
         private readonly ITeamRepository teamRepository;
         private readonly IPlayerRepository playerRepository;
         private readonly IMatchRepository matchRepository;
+        private readonly IMatchService matchService;
         private readonly IUnitOfWork unitOfWork;
 
         public TeamService(ITournamentRepository tournamentRepository, ITeamRepository teamRepository,
-            IPlayerRepository playerRepository, IMatchRepository matchRepository, IUnitOfWork unitOfWork)
+            IPlayerRepository playerRepository, IMatchRepository matchRepository, IUnitOfWork unitOfWork, IMatchService matchService)
         {
             this.tournamentRepository = tournamentRepository;
             this.teamRepository = teamRepository;
             this.playerRepository = playerRepository;
             this.matchRepository = matchRepository;
             this.unitOfWork = unitOfWork;
+            this.matchService = matchService;
         }
 
         public async Task<Team> GetTeamByIdAsync(int id)
@@ -80,6 +82,7 @@ namespace Turniejowo.API.Services
 
         public async Task DeleteTeamAsync(int id)
         {
+            await matchService.DeleteMatchesRelatedToTheTeam(id);
             var teamToDelete = await teamRepository.GetByIdAsync(id);
 
             if (teamToDelete == null)
