@@ -82,7 +82,7 @@ namespace Turniejowo.API.Services
 
         public async Task DeleteTeamAsync(int id)
         {
-            await matchService.DeleteMatchesRelatedToTheTeam(id);
+            await matchService.DeleteMatchesRelatedToTheTeamAsync(id);
             var teamToDelete = await teamRepository.GetByIdAsync(id);
 
             if (teamToDelete == null)
@@ -91,6 +91,18 @@ namespace Turniejowo.API.Services
             }
 
             teamRepository.Delete(teamToDelete);
+            await unitOfWork.CompleteAsync();
+        }
+
+        public async Task DeleteTeamsRelatedToTheTournamentAsync(int id)
+        {
+            var teams = await teamRepository.FindAsync(t => t.TournamentId == id);
+
+            foreach (var team in teams)
+            {
+                await DeleteTeamAsync(team.TeamId);
+            }
+
             await unitOfWork.CompleteAsync();
         }
 

@@ -19,6 +19,7 @@ namespace Turniejowo.API.Services
         private readonly IUnitOfWork unitOfWork;
         private readonly ITournamentRepository tournamentRepository;
         private readonly ITeamRepository teamRepository;
+        private readonly ITeamService teamService;
         private readonly IPlayerRepository playerRepository;
         private readonly IUserRepository userRepository;
         private readonly IMatchRepository matchRepository;
@@ -30,7 +31,7 @@ namespace Turniejowo.API.Services
                                  ITeamRepository teamRepository, IPlayerRepository playerRepository, 
                                  IUserRepository userRepository, IMatchRepository matchRepository, 
                                  IMatchToMatchResponseMapper matchToMatchResponseMapper, IMapper mapper, 
-                                 IDisciplineRepository disciplineRepository)
+                                 IDisciplineRepository disciplineRepository, ITeamService teamService)
         {
             this.unitOfWork = unitOfWork;
             this.tournamentRepository = tournamentRepository;
@@ -41,6 +42,7 @@ namespace Turniejowo.API.Services
             this.matchToMatchResponseMapper = matchToMatchResponseMapper;
             this.mapper = mapper;
             this.disciplineRepository = disciplineRepository;
+            this.teamService = teamService;
         }
 
         public async Task<TournamentResponse> GetTournamentByIdAsync(int id)
@@ -112,6 +114,7 @@ namespace Turniejowo.API.Services
 
         public async Task DeleteTournamentAsync(int id)
         {
+            await teamService.DeleteTeamsRelatedToTheTournamentAsync(id);
             var tournamentToDelete = await tournamentRepository.GetByIdAsync(id);
 
             if (tournamentToDelete == null)

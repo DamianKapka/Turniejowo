@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Turniejowo.API.Exceptions;
 using Turniejowo.API.Models;
@@ -46,7 +44,7 @@ namespace Turniejowo.API.Services
             await unitOfWork.CompleteAsync();
         }
 
-        public async Task DeleteMatchesRelatedToTheTeam(int id)
+        public async Task DeleteMatchesRelatedToTheTeamAsync(int id)
         {
             var matches = await matchRepository.FindAsync(m => m.GuestTeamId == id || m.HomeTeamId == id);
 

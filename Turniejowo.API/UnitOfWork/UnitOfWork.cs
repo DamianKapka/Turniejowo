@@ -5,16 +5,16 @@ namespace Turniejowo.API.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly TurniejowoDbContext _context;
+        private readonly TurniejowoDbContext context;
 
         public UnitOfWork(TurniejowoDbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task CompleteAsync()
         {
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
     }
 }

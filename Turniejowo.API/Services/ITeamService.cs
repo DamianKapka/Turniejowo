@@ -16,6 +16,8 @@ namespace Turniejowo.API.Services
 
         Task DeleteTeamAsync(int id);
 
+        Task DeleteTeamsRelatedToTheTournamentAsync(int id);
+
         Task<ICollection<Player>> GetTeamPlayersAsync(int id);
 
         Task<ICollection<Match>> GetTeamMatchesAsync(int id);

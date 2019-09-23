@@ -18,6 +18,6 @@ namespace Turniejowo.API.Services
 
         Task DeleteMatchAsync(int id);
 
-        Task DeleteMatchesRelatedToTheTeam(int id);
+        Task DeleteMatchesRelatedToTheTeamAsync(int id);
     }
 }
