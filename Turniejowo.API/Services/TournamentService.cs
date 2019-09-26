@@ -48,14 +48,15 @@ namespace Turniejowo.API.Services
         public async Task<TournamentResponse> GetTournamentByIdAsync(int id)
         {
             var tournament = await tournamentRepository.GetByIdAsync(id);
-            var tournamentCreator = await userRepository.GetByIdAsync(tournament.CreatorId);
-            var tournamentTeams = await GetTournamentTeamsAsync(id);
-            var discipline = await disciplineRepository.FindSingleAsync(d => d.DisciplineId == tournament.DisciplineId);
 
             if (tournament == null)
             {
                 throw new NotFoundInDatabaseException();
             }
+
+            var tournamentCreator = await userRepository.GetByIdAsync(tournament.CreatorId);
+            var tournamentTeams = await GetTournamentTeamsAsync(id);
+            var discipline = await disciplineRepository.FindSingleAsync(d => d.DisciplineId == tournament.DisciplineId);
 
             var response = new TournamentResponse()
             {
@@ -128,6 +129,13 @@ namespace Turniejowo.API.Services
 
         public async Task<ICollection<Team>> GetTournamentTeamsAsync(int id)
         {
+            var tournament = await tournamentRepository.GetByIdAsync(id);
+
+            if (tournament == null)
+            {
+                throw new NotFoundInDatabaseException();
+            }
+
             var teams = await teamRepository.FindAsync(team => team.TournamentId == id);
 
             return teams;

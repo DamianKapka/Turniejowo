@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper.Configuration.Annotations;
 using Turniejowo.API.Models;
 using Xunit;
 
@@ -315,13 +316,12 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             Assert.NotEqual(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
-        [Fact]
+        [Fact(Skip = "No Discipline POST")]
         public async Task Get_WithTournament_Returns200()
         {
             //Arrange 
             await AuthenticateAsync();
             await InsertDummyData();
-
 
             //Act 
             var response = await TestClient.GetAsync("api/tournament/1");
@@ -360,7 +360,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             Assert.NotEqual(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
-        [Fact]
+        [Fact(Skip = "No Discipline POST")]
         public async Task GetTeamsForTournament_WithTeams_Returns200()
         {
             //Arrange 
@@ -447,7 +447,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
         }
 
         [Fact]
-        public async Task GetMatchesForTournament_WithoutMatches_Returns404()
+        public async Task GetMatchesForTournament_WithoutTournament_Returns404()
         {
             //Arrange
             await AuthenticateAsync();

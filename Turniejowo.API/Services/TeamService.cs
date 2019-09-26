@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Turniejowo.API.Exceptions;
 using Turniejowo.API.Models;
@@ -108,6 +109,11 @@ namespace Turniejowo.API.Services
 
         public async Task<ICollection<Player>> GetTeamPlayersAsync(int id)
         {
+            if (await teamRepository.GetByIdAsync(id) == null)
+            {
+                throw new NotFoundInDatabaseException();
+            }
+
             var players = await playerRepository.FindAsync(player => player.TeamId == id);
 
             return players;
@@ -115,6 +121,11 @@ namespace Turniejowo.API.Services
 
         public async Task<ICollection<Match>> GetTeamMatchesAsync(int id)
         {
+            if (await teamRepository.GetByIdAsync(id) == null)
+            {
+                throw  new NotFoundInDatabaseException();
+            }
+
             var matches = await matchRepository.FindAsync(m => m.HomeTeamId == id || m.GuestTeamId == id);
 
             return matches;
