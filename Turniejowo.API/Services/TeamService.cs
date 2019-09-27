@@ -40,6 +40,30 @@ namespace Turniejowo.API.Services
             return team;
         }
 
+        public async Task<ICollection<Player>> GetTeamPlayersAsync(int id)
+        {
+            if (await teamRepository.GetByIdAsync(id) == null)
+            {
+                throw new NotFoundInDatabaseException();
+            }
+
+            var players = await playerRepository.FindAsync(player => player.TeamId == id);
+
+            return players;
+        }
+
+        public async Task<ICollection<Match>> GetTeamMatchesAsync(int id)
+        {
+            if (await teamRepository.GetByIdAsync(id) == null)
+            {
+                throw new NotFoundInDatabaseException();
+            }
+
+            var matches = await matchRepository.FindAsync(m => m.HomeTeamId == id || m.GuestTeamId == id);
+
+            return matches;
+        }
+
         public async Task AddNewTeamAsync(Team team)
         {
             var tournamentForTeam = await tournamentRepository.GetByIdAsync(team.TournamentId);
@@ -105,30 +129,6 @@ namespace Turniejowo.API.Services
             }
 
             await unitOfWork.CompleteAsync();
-        }
-
-        public async Task<ICollection<Player>> GetTeamPlayersAsync(int id)
-        {
-            if (await teamRepository.GetByIdAsync(id) == null)
-            {
-                throw new NotFoundInDatabaseException();
-            }
-
-            var players = await playerRepository.FindAsync(player => player.TeamId == id);
-
-            return players;
-        }
-
-        public async Task<ICollection<Match>> GetTeamMatchesAsync(int id)
-        {
-            if (await teamRepository.GetByIdAsync(id) == null)
-            {
-                throw  new NotFoundInDatabaseException();
-            }
-
-            var matches = await matchRepository.FindAsync(m => m.HomeTeamId == id || m.GuestTeamId == id);
-
-            return matches;
         }
     }
 }

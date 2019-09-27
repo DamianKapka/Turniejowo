@@ -9,71 +9,15 @@ namespace Turniejowo.API.Services
 {
     public class MatchService : IMatchService
     {
-        private readonly ITeamRepository teamRepository;
         private readonly IMatchRepository matchRepository;
+        private readonly ITeamRepository teamRepository;
         private readonly IUnitOfWork unitOfWork;
 
-        public MatchService(IMatchRepository matchRepository, IUnitOfWork unitOfWork, ITeamRepository teamRepository)
+        public MatchService(IMatchRepository matchRepository, ITeamRepository teamRepository, IUnitOfWork unitOfWork)
         {
             this.matchRepository = matchRepository;
-            this.unitOfWork = unitOfWork;
             this.teamRepository = teamRepository;
-        }
-
-        public async Task AddNewMatchAsync(Match match)
-        {
-            if (await teamRepository.FindSingleAsync(x => x.TeamId == match.HomeTeamId) == null || await teamRepository.FindSingleAsync(y => y.TeamId == match.GuestTeamId) == null)
-            {
-                throw new NotFoundInDatabaseException();
-            }
-
-            matchRepository.Add(match);
-            await unitOfWork.CompleteAsync();
-        }
-        
-        public async Task DeleteMatchAsync(int id)
-        {
-            var matchToDel = await matchRepository.FindSingleAsync(x => x.MatchId == id);
-
-            if (matchToDel == null)
-            {
-                throw new NotFoundInDatabaseException();
-            }
-
-            matchRepository.Delete(matchToDel);
-            await unitOfWork.CompleteAsync();
-        }
-
-        public async Task DeleteMatchesRelatedToTheTeamAsync(int id)
-        {
-            var matches = await matchRepository.FindAsync(m => m.GuestTeamId == id || m.HomeTeamId == id);
-
-            foreach (var match in matches)
-            {
-                await DeleteMatchAsync(match.MatchId);
-            }
-
-            await unitOfWork.CompleteAsync();
-        }
-
-        public async Task EditMatchAsync(Match match)
-        {
-            var matchToEdit = await matchRepository.FindSingleAsync(x => x.MatchId == match.MatchId);
-
-            if (matchToEdit == null)
-            {
-                throw new NotFoundInDatabaseException();
-            }
-
-            if (await teamRepository.FindSingleAsync(x => x.TeamId == match.HomeTeamId) == null || await teamRepository.FindSingleAsync(y => y.TeamId == match.GuestTeamId) == null)
-            {
-                throw new NotFoundInDatabaseException();
-            }
-
-            matchRepository.ClearEntryState(matchToEdit);
-
-            matchRepository.Update(match);
-            await unitOfWork.CompleteAsync();
+            this.unitOfWork = unitOfWork;
         }
 
         public async Task<ICollection<Match>> GetAllMatchesAsync()
@@ -98,6 +42,62 @@ namespace Turniejowo.API.Services
             }
 
             return match;
+        }
+
+        public async Task AddNewMatchAsync(Match match)
+        {
+            if (await teamRepository.FindSingleAsync(x => x.TeamId == match.HomeTeamId) == null || await teamRepository.FindSingleAsync(y => y.TeamId == match.GuestTeamId) == null)
+            {
+                throw new NotFoundInDatabaseException();
+            }
+
+            matchRepository.Add(match);
+            await unitOfWork.CompleteAsync();
+        }
+
+        public async Task EditMatchAsync(Match match)
+        {
+            var matchToEdit = await matchRepository.FindSingleAsync(x => x.MatchId == match.MatchId);
+
+            if (matchToEdit == null)
+            {
+                throw new NotFoundInDatabaseException();
+            }
+
+            if (await teamRepository.FindSingleAsync(x => x.TeamId == match.HomeTeamId) == null || await teamRepository.FindSingleAsync(y => y.TeamId == match.GuestTeamId) == null)
+            {
+                throw new NotFoundInDatabaseException();
+            }
+
+            matchRepository.ClearEntryState(matchToEdit);
+
+            matchRepository.Update(match);
+            await unitOfWork.CompleteAsync();
+        }
+
+        public async Task DeleteMatchAsync(int id)
+        {
+            var matchToDel = await matchRepository.FindSingleAsync(x => x.MatchId == id);
+
+            if (matchToDel == null)
+            {
+                throw new NotFoundInDatabaseException();
+            }
+
+            matchRepository.Delete(matchToDel);
+            await unitOfWork.CompleteAsync();
+        }
+
+        public async Task DeleteMatchesRelatedToTheTeamAsync(int id)
+        {
+            var matches = await matchRepository.FindAsync(m => m.GuestTeamId == id || m.HomeTeamId == id);
+
+            foreach (var match in matches)
+            {
+                await DeleteMatchAsync(match.MatchId);
+            }
+
+            await unitOfWork.CompleteAsync();
         }
     }
 }

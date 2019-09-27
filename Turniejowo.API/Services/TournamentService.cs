@@ -16,7 +16,6 @@ namespace Turniejowo.API.Services
 {
     public class TournamentService : ITournamentService
     {
-        private readonly IUnitOfWork unitOfWork;
         private readonly ITournamentRepository tournamentRepository;
         private readonly ITeamRepository teamRepository;
         private readonly ITeamService teamService;
@@ -24,25 +23,22 @@ namespace Turniejowo.API.Services
         private readonly IUserRepository userRepository;
         private readonly IMatchRepository matchRepository;
         private readonly IDisciplineRepository disciplineRepository;
+        private readonly IUnitOfWork unitOfWork;
         private readonly IMatchToMatchResponseMapper matchToMatchResponseMapper;
         private readonly IMapper mapper;
 
-        public TournamentService(IUnitOfWork unitOfWork, ITournamentRepository tournamentRepository, 
-                                 ITeamRepository teamRepository, IPlayerRepository playerRepository, 
-                                 IUserRepository userRepository, IMatchRepository matchRepository, 
-                                 IMatchToMatchResponseMapper matchToMatchResponseMapper, IMapper mapper, 
-                                 IDisciplineRepository disciplineRepository, ITeamService teamService)
+        public TournamentService(ITournamentRepository tournamentRepository, ITeamRepository teamRepository, ITeamService teamService, IPlayerRepository playerRepository, IUserRepository userRepository, IMatchRepository matchRepository, IDisciplineRepository disciplineRepository, IUnitOfWork unitOfWork, IMatchToMatchResponseMapper matchToMatchResponseMapper, IMapper mapper)
         {
-            this.unitOfWork = unitOfWork;
             this.tournamentRepository = tournamentRepository;
             this.teamRepository = teamRepository;
+            this.teamService = teamService;
             this.playerRepository = playerRepository;
             this.userRepository = userRepository;
             this.matchRepository = matchRepository;
+            this.disciplineRepository = disciplineRepository;
+            this.unitOfWork = unitOfWork;
             this.matchToMatchResponseMapper = matchToMatchResponseMapper;
             this.mapper = mapper;
-            this.disciplineRepository = disciplineRepository;
-            this.teamService = teamService;
         }
 
         public async Task<TournamentResponse> GetTournamentByIdAsync(int id)
@@ -73,6 +69,61 @@ namespace Turniejowo.API.Services
             };
 
             return response;
+        }
+
+        public async Task<Table> GetTournamentTable(int id)
+        {
+            var tournamentTeams = await GetTournamentTeamsAsync(id) ?? throw new NotFoundInDatabaseException();
+
+            foreach (var match in await GetTournamentMatchesAsync(id))
+            {
+                Team winner;
+                Team loser;
+
+                if (match.HomeTeamPoints > match.GuestTeamPoints)
+                {
+                    winner = tournamentTeams.First(x => x.TeamId == match.HomeTeamId);
+
+                    winner.Wins++;
+                    winner.Points += 3;
+                    winner.Matches++;
+
+                    loser = tournamentTeams.First(x => x.TeamId == match.GuestTeamId);
+                    loser.Matches++;
+                    loser.Loses++;
+
+                }
+                else if (match.HomeTeamPoints == match.GuestTeamPoints)
+                {
+                    winner = tournamentTeams.First(x => x.TeamId == match.HomeTeamId);
+                    winner.Points++;
+                    winner.Draws++;
+                    winner.Matches++;
+
+                    loser = tournamentTeams.First(x => x.TeamId == match.GuestTeamId);
+                    loser.Points++;
+                    loser.Draws++;
+                    loser.Matches++;
+                }
+                else
+                {
+                    winner = tournamentTeams.First(x => x.TeamId == match.GuestTeamId);
+                    winner.Points += 3;
+                    winner.Wins++;
+                    winner.Matches++;
+
+                    loser = tournamentTeams.First(x => x.TeamId == match.HomeTeamId);
+                    loser.Loses++;
+                    loser.Matches++;
+                }
+            }
+
+            var tableEntries = tournamentTeams.Select(team => mapper.Map<TableEntry>(team)).ToList().OrderByDescending(t => int.Parse(t.Points));
+
+            return new Table()
+            {
+                TableData = tableEntries.ToList()
+            };
         }
 
         public async Task AddNewTournamentAsync(Tournament tournament)
@@ -200,61 +251,6 @@ namespace Turniejowo.API.Services
             }
 
             return listOfDateWithMatches;
-        }
-
-        public async Task<Table> GetTournamentTable(int id)
-        {
-            var tournamentTeams = await GetTournamentTeamsAsync(id) ?? throw new NotFoundInDatabaseException();
-
-            foreach (var match in await GetTournamentMatchesAsync(id))
-            {
-                Team winner;
-                Team loser;
-
-                if (match.HomeTeamPoints > match.GuestTeamPoints)
-                {
-                    winner = tournamentTeams.First(x => x.TeamId == match.HomeTeamId);
-                    
-                    winner.Wins++;
-                    winner.Points += 3;
-                    winner.Matches++;
-
-                    loser = tournamentTeams.First(x => x.TeamId == match.GuestTeamId);
-                    loser.Matches++;
-                    loser.Loses++;
-                    
-                }
-                else if (match.HomeTeamPoints == match.GuestTeamPoints)
-                {
-                    winner = tournamentTeams.First(x => x.TeamId == match.HomeTeamId);
-                    winner.Points++;
-                    winner.Draws++;
-                    winner.Matches++;
-
-                    loser = tournamentTeams.First(x => x.TeamId == match.GuestTeamId);
-                    loser.Points++;
-                    loser.Draws++;
-                    loser.Matches++;
-                }
-                else
-                {
-                    winner = tournamentTeams.First(x => x.TeamId == match.GuestTeamId);
-                    winner.Points += 3;
-                    winner.Wins++;
-                    winner.Matches++;
-
-                    loser = tournamentTeams.First(x => x.TeamId == match.HomeTeamId);
-                    loser.Loses++;
-                    loser.Matches++;
-                }
-            }
-
-            var tableEntries = tournamentTeams.Select(team => mapper.Map<TableEntry>(team)).ToList().OrderByDescending(t => int.Parse(t.Points));
-
-            return new Table()
-            {
-                TableData = tableEntries.ToList()
-            };
         }
     }
 }

@@ -44,6 +44,18 @@ namespace Turniejowo.API.Services
             return user;
         }
 
+        public async Task<ICollection<Tournament>> GetUserTournamentsAsync(int id)
+        {
+            var tournaments = await tournamentRepository.FindAsync(t => t.CreatorId == id);
+
+            if (tournaments.Count == 0)
+            {
+                throw new NotFoundInDatabaseException();
+            }
+
+            return tournaments;
+        }
+
         public async Task AddNewUserAsync(User user)
         {
             if (await userRepository.FindSingleAsync(x => x.Email == user.Email) != null)
@@ -91,18 +103,6 @@ namespace Turniejowo.API.Services
             user.Password = null;
 
             return user;
-        }
-
-        public async Task<ICollection<Tournament>> GetUserTournamentsAsync(int id)
-        {
-            var tournaments = await tournamentRepository.FindAsync(t => t.CreatorId == id);
-
-            if (tournaments.Count == 0)
-            {
-                throw new NotFoundInDatabaseException();
-            }
-
-            return tournaments;
         }
     }
 }

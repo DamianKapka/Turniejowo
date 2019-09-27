@@ -11,15 +11,27 @@ namespace Turniejowo.API.Services
 {
     public class PlayerService : IPlayerService
     {
-        private readonly IUnitOfWork unitOfWork;
-        private readonly ITeamRepository teamRepository;
         private readonly IPlayerRepository playerRepository;
+        private readonly ITeamRepository teamRepository;
+        private readonly IUnitOfWork unitOfWork;
 
-        public PlayerService(IUnitOfWork unitOfWork, ITeamRepository teamRepository, IPlayerRepository playerRepository)
+        public PlayerService(IPlayerRepository playerRepository, ITeamRepository teamRepository, IUnitOfWork unitOfWork)
         {
-            this.unitOfWork = unitOfWork;
-            this.teamRepository = teamRepository;
             this.playerRepository = playerRepository;
+            this.teamRepository = teamRepository;
+            this.unitOfWork = unitOfWork;
+        }
+
+        public async Task<Player> GetPlayerByIdAsync(int id)
+        {
+            var player = await playerRepository.GetByIdAsync(id);
+
+            if (player == null)
+            {
+                throw new NotFoundInDatabaseException();
+            }
+
+            return player;
         }
 
         public async Task AddNewPlayerAsync(Player player)
@@ -43,19 +55,6 @@ namespace Turniejowo.API.Services
             await unitOfWork.CompleteAsync();
         }
 
-        public async Task DeletePlayerAsync(int id)
-        {
-            var playerToDelete = await playerRepository.GetByIdAsync(id);
-
-            if (playerToDelete == null)
-            {
-                throw new NotFoundInDatabaseException();
-            }
-
-            playerRepository.Delete(playerToDelete);
-            await unitOfWork.CompleteAsync();
-        }
-
         public async Task EditPlayerAsync(Player player)
         {
             var playerTeam = await teamRepository.GetByIdAsync(player.TeamId);
@@ -67,7 +66,7 @@ namespace Turniejowo.API.Services
 
             var playerToEdit = await playerRepository.GetByIdAsync(player.PlayerId);
 
-            if (playerToEdit== null)
+            if (playerToEdit == null)
             {
                 throw new NotFoundInDatabaseException();
             }
@@ -78,16 +77,17 @@ namespace Turniejowo.API.Services
             await unitOfWork.CompleteAsync();
         }
 
-        public async Task<Player> GetPlayerByIdAsync(int id)
+        public async Task DeletePlayerAsync(int id)
         {
-            var player = await playerRepository.GetByIdAsync(id);
+            var playerToDelete = await playerRepository.GetByIdAsync(id);
 
-            if (player == null)
+            if (playerToDelete == null)
             {
                 throw new NotFoundInDatabaseException();
             }
 
-            return player;
+            playerRepository.Delete(playerToDelete);
+            await unitOfWork.CompleteAsync();
         }
     }
 }
