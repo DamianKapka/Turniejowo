@@ -22,8 +22,15 @@ namespace Turniejowo.API.GenericRepository
             return await _context.Set<T>().ToListAsync();
         }
 
-        public async Task<ICollection<T>> FindAsync(Expression<Func<T, bool>> query)
+        public async Task<ICollection<T>> FindAsync(Expression<Func<T, bool>> query, string[] properties = null)
         {
+            if (properties != null)
+            {
+                return await properties
+                    .Aggregate(_context.Set<T>().Where(query), (current, property) => current.Include(property))
+                    .ToListAsync();
+            }
+
             return await _context.Set<T>().Where(query).ToListAsync();
         }
 
