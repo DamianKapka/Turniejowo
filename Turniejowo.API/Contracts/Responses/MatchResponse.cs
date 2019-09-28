@@ -9,17 +9,15 @@ namespace Turniejowo.API.Contracts.Responses
 {
     public class MatchResponse
     {
-        public int MatchId { get; set; }
-
         public DateTime MatchDateTime { get; set; }
 
         public bool IsFinished { get; set; }
 
-        public int? HomeTeamId { get; set; }
+        public int HomeTeamId { get; set; }
 
         public string HomeTeamName { get; set; }
 
-        public int? GuestTeamId { get; set; }
+        public int GuestTeamId { get; set; }
 
         public string GuestTeamName { get; set; }
 

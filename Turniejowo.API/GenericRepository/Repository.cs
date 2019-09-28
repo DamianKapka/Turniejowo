@@ -17,8 +17,15 @@ namespace Turniejowo.API.GenericRepository
             _context = context;
         }
 
-        public async Task<ICollection<T>> GetAllAsync()
+        public async Task<ICollection<T>> GetAllAsync(string[] properties = null)
         {
+            if (properties != null)
+            {
+                return await properties
+                    .Aggregate(_context.Set<T>().AsQueryable(), (current, property) => current.Include(property))
+                    .ToListAsync();
+            }
+
             return await _context.Set<T>().ToListAsync();
         }
 
@@ -34,8 +41,15 @@ namespace Turniejowo.API.GenericRepository
             return await _context.Set<T>().Where(query).ToListAsync();
         }
 
-        public async Task<T> FindSingleAsync(Expression<Func<T, bool>> query)
+        public async Task<T> FindSingleAsync(Expression<Func<T, bool>> query, string[] properties = null)
         {
+            if (properties != null)
+            {
+                return await properties
+                    .Aggregate(_context.Set<T>().Where(query), (current, property) => current.Include(property))
+                    .FirstOrDefaultAsync();
+            }
+
             return await _context.Set<T>().FirstOrDefaultAsync(query);
         }
 

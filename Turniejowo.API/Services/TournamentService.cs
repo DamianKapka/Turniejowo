@@ -24,10 +24,9 @@ namespace Turniejowo.API.Services
         private readonly IMatchRepository matchRepository;
         private readonly IDisciplineRepository disciplineRepository;
         private readonly IUnitOfWork unitOfWork;
-        private readonly IMatchToMatchResponseMapper matchToMatchResponseMapper;
         private readonly IMapper mapper;
 
-        public TournamentService(ITournamentRepository tournamentRepository, ITeamRepository teamRepository, ITeamService teamService, IPlayerRepository playerRepository, IUserRepository userRepository, IMatchRepository matchRepository, IDisciplineRepository disciplineRepository, IUnitOfWork unitOfWork, IMatchToMatchResponseMapper matchToMatchResponseMapper, IMapper mapper)
+        public TournamentService(ITournamentRepository tournamentRepository, ITeamRepository teamRepository, ITeamService teamService, IPlayerRepository playerRepository, IUserRepository userRepository, IMatchRepository matchRepository, IDisciplineRepository disciplineRepository, IUnitOfWork unitOfWork,IMapper mapper)
         {
             this.tournamentRepository = tournamentRepository;
             this.teamRepository = teamRepository;
@@ -37,7 +36,6 @@ namespace Turniejowo.API.Services
             this.matchRepository = matchRepository;
             this.disciplineRepository = disciplineRepository;
             this.unitOfWork = unitOfWork;
-            this.matchToMatchResponseMapper = matchToMatchResponseMapper;
             this.mapper = mapper;
         }
 
@@ -230,7 +228,7 @@ namespace Turniejowo.API.Services
         public async Task<ICollection<Match>> GetTournamentMatchesAsync(int id)
         {
             var matches =
-                await matchRepository.FindAsync(m => m.HomeTeam.TournamentId == id && m.GuestTeam.TournamentId == id);
+                await matchRepository.FindAsync(m => m.HomeTeam.TournamentId == id && m.GuestTeam.TournamentId == id,new string[] {"HomeTeam","GuestTeam"});
 
             return matches;
         }
@@ -246,7 +244,7 @@ namespace Turniejowo.API.Services
                 listOfDateWithMatches.Add(new DateWithMatches()
                 {
                     DateTime = match.Key,
-                    Matches = await matchToMatchResponseMapper.Map(match.ToArray())
+                    Matches = mapper.Map<List<MatchResponse>>(match.ToArray())
                 });
             }
 
