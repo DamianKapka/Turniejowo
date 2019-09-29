@@ -47,7 +47,7 @@ namespace Turniejowo.API.Services
                 throw new NotFoundInDatabaseException();
             }
 
-            var players = await playerRepository.FindAsync(player => player.TeamId == id);
+            var players = await playerRepository.FindAsync(player => player.TeamId == id,new string[]{"Team"});
 
             return players;
         }
@@ -59,7 +59,7 @@ namespace Turniejowo.API.Services
                 throw new NotFoundInDatabaseException();
             }
 
-            var matches = await matchRepository.FindAsync(m => m.HomeTeamId == id || m.GuestTeamId == id);
+            var matches = await matchRepository.FindAsync(m => m.HomeTeamId == id || m.GuestTeamId == id,new string[]{"HomeTeam","GuestTeam"});
 
             return matches;
         }

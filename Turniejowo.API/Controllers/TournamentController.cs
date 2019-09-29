@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Turniejowo.API.Contracts.Responses;
@@ -19,10 +20,12 @@ namespace Turniejowo.API.Controllers
     public class TournamentController : ControllerBase
     {
         private readonly ITournamentService tournamentService;
+        private readonly IMapper mapper;
 
-        public TournamentController(ITournamentService tournamentService)
+        public TournamentController(ITournamentService tournamentService, IMapper mapper)
         {
             this.tournamentService = tournamentService;
+            this.mapper = mapper;
         }
 
         [AllowAnonymous]
@@ -33,7 +36,104 @@ namespace Turniejowo.API.Controllers
             {
                 var tournamentToFind = await tournamentService.GetTournamentByIdAsync(id);
 
-                return Ok(tournamentToFind);
+                return Ok(mapper.Map<TournamentResponse>(tournamentToFind));
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("{id}/teams")]
+        public async Task<IActionResult> GetTeamsForTournament([FromRoute] int id)
+        {
+            try
+            {
+                var teams = await tournamentService.GetTournamentTeamsAsync(id);
+
+                return Ok(mapper.Map<List<TeamResponse>>(teams));
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("{id}/players")]
+        public async Task<IActionResult> GetPlayersForTournament([FromRoute] int id, [FromQuery] bool groupedbyteam)
+        {
+            try
+            {
+                if (groupedbyteam)
+                {
+                    var groupedPlayers = await tournamentService.GetTournamentPlayersGroupedByTeamAsync(id);
+                    return Ok(groupedPlayers);
+                }
+
+                var players = await tournamentService.GetTournamentPlayersAsync(id);
+                return Ok(mapper.Map<List<PlayerResponse>>(players));
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("{id}/matches")]
+        public async Task<IActionResult> GetMatchesForTournament([FromRoute] int id, [FromQuery]bool groupedByDateTime)
+        {
+            try
+            {
+                if (groupedByDateTime)
+                {
+                    var groupedMatches = await tournamentService.GetTournamentMatchesGroupedByDateAsync(id);
+                    return Ok(groupedMatches);
+                }
+
+                var matches = await tournamentService.GetTournamentMatchesAsync(id);
+
+                return Ok(mapper.Map<List<MatchResponse>>(matches));
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("{id}/table")]
+        public async Task<IActionResult> GetTournamentTable([FromRoute] int id)
+        {
+            try
+            {
+                var table = await tournamentService.GetTournamentTable(id);
+
+                return Ok(table);
+
             }
             catch (NotFoundInDatabaseException)
             {
@@ -120,102 +220,5 @@ namespace Turniejowo.API.Controllers
                 return BadRequest(e.Message);
             }
         }
-     
-        [HttpGet]
-        [AllowAnonymous]
-        [Route("{id}/teams")]
-        public async Task<IActionResult> GetTeamsForTournament([FromRoute] int id)
-        {
-            try
-            {
-                var teams = await tournamentService.GetTournamentTeamsAsync(id);
-
-                return Ok(teams);
-            }
-            catch (NotFoundInDatabaseException)
-            {
-                return NotFound();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("{id}/players")]
-        public async Task<IActionResult> GetPlayersForTournament([FromRoute] int id,[FromQuery] bool groupedbyteam)
-        {
-            try
-            {
-                if (groupedbyteam)
-                {
-                    var groupedPlayers = await tournamentService.GetTournamentPlayersGroupedByTeamAsync(id);
-                    return Ok(groupedPlayers);
-                }
-
-                var players = await tournamentService.GetTournamentPlayersAsync(id);
-                return Ok(players);
-            }
-            catch (NotFoundInDatabaseException)
-            {
-                return NotFound();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("{id}/matches")]
-        public async Task<IActionResult> GetMatchesForTournament([FromRoute] int id, [FromQuery]bool groupedByDateTime)
-        {
-            try
-            {
-                if (groupedByDateTime)
-                {
-                    var groupedMatches = await tournamentService.GetTournamentMatchesGroupedByDateAsync(id);
-                    return Ok(groupedMatches);
-                }
-
-                var matches = await tournamentService.GetTournamentMatchesAsync(id);
-
-                return Ok(matches);
-            }
-            catch (NotFoundInDatabaseException)
-            {
-                return NotFound();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("{id}/table")]
-        public async Task<IActionResult> GetTournamentTable([FromRoute] int id)
-        {
-            try
-            {
-                var table = await tournamentService.GetTournamentTable(id);
-
-                return Ok(table);
-
-            }
-            catch (NotFoundInDatabaseException)
-            {
-                return NotFound();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
     }
 }

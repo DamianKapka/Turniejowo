@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Turniejowo.API.Contracts.Responses;
 using Turniejowo.API.Exceptions;
 using Turniejowo.API.Models;
 using Turniejowo.API.Repositories;
@@ -19,10 +21,12 @@ namespace Turniejowo.API.Controllers
     public class PlayerController : ControllerBase
     {
         private readonly IPlayerService playerService;
+        private readonly IMapper mapper;
 
-        public PlayerController(IPlayerService playerService)
+        public PlayerController(IPlayerService playerService, IMapper mapper)
         {
             this.playerService = playerService;
+            this.mapper = mapper;
         }
 
         [HttpGet("{id}")]
@@ -32,7 +36,7 @@ namespace Turniejowo.API.Controllers
             {
                 var player = await playerService.GetPlayerByIdAsync(id);
 
-                return Ok(player);
+                return Ok(mapper.Map<PlayerResponse>(player));
             }
             catch (NotFoundInDatabaseException)
             {

@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Turniejowo.API.Contracts.Responses;
 using Turniejowo.API.Exceptions;
 using Turniejowo.API.Models;
 using Turniejowo.API.Repositories;
@@ -20,10 +22,12 @@ namespace Turniejowo.API.Controllers
     public class TeamController : ControllerBase
     {
         private readonly ITeamService teamService;
+        private readonly IMapper mapper;
 
-        public TeamController(ITeamService teamService)
+        public TeamController(ITeamService teamService, IMapper mapper)
         {
             this.teamService = teamService;
+            this.mapper = mapper;
         }
 
         [HttpGet("{id}")]
@@ -33,7 +37,49 @@ namespace Turniejowo.API.Controllers
             {
                 var teamToFind = await teamService.GetTeamByIdAsync(id);
 
-                return Ok(teamToFind);
+                return Ok(mapper.Map<TeamResponse>(teamToFind));
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route(@"{id}/players")]
+        public async Task<IActionResult> GetPlayersForTeam([FromRoute] int id)
+        {
+            try
+            {
+                var players = await teamService.GetTeamPlayersAsync(id);
+
+                return Ok(mapper.Map<List<PlayerResponse>>(players));
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route(@"{id}/matches")]
+        public async Task<IActionResult> GetMatchesForTeam([FromRoute]int id)
+        {
+            try
+            {
+                var matches = await teamService.GetTeamMatchesAsync(id);
+
+                return Ok(mapper.Map<List<MatchResponse>>(matches));
             }
             catch (NotFoundInDatabaseException)
             {
@@ -105,48 +151,6 @@ namespace Turniejowo.API.Controllers
                 await teamService.DeleteTeamAsync(id);
 
                 return Accepted();
-            }
-            catch (NotFoundInDatabaseException)
-            {
-                return NotFound();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
-        [AllowAnonymous]
-        [HttpGet]
-        [Route(@"{id}/players")]
-        public async Task<IActionResult> GetPlayersForTeam([FromRoute] int id)
-        {
-            try
-            {
-                var players = await teamService.GetTeamPlayersAsync(id);
-
-                return Ok(players);
-            }
-            catch (NotFoundInDatabaseException)
-            {
-                return NotFound();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
-        [AllowAnonymous]
-        [HttpGet]
-        [Route(@"{id}/matches")]
-        public async Task<IActionResult> GetMatchesForTeam([FromRoute]int id)
-        {
-            try
-            {
-                var matches = await teamService.GetTeamMatchesAsync(id);
-
-                return Ok(matches);
             }
             catch (NotFoundInDatabaseException)
             {

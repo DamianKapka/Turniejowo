@@ -46,7 +46,7 @@ namespace Turniejowo.API.Services
 
         public async Task<ICollection<Tournament>> GetUserTournamentsAsync(int id)
         {
-            var tournaments = await tournamentRepository.FindAsync(t => t.CreatorId == id);
+            var tournaments = await tournamentRepository.FindAsync(t => t.CreatorId == id,new string[]{"Discipline","Creator"});
 
             if (tournaments.Count == 0)
             {

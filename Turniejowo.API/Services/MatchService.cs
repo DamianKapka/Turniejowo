@@ -22,7 +22,7 @@ namespace Turniejowo.API.Services
 
         public async Task<ICollection<Match>> GetAllMatchesAsync()
         {
-            var matches = await matchRepository.GetAllAsync();
+            var matches = await matchRepository.GetAllAsync(new string[]{"HomeTeam","GuestTeam"});
 
             if (matches.Count == 0)
             {
@@ -34,7 +34,7 @@ namespace Turniejowo.API.Services
 
         public async Task<Match> GetMatchByIdAsync(int id)
         {
-            var match = await matchRepository.GetByIdAsync(id);
+            var match = await matchRepository.FindSingleAsync(m => m.MatchId == id,new string[]{"HomeTeam","GuestTeam"});
 
             if (match == null)
             {

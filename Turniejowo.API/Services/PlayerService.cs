@@ -24,7 +24,7 @@ namespace Turniejowo.API.Services
 
         public async Task<Player> GetPlayerByIdAsync(int id)
         {
-            var player = await playerRepository.GetByIdAsync(id);
+            var player = await playerRepository.FindSingleAsync(p => p.PlayerId == id,new string[]{"Team"});
 
             if (player == null)
             {

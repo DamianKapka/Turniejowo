@@ -39,34 +39,16 @@ namespace Turniejowo.API.Services
             this.mapper = mapper;
         }
 
-        public async Task<TournamentResponse> GetTournamentByIdAsync(int id)
+        public async Task<Tournament> GetTournamentByIdAsync(int id)
         {
-            var tournament = await tournamentRepository.GetByIdAsync(id);
+            var tournament = await tournamentRepository.FindSingleAsync(t => t.TournamentId == id,new string[]{"Discipline", "Creator"});
 
             if (tournament == null)
             {
                 throw new NotFoundInDatabaseException();
             }
 
-            var tournamentCreator = await userRepository.GetByIdAsync(tournament.CreatorId);
-            var tournamentTeams = await GetTournamentTeamsAsync(id);
-            var discipline = await disciplineRepository.FindSingleAsync(d => d.DisciplineId == tournament.DisciplineId);
-
-            var response = new TournamentResponse()
-            {
-                TournamentId = tournament.TournamentId,
-                Name = tournament.Name,
-                AmountOfSignedTeams = tournamentTeams.Count,
-                AmountOfTeams = tournament.AmountOfTeams,
-                Date = tournament.Date,
-                EntryFee = tournament.EntryFee,
-                Localization = tournament.Localization,
-                CreatorName = tournamentCreator.FullName,
-                CreatorContact = tournamentCreator.Phone,
-                Discipline = discipline.Name
-            };
-
-            return response;
+            return tournament;
         }
 
         public async Task<Table> GetTournamentTable(int id)

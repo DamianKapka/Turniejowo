@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
+using Turniejowo.API.Contracts.Responses;
 using Turniejowo.API.Exceptions;
 using Turniejowo.API.Models;
 using Turniejowo.API.Repositories;
@@ -16,10 +19,12 @@ namespace Turniejowo.API.Controllers
     public class MatchController : ControllerBase
     {
         private readonly IMatchService matchService;
+        private readonly IMapper mapper;
 
-        public MatchController(IMatchService matchService)
+        public MatchController(IMatchService matchService, IMapper mapper)
         {
             this.matchService = matchService;
+            this.mapper = mapper;
         }
 
         [HttpGet]
@@ -28,7 +33,7 @@ namespace Turniejowo.API.Controllers
             try
             {
                 var matches = await matchService.GetAllMatchesAsync();
-                return Ok(matches);
+                return Ok(mapper.Map<List<MatchResponse>>(matches));
             }
             catch (NotFoundInDatabaseException)
             {
@@ -48,7 +53,7 @@ namespace Turniejowo.API.Controllers
             {
                 var match = await matchService.GetMatchByIdAsync(id);
 
-                return Ok(match);
+                return Ok(mapper.Map<MatchResponse>(match));
             }
             catch (NotFoundInDatabaseException)
             {
