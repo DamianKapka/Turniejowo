@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Turniejowo.API.Exceptions;
+using Turniejowo.API.Models;
 using Turniejowo.API.Repositories;
+using Turniejowo.API.UnitOfWork;
 
 namespace Turniejowo.API.Services
 {
     public class DisciplineService : IDisciplineService
     {
         private readonly IDisciplineRepository disciplineRepository;
+        private readonly IUnitOfWork unitOfWork;
 
-        public DisciplineService(IDisciplineRepository disciplineRepository)
+        public DisciplineService(IDisciplineRepository disciplineRepository, IUnitOfWork unitOfWork)
         {
             this.disciplineRepository = disciplineRepository;
+            this.unitOfWork = unitOfWork;
         }
 
         public async Task<string> GetDisciplineNameByIdAsync(int id)
@@ -36,6 +40,17 @@ namespace Turniejowo.API.Services
             }
 
             return discipline.DisciplineId;
+        }
+
+        public async Task AddNewDisciplineAsync(Discipline discipline)
+        {
+            if (await disciplineRepository.FindSingleAsync(d => d.Name == discipline.Name) != null)
+            {
+                throw new AlreadyInDatabaseException();
+            }
+
+            disciplineRepository.Add(discipline);
+            await unitOfWork.CompleteAsync();
         }
     }
 }
