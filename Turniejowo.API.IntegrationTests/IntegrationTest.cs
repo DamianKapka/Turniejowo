@@ -68,6 +68,12 @@ namespace Turniejowo.API.IntegrationTests
 
         protected async Task InsertDummyData()
         {
+            var dsResponse = await TestClient.PostAsJsonAsync("api/discipline", new Discipline()
+            {
+                DisciplineId = 1,
+                Name = "Zulerka"
+            });
+
             var usrResponse = await TestClient.PostAsJsonAsync("api/user", new User()
             {
                 Email = "test2@test.com",
@@ -82,7 +88,7 @@ namespace Turniejowo.API.IntegrationTests
                 AmountOfTeams = 1,
                 CreatorId = 1,
                 Date = DateTime.Now,
-                DisciplineId = 3,
+                DisciplineId = 1,
                 EntryFee = 20,
                 Localization = "testLocalization"
             });

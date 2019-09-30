@@ -212,6 +212,11 @@ namespace Turniejowo.API.Services
             var matches =
                 await matchRepository.FindAsync(m => m.HomeTeam.TournamentId == id && m.GuestTeam.TournamentId == id,new string[] {"HomeTeam","GuestTeam"});
 
+            if (matches.Count == 0)
+            {
+                throw new NotFoundInDatabaseException();
+            }
+
             return matches;
         }
 
