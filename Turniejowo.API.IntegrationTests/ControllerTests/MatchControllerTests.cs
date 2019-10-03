@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Turniejowo.API.Contracts.Responses;
 using Turniejowo.API.Models;
 using Xunit;
 
@@ -65,7 +66,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
 
             //Act
             var response = await TestClient.GetAsync("api/match");
-            var responseContent = await response.Content.ReadAsAsync<Match[]>();
+            var responseContent = await response.Content.ReadAsAsync<List<MatchResponse>>();
 
             //Assert
             Assert.Single(responseContent);
@@ -87,9 +88,10 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
         }
 
         [Fact]
-        public async Task Get_WithoutAuth_DoesNotReturns_401()
+        public async Task Get_WithoutAuth_Returns_200()
         {
             //Arrange
+            await InsertDummyData();
 
             //Act
             var response = await TestClient.GetAsync("/api/match/1");
@@ -107,7 +109,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
 
             //Act
             var response = await TestClient.GetAsync("api/match/1");
-            var responseContent = await response.Content.ReadAsAsync<Match>();
+            var responseContent = await response.Content.ReadAsAsync<MatchResponse>();
 
             //Assert
             Assert.Equal(HttpStatusCode.OK,response.StatusCode);
@@ -333,6 +335,27 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
 
             //Assert
             Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Edit_EditedMatchDoesNotExist_Returns404()
+        {
+            //Arrange
+            await AuthenticateAsync();
+            await InsertDummyData();
+
+            //Act 
+            var response = await TestClient.PutAsJsonAsync("api/match/27", new Match()
+            {
+                MatchId = 27,
+                GuestTeamId = 1,
+                HomeTeamId = 2,
+                HomeTeamPoints = 20,
+                GuestTeamPoints = 30
+            });
+
+            //Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
         #endregion
 

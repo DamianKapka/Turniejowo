@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Turniejowo.API.Contracts.Responses;
 using Turniejowo.API.Models;
 using Xunit;
 
@@ -44,7 +45,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
                 Loses = 0,
                 Matches = 0,
                 Points = 0,
-                TournamentId = 2,
+                TournamentId = 3,
                 Wins = 0,
             });
 
@@ -125,7 +126,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             await InsertDummyData();
 
             //Act
-            var response = await TestClient.DeleteAsync("/api/team/3");
+            var response = await TestClient.DeleteAsync("/api/team/4");
 
             //Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -282,7 +283,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
 
             //Act
             var response = await TestClient.GetAsync("api/team/1");
-            var responseContent = await response.Content.ReadAsAsync<Team>();
+            var responseContent = await response.Content.ReadAsAsync<TeamResponse>();
 
             //Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -373,6 +374,20 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             //Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
+
+        [Fact]
+        public async Task GetPlayersForTeam_WithoutPlayers_Returns200()
+        {
+            //Arrange
+            await AuthenticateAsync();
+            await InsertDummyData();
+
+            //Act
+            var response = await TestClient.GetAsync("api/team/3/players");
+
+            //Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
         #endregion
 
         #region GetMatchesForTeam Tests
@@ -415,6 +430,20 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
 
             //Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetMatchesForTeam_WithoutMatches_Returns200()
+        {
+            //Arrange
+            await AuthenticateAsync();
+            await InsertDummyData();
+
+            //Act
+            var response = await TestClient.GetAsync("api/team/3/matches");
+
+            //Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
         #endregion
     }

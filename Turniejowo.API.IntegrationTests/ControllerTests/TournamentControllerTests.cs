@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper.Configuration.Annotations;
+using Microsoft.VisualStudio.TestPlatform.Common.Utilities;
 using Turniejowo.API.Contracts.Responses;
 using Turniejowo.API.Models;
 using Xunit;
@@ -387,6 +388,20 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             //Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
+
+        [Fact]
+        public async Task GetPlayersForTeam_WithoutPlayers_Returns200()
+        {
+            //Arrange 
+            await AuthenticateAsync();
+            await InsertDummyData();
+
+            //Act
+            var response = await TestClient.GetAsync("api/tournament/2/teams");
+
+            //Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
         #endregion
 
         #region GetPlayersForTournament Tests
@@ -430,6 +445,23 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             //Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task GetPlayersForTournament_WithAllRight_Returns200(bool grp)
+        {
+            //Arrange
+            await AuthenticateAsync();
+            await InsertDummyData();
+
+            //Act
+            var response = await TestClient.GetAsync($"api/tournament/1/players?groupedbyteam={grp}");
+
+            //Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
         #endregion
 
         #region GetMatchesForTournament Tests
@@ -460,12 +492,78 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
-        // TODO! groupedByDateTime test
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task GetMatchesForTournament_WitAllRight_Returns200_NotEmpty(bool grp)
+        {
+            //Arrange
+            await AuthenticateAsync();
+            await InsertDummyData();
+
+            //Act
+            var response = await TestClient.GetAsync($"/api/tournament/1/matches/?groupedByDateTime={grp}");
+
+            dynamic responseContent;
+
+            if (grp) { 
+                responseContent = await response.Content.ReadAsAsync<List<DateWithMatches>>();
+            }
+            else
+            {
+                responseContent = await response.Content.ReadAsAsync<List<MatchResponse>>();
+            }
+
+            //Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Single(responseContent);
+
+        }
 
         #endregion
 
-        #region GetTournamentTable test
-        //TODO!
+        #region GetTournamentTable Test
+
+        [Fact]
+        public async Task GetTournamentTable_NoToken_DoesNotReturn401()
+        {
+            //Arrange
+            await InsertDummyData();
+
+            //Act
+            var response = await TestClient.GetAsync("api/tournament/1/table");
+
+            //Assert
+            Assert.NotEqual(HttpStatusCode.Unauthorized,response.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetTournamentTable_NoTournament_Returns404()
+        {
+            //Arrange
+            await AuthenticateAsync();
+            await InsertDummyData();
+
+            //Act
+            var response = await TestClient.GetAsync("api/tournament/4/table");
+
+            //Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetTournamentTable_AllRight_Returns200()
+        {
+            //Arrange
+            await AuthenticateAsync();
+            await InsertDummyData();
+
+            //Act
+            var response = await TestClient.GetAsync("api/tournament/1/table");
+
+            //Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
         #endregion
     }
 }

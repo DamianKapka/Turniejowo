@@ -93,6 +93,17 @@ namespace Turniejowo.API.IntegrationTests
                 Localization = "testLocalization"
             });
 
+            var trn2Response = await TestClient.PostAsJsonAsync("api/tournament", new Tournament()
+            {
+                Name = "testTourneyNext",
+                AmountOfTeams = 1,
+                CreatorId = 1,
+                Date = DateTime.Now,
+                DisciplineId = 1,
+                EntryFee = 20,
+                Localization = "testLocalization"
+            });
+
             var tmResponse = await TestClient.PostAsJsonAsync("api/team", new Team()
             {
                 TournamentId = 1,
@@ -107,6 +118,16 @@ namespace Turniejowo.API.IntegrationTests
             {
                 TournamentId = 1,
                 Name = "testteam2",
+                Points = 0,
+                Wins = 0,
+                Loses = 0,
+                Matches = 0
+            });
+
+            var tm3Response = await TestClient.PostAsJsonAsync("api/team", new Team()
+            {
+                TournamentId = 1,
+                Name = "testteam3",
                 Points = 0,
                 Wins = 0,
                 Loses = 0,

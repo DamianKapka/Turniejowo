@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Turniejowo.API.Contracts.Responses;
 using Turniejowo.API.Models;
 using Xunit;
 
@@ -44,7 +45,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
                 FName = "Damian",
                 LName = "Kapka",
                 Points = 0,
-                TeamId = 3,
+                TeamId = 4,
             });
 
             //Assert
@@ -154,7 +155,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
         #region Edit Tests
 
         [Fact]
-        public async Task Edit_MismatchedIdAndPlayerdId_Returns409()
+        public async Task Edit_MismatchedIdAndPlayerId_Returns409()
         {
             //Arrange
             await AuthenticateAsync();
@@ -266,7 +267,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
 
             //Act
             var response = await TestClient.GetAsync("api/player/1");
-            var responseContent = await response.Content.ReadAsAsync<Player>();
+            var responseContent = await response.Content.ReadAsAsync<PlayerResponse>();
 
             //Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
