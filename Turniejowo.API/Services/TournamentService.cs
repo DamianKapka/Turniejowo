@@ -54,8 +54,9 @@ namespace Turniejowo.API.Services
         public async Task<Table> GetTournamentTable(int id)
         {
             var tournamentTeams = await GetTournamentTeamsAsync(id) ?? throw new NotFoundInDatabaseException();
+            var tournamentMatches = await GetTournamentMatchesAsync(id);
 
-            foreach (var match in await GetTournamentMatchesAsync(id))
+            foreach (var match in tournamentMatches.Where(t => t.IsFinished))
             {
                 Team winner;
                 Team loser;
