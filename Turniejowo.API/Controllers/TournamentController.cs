@@ -35,8 +35,12 @@ namespace Turniejowo.API.Controllers
             try
             {
                 var tournamentToFind = await tournamentService.GetTournamentByIdAsync(id);
+                var tournamentTeams = await tournamentService.GetTournamentTeamsAsync(id);
 
-                return Ok(mapper.Map<TournamentResponse>(tournamentToFind));
+                var response = mapper.Map<TournamentResponse>(tournamentToFind);
+                response.AmountOfSignedTeams = tournamentTeams.Count;
+
+                return Ok(response);
             }
             catch (NotFoundInDatabaseException)
             {

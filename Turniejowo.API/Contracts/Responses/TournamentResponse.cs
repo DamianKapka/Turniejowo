@@ -20,9 +20,13 @@ namespace Turniejowo.API.Contracts.Responses
 
         public string CreatorName { get; set; }
 
+        public string CreatorContact { get; set; }
+
         public DateTime Date { get; set; }
 
         public int AmountOfTeams { get; set; }
+
+        public int AmountOfSignedTeams { get; set; }
 
         public int EntryFee { get; set; }
 
