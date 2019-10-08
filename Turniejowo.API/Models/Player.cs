@@ -25,6 +25,6 @@ namespace Turniejowo.API.Models
 
         public Team Team { get; set; }
 
-        public int Points { get; set; }
+        public ICollection<Points> PlayerPoints { get; set; }
     }
 }

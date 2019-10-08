@@ -139,7 +139,6 @@ namespace Turniejowo.API.IntegrationTests
                 FName = "testPlayerrr",
                 LName = "testPlayerrr",
                 TeamId = 1,
-                Points = 0,
             });
 
             var pl2Response = await TestClient.PostAsJsonAsync("api/player", new Player()
@@ -147,7 +146,6 @@ namespace Turniejowo.API.IntegrationTests
                 FName = "testPlayerr",
                 LName = "testPlayerr",
                 TeamId = 2,
-                Points = 0,
             });
 
             var mtResponse = await TestClient.PostAsJsonAsync("api/match", new Match()

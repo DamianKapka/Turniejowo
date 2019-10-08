@@ -38,5 +38,7 @@ namespace Turniejowo.API.Models
 
         [Required]
         public string Localization { get; set; }
+
+        public ICollection<Points> TournamentPoints { get; set; }
     }
 }

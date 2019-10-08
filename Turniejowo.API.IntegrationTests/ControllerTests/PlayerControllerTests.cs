@@ -24,7 +24,6 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             var response = await TestClient.PostAsJsonAsync("api/player", new Player()
             {
                 LName = "Kapka",
-                Points = 0,
                 TeamId = 1,
             });
 
@@ -44,7 +43,6 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             {
                 FName = "Damian",
                 LName = "Kapka",
-                Points = 0,
                 TeamId = 4,
             });
 
@@ -64,7 +62,6 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             {
                 FName = "Damian",
                 LName = "Kapka",
-                Points = 0,
                 TeamId = 1,
             });
 
@@ -80,7 +77,6 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             {
                 FName = "Damian",
                 LName = "Kapka",
-                Points = 0,
                 TeamId = 1,
             });
 
@@ -101,7 +97,6 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
                 FName = "testPlayerrr",
                 LName = "testPlayerrr",
                 TeamId = 1,
-                Points = 0,
             });
 
             //Assert
@@ -167,7 +162,6 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
                 PlayerId = 3,
                 FName = "Damian",
                 LName = "Kapka",
-                Points = 0,
                 TeamId = 1
             });
 
@@ -187,7 +181,6 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             {
                 PlayerId = 1,
                 FName = "Damian",
-                Points = 0,
                 TeamId = 1
             });
 
@@ -208,7 +201,6 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
                 PlayerId = 1,
                 FName = "Damian",
                 LName = "Kapka",
-                Points = 0,
                 TeamId = 1337
             });
 
@@ -229,7 +221,6 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
                 PlayerId = 1,
                 FName = "Damian",
                 LName = "Kapka",
-                Points = 0,
                 TeamId = 1
             });
 
@@ -248,7 +239,6 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
                 PlayerId = 1,
                 FName = "Damian",
                 LName = "Kapka",
-                Points = 0,
                 TeamId = 1
             });
 
