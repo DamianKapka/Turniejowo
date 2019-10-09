@@ -48,6 +48,13 @@ namespace Turniejowo.API.Controllers
             }
         }
 
+        [AllowAnonymous]
+        [HttpGet("{id:int}/points")]
+        public async Task<IActionResult> GetPointsForPlayers([FromRoute] int playerId)
+        {
+            throw new NotImplementedException();
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddNewPlayer([FromBody] Player player)
         {
