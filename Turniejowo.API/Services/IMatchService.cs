@@ -12,6 +12,8 @@ namespace Turniejowo.API.Services
 
         Task<Match> GetMatchByIdAsync(int id);
 
+        Task<ICollection<Points>> GetPointsForMatch(int matchId);
+
         Task AddNewMatchAsync(Match match);
 
         Task EditMatchAsync(Match match);

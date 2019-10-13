@@ -67,9 +67,22 @@ namespace Turniejowo.API.Controllers
 
         [AllowAnonymous]
         [HttpGet("{id:int}/points")]
-        public async Task<IActionResult> GetPointsForMatch([FromRoute] int matchId)
+        public async Task<IActionResult> GetPointsForMatch([FromRoute] int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var points = await matchService.GetPointsForMatch(id);
+
+                return Ok(mapper.Map<List<PointsResponse>>(points));
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPost]

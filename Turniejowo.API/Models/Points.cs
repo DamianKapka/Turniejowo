@@ -24,5 +24,7 @@ namespace Turniejowo.API.Models
         [ForeignKey("Tournament")] 
         public int TournamentId { get; set; }
         public Tournament Tournament { get; set; }
+
+        public int PointsQty { get; set; }
     }
 }

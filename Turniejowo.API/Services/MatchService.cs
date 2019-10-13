@@ -11,12 +11,14 @@ namespace Turniejowo.API.Services
     {
         private readonly IMatchRepository matchRepository;
         private readonly ITeamRepository teamRepository;
+        private readonly IPointsRepository pointsRepository;
         private readonly IUnitOfWork unitOfWork;
 
-        public MatchService(IMatchRepository matchRepository, ITeamRepository teamRepository, IUnitOfWork unitOfWork)
+        public MatchService(IMatchRepository matchRepository, ITeamRepository teamRepository, IPointsRepository pointsRepository, IUnitOfWork unitOfWork)
         {
             this.matchRepository = matchRepository;
             this.teamRepository = teamRepository;
+            this.pointsRepository = pointsRepository;
             this.unitOfWork = unitOfWork;
         }
 
@@ -42,6 +44,16 @@ namespace Turniejowo.API.Services
             }
 
             return match;
+        }
+
+        public async Task<ICollection<Points>> GetPointsForMatch(int matchId)
+        {
+            var match = await matchRepository.FindSingleAsync(m => m.MatchId == matchId)
+                        ?? throw new NotFoundInDatabaseException();
+
+            var points = await pointsRepository.FindAsync(p => p.MatchId == matchId, new string[] { "Tournament", "Player", "Match" });
+
+            return points;
         }
 
         public async Task AddNewMatchAsync(Match match)

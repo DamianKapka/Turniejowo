@@ -12,5 +12,6 @@ namespace Turniejowo.API.Contracts.Responses
         public PlayerResponse Player { get; set; }
         public MatchResponse Match { get; set; }
         public TournamentResponse Tournament { get; set; }
+        public int PointsQty { get; set; }
     }
 }
