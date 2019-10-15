@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Turniejowo.API", "Turniejow
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Turniejowo.API.IntegrationTests", "Turniejowo.API.IntegrationTests\Turniejowo.API.IntegrationTests.csproj", "{8B6BCEAB-CC92-4E9D-B8F0-AECDAF6AFD29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Turniejowo.API.UnitTests", "Turniejowo.API.UnitTests\Turniejowo.API.UnitTests.csproj", "{DD13E590-44EF-436A-8202-E02120A872CF}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{8B6BCEAB-CC92-4E9D-B8F0-AECDAF6AFD29}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B6BCEAB-CC92-4E9D-B8F0-AECDAF6AFD29}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B6BCEAB-CC92-4E9D-B8F0-AECDAF6AFD29}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DD13E590-44EF-436A-8202-E02120A872CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DD13E590-44EF-436A-8202-E02120A872CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DD13E590-44EF-436A-8202-E02120A872CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DD13E590-44EF-436A-8202-E02120A872CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

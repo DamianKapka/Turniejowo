@@ -565,5 +565,9 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
         #endregion
+
+        //TODO
+        #region GetTournamentPoints Tests
+        #endregion
     }
 }

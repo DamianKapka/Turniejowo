@@ -131,6 +131,10 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
         }
         #endregion
 
+        //TODO
+        #region GetPointsForMatch Tests
+        #endregion
+
         #region Add Tests
 
         [Fact]
