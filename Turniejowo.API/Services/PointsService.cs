@@ -74,7 +74,7 @@ namespace Turniejowo.API.Services
 
         private bool ValidatePointsPropertiesRelations(Points points)
         {
-            if (points.Player.TeamId != points.Match.HomeTeamId && points.Player.TeamId != points.Match.GuestTeamId)
+            if ((points.Player.TeamId != points.Match.HomeTeamId) && (points.Player.TeamId != points.Match.GuestTeamId))
             {
                 return false;
             }

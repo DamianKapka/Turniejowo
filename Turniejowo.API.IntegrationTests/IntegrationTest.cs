@@ -148,12 +148,39 @@ namespace Turniejowo.API.IntegrationTests
                 TeamId = 2,
             });
 
+            var pl3Response = await TestClient.PostAsJsonAsync("api/player", new Player()
+            {
+                FName = "testPlayerr3",
+                LName = "testPlayerr3",
+                TeamId = 3,
+            });
+
             var mtResponse = await TestClient.PostAsJsonAsync("api/match", new Match()
             {
                 HomeTeamId = 1,
                 GuestTeamId = 2,
                 GuestTeamPoints = 3,
                 HomeTeamPoints = 2,
+            });
+
+            var ptResponse = await TestClient.PostAsJsonAsync("api/points", new List<Points>()
+            {
+                new Points()
+                    {
+                        PointsId = 1,
+                        MatchId = 1,
+                        PlayerId = 1,
+                        PointsQty = 3,
+                        TournamentId = 1,
+                    },
+                new Points()
+                    {
+                        PointsId = 2,
+                        MatchId = 1,
+                        PlayerId = 2,
+                        PointsQty = 2,
+                        TournamentId = 1,
+                    }
             });
         }
     }

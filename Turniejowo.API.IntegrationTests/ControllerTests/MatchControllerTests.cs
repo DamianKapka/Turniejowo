@@ -131,8 +131,47 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
         }
         #endregion
 
-        //TODO
         #region GetPointsForMatch Tests
+        [Fact]
+        public async Task GetPointsForMatch_NoToken_DoesNot_Return401()
+        {
+            //Arrange 
+            await InsertDummyData();
+
+            //Act
+            var response = await TestClient.GetAsync("api/match/1/points");
+
+            //Assert
+            Assert.NotEqual(HttpStatusCode.Unauthorized,response.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetPointsForMatch_ValidRequest_Returns200()
+        {
+            //Arrange 
+            await AuthenticateAsync();
+            await InsertDummyData();
+
+            //Act
+            var response = await TestClient.GetAsync("api/match/1/points");
+
+            //Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetPointsForMatch_NoPoints_Returns404()
+        {
+            //Arrange 
+            await AuthenticateAsync();
+            await InsertDummyData();
+
+            //Act
+            var response = await TestClient.GetAsync("api/match/21/points");
+
+            //Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
         #endregion
 
         #region Add Tests

@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29324.140
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.705
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Turniejowo.API", "Turniejowo.API\Turniejowo.API.csproj", "{F69296A9-68DD-444F-A575-81FDD034FD49}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Turniejowo.API.IntegrationTests", "Turniejowo.API.IntegrationTests\Turniejowo.API.IntegrationTests.csproj", "{8B6BCEAB-CC92-4E9D-B8F0-AECDAF6AFD29}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Turniejowo.UnitTests", "Turniejowo.UnitTests\Turniejowo.UnitTests.csproj", "{87309B65-0CE0-47FE-BB54-9EABE9E70E8A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{8B6BCEAB-CC92-4E9D-B8F0-AECDAF6AFD29}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B6BCEAB-CC92-4E9D-B8F0-AECDAF6AFD29}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B6BCEAB-CC92-4E9D-B8F0-AECDAF6AFD29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87309B65-0CE0-47FE-BB54-9EABE9E70E8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87309B65-0CE0-47FE-BB54-9EABE9E70E8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87309B65-0CE0-47FE-BB54-9EABE9E70E8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87309B65-0CE0-47FE-BB54-9EABE9E70E8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
