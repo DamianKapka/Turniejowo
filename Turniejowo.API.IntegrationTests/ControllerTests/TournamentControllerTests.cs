@@ -565,5 +565,49 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
         #endregion
+
+        //TODO
+        #region GetTournamentPoints Tests
+        [Fact]
+        public async Task GetTournamentPoints_NoToken_DoesntReturn401()
+        {
+            //Arrange 
+            await InsertDummyData();
+
+            //Act
+            var response = await TestClient.GetAsync("api/tournament/1/points");
+
+            //Assert
+            Assert.NotEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetTournamentPoints_ValidRequest_Returns200()
+        {
+            //Arrange 
+            await AuthenticateAsync();
+            await InsertDummyData();
+
+            //Act
+            var response = await TestClient.GetAsync("api/tournament/1/points");
+
+            //Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetTournamentPoints_NoPoints_Returns404()
+        {
+            //Arrange 
+            await AuthenticateAsync();
+            await InsertDummyData();
+
+            //Act
+            var response = await TestClient.GetAsync("api/tournament/3/points");
+
+            //Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+        #endregion
     }
 }

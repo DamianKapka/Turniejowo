@@ -17,6 +17,7 @@ namespace Turniejowo.API.Installers
             services.AddScoped<IPlayerRepository, PlayerRepository>();
             services.AddScoped<IMatchRepository, MatchRepository>();
             services.AddScoped<IDisciplineRepository, DisciplineRepository>();
+            services.AddScoped<IPointsRepository, PointsRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
 
             services.AddScoped<IUserService, UserService>();
@@ -25,6 +26,7 @@ namespace Turniejowo.API.Installers
             services.AddScoped<IPlayerService, PlayerService>();
             services.AddScoped<IMatchService, MatchService>();
             services.AddScoped<IDisciplineService, DisciplineService>();
+            services.AddScoped<IPointsService,PointsService>();
         }
     }
 }

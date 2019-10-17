@@ -23,10 +23,11 @@ namespace Turniejowo.API.Services
         private readonly IUserRepository userRepository;
         private readonly IMatchRepository matchRepository;
         private readonly IDisciplineRepository disciplineRepository;
+        private readonly IPointsRepository pointsRepository;
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
 
-        public TournamentService(ITournamentRepository tournamentRepository, ITeamRepository teamRepository, ITeamService teamService, IPlayerRepository playerRepository, IUserRepository userRepository, IMatchRepository matchRepository, IDisciplineRepository disciplineRepository, IUnitOfWork unitOfWork,IMapper mapper)
+        public TournamentService(ITournamentRepository tournamentRepository, ITeamRepository teamRepository, ITeamService teamService, IPlayerRepository playerRepository, IUserRepository userRepository, IMatchRepository matchRepository, IDisciplineRepository disciplineRepository, IUnitOfWork unitOfWork, IPointsRepository pointsRepository, IMapper mapper)
         {
             this.tournamentRepository = tournamentRepository;
             this.teamRepository = teamRepository;
@@ -35,6 +36,7 @@ namespace Turniejowo.API.Services
             this.userRepository = userRepository;
             this.matchRepository = matchRepository;
             this.disciplineRepository = disciplineRepository;
+            this.pointsRepository = pointsRepository;
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
         }
@@ -237,6 +239,17 @@ namespace Turniejowo.API.Services
             }
 
             return listOfDateWithMatches;
+        }
+
+
+        public async Task<ICollection<Points>> GetTournamentPoints(int tournamentId)
+        {
+            var tournament = await tournamentRepository.FindSingleAsync(t => t.TournamentId == tournamentId)
+                             ?? throw new NotFoundInDatabaseException();
+
+            var points = await pointsRepository.FindAsync(p => p.TournamentId == tournamentId, new string[] { "Tournament", "Player", "Match" });
+
+            return points;
         }
     }
 }

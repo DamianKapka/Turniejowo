@@ -13,12 +13,14 @@ namespace Turniejowo.API.Services
     {
         private readonly IPlayerRepository playerRepository;
         private readonly ITeamRepository teamRepository;
+        private readonly IPointsRepository pointsRepository;
         private readonly IUnitOfWork unitOfWork;
-
-        public PlayerService(IPlayerRepository playerRepository, ITeamRepository teamRepository, IUnitOfWork unitOfWork)
+        
+        public PlayerService(IPlayerRepository playerRepository, ITeamRepository teamRepository, IPointsRepository pointsRepository, IUnitOfWork unitOfWork)
         {
             this.playerRepository = playerRepository;
             this.teamRepository = teamRepository;
+            this.pointsRepository = pointsRepository;
             this.unitOfWork = unitOfWork;
         }
 
@@ -32,6 +34,16 @@ namespace Turniejowo.API.Services
             }
 
             return player;
+        }
+
+        public async Task<ICollection<Points>> GetPointsForPlayer(int playerId)
+        {
+            var player = await playerRepository.FindSingleAsync(p => p.PlayerId == playerId)
+                         ?? throw new NotFoundInDatabaseException();
+
+            var points = await pointsRepository.FindAsync(p => p.PlayerId == playerId, new string[] { "Tournament", "Player", "Match" });
+
+            return points;
         }
 
         public async Task AddNewPlayerAsync(Player player)

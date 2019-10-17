@@ -24,7 +24,6 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             var response = await TestClient.PostAsJsonAsync("api/player", new Player()
             {
                 LName = "Kapka",
-                Points = 0,
                 TeamId = 1,
             });
 
@@ -44,7 +43,6 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             {
                 FName = "Damian",
                 LName = "Kapka",
-                Points = 0,
                 TeamId = 4,
             });
 
@@ -62,9 +60,9 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             //Act
             var response = await TestClient.PostAsJsonAsync("api/player", new Player()
             {
+                PlayerId = 4,
                 FName = "Damian",
                 LName = "Kapka",
-                Points = 0,
                 TeamId = 1,
             });
 
@@ -80,7 +78,6 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             {
                 FName = "Damian",
                 LName = "Kapka",
-                Points = 0,
                 TeamId = 1,
             });
 
@@ -101,7 +98,6 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
                 FName = "testPlayerrr",
                 LName = "testPlayerrr",
                 TeamId = 1,
-                Points = 0,
             });
 
             //Assert
@@ -119,7 +115,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             await InsertDummyData();
 
             //Act
-            var response = await TestClient.DeleteAsync("/api/player/3");
+            var response = await TestClient.DeleteAsync("/api/player/5");
 
             //Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -167,7 +163,6 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
                 PlayerId = 3,
                 FName = "Damian",
                 LName = "Kapka",
-                Points = 0,
                 TeamId = 1
             });
 
@@ -187,7 +182,6 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             {
                 PlayerId = 1,
                 FName = "Damian",
-                Points = 0,
                 TeamId = 1
             });
 
@@ -208,7 +202,6 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
                 PlayerId = 1,
                 FName = "Damian",
                 LName = "Kapka",
-                Points = 0,
                 TeamId = 1337
             });
 
@@ -229,7 +222,6 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
                 PlayerId = 1,
                 FName = "Damian",
                 LName = "Kapka",
-                Points = 0,
                 TeamId = 1
             });
 
@@ -248,7 +240,6 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
                 PlayerId = 1,
                 FName = "Damian",
                 LName = "Kapka",
-                Points = 0,
                 TeamId = 1
             });
 
@@ -311,6 +302,50 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
 
             //Act 
             var response = await TestClient.GetAsync("api/player/5");
+
+            //Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+        #endregion
+
+        #region GetPointsForPlayersTests
+
+        [Fact]
+        public async Task GetPointsForPlayersTests_NoToken_DoesNot_Return401()
+        {
+            //Arrange 
+            await InsertDummyData();
+
+            //Act
+            var response = await TestClient.GetAsync("api/player/1/points");
+
+            //Assert
+            Assert.NotEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetPointsForPlayersTests_ValidRequest_Returns200()
+        {
+            //Arrange 
+            await AuthenticateAsync();
+            await InsertDummyData();
+            
+            //Act
+            var response = await TestClient.GetAsync("api/player/1/points");
+
+            //Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetPointsForPlayersTests_NoPoints_Returns404()
+        {
+            //Arrange 
+            await AuthenticateAsync();
+            await InsertDummyData();
+
+            //Act
+            var response = await TestClient.GetAsync("api/player/5/points");
 
             //Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);

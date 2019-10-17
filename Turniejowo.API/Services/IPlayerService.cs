@@ -10,6 +10,8 @@ namespace Turniejowo.API.Services
     {
         Task<Player> GetPlayerByIdAsync(int id);
 
+        Task<ICollection<Points>> GetPointsForPlayer(int playerId);
+
         Task AddNewPlayerAsync(Player player);
 
         Task EditPlayerAsync(Player player);

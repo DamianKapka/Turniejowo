@@ -20,6 +20,7 @@ namespace Turniejowo.API.MappingProfiles
                 .ForMember(dest => dest.Discipline, opt => opt.MapFrom(src => src.Discipline.Name))
                 .ForMember(dest => dest.CreatorName, opt => opt.MapFrom(src => src.Creator.FullName))
                 .ForMember(dest => dest.CreatorContact, opt => opt.MapFrom(src => src.Creator.Phone));
+            CreateMap<Points, PointsResponse>();
         }
     }
 }

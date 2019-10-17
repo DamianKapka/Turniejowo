@@ -106,6 +106,7 @@ namespace Turniejowo.API.IntegrationTests
 
             var tmResponse = await TestClient.PostAsJsonAsync("api/team", new Team()
             {
+                TeamId = 1,
                 TournamentId = 1,
                 Name = "testteam1",
                 Points = 0,
@@ -116,6 +117,7 @@ namespace Turniejowo.API.IntegrationTests
 
             var tm2Response = await TestClient.PostAsJsonAsync("api/team", new Team()
             {
+                TeamId = 2,
                 TournamentId = 1,
                 Name = "testteam2",
                 Points = 0,
@@ -126,6 +128,7 @@ namespace Turniejowo.API.IntegrationTests
 
             var tm3Response = await TestClient.PostAsJsonAsync("api/team", new Team()
             {
+                TeamId = 3,
                 TournamentId = 1,
                 Name = "testteam3",
                 Points = 0,
@@ -136,18 +139,26 @@ namespace Turniejowo.API.IntegrationTests
 
             var plResponse = await TestClient.PostAsJsonAsync("api/player", new Player()
             {
+                PlayerId = 1,
                 FName = "testPlayerrr",
                 LName = "testPlayerrr",
                 TeamId = 1,
-                Points = 0,
             });
 
             var pl2Response = await TestClient.PostAsJsonAsync("api/player", new Player()
             {
+                PlayerId = 2,
                 FName = "testPlayerr",
                 LName = "testPlayerr",
                 TeamId = 2,
-                Points = 0,
+            });
+
+            var pl3Response = await TestClient.PostAsJsonAsync("api/player", new Player()
+            {
+                PlayerId = 3,
+                FName = "testPlayerrrrrr",
+                LName = "testPlayerrrrrr",
+                TeamId = 3,
             });
 
             var mtResponse = await TestClient.PostAsJsonAsync("api/match", new Match()
@@ -156,6 +167,26 @@ namespace Turniejowo.API.IntegrationTests
                 GuestTeamId = 2,
                 GuestTeamPoints = 3,
                 HomeTeamPoints = 2,
+            });
+
+            var ptResponse = await TestClient.PostAsJsonAsync("api/points", new List<Points>()
+            {
+                new Points()
+                    {
+                        PointsId = 1,
+                        MatchId = 1,
+                        PlayerId = 1,
+                        PointsQty = 3,
+                        TournamentId = 1,
+                    },
+                new Points()
+                    {
+                        PointsId = 2,
+                        MatchId = 1,
+                        PlayerId = 2,
+                        PointsQty = 2,
+                        TournamentId = 1,
+                    }
             });
         }
     }

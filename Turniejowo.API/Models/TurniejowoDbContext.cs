@@ -20,14 +20,35 @@ namespace Turniejowo.API.Models
                 entity.HasOne(e => e.GuestTeam)
                       .WithMany(t => t.GuestMatches)
                       .HasForeignKey(k => k.GuestTeamId)
-                      .OnDelete(DeleteBehavior.Cascade)
+                      .OnDelete(DeleteBehavior.Restrict)
                       .HasConstraintName("FK_Match_HomeTeam");
 
                 entity.HasOne(e => e.HomeTeam)
                       .WithMany(t => t.HomeMatches)
                       .HasForeignKey(k => k.HomeTeamId)
-                      .OnDelete(DeleteBehavior.Cascade)
+                      .OnDelete(DeleteBehavior.Restrict)
                       .HasConstraintName("FK_Match_GuestTeam");
+            });
+
+            modelBuilder.Entity<Points>(entity =>
+            {
+                entity.HasOne(e => e.Tournament)
+                    .WithMany(t => t.TournamentPoints)
+                    .HasForeignKey(p => p.TournamentId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_Points_Tournament");
+
+                entity.HasOne(e => e.Match)
+                    .WithMany(m => m.MatchPoints)
+                    .HasForeignKey(p => p.MatchId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_Points_Match");
+
+                entity.HasOne(e => e.Player)
+                    .WithMany(p => p.PlayerPoints)
+                    .HasForeignKey(p => p.PlayerId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_Points_Player");
             });
         }
 
@@ -37,5 +58,6 @@ namespace Turniejowo.API.Models
         public DbSet<User> Users{ get; set; }
         public DbSet<Player> Players{ get; set; }
         public DbSet<Match> Matches{ get; set; }
+        public DbSet<Points> Points { get; set; }
     }
 }

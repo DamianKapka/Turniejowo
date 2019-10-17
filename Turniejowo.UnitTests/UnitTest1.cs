@@ -1,7 +1,7 @@
 using System;
 using Xunit;
 
-namespace Turniejowo.API.UnitTests
+namespace Turniejowo.UnitTests
 {
     public class UnitTest1
     {

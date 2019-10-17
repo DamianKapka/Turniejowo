@@ -35,5 +35,7 @@ namespace Turniejowo.API.Models
 
         [Required]
         public int GuestTeamPoints { get; set; }
+
+        public ICollection<Points> MatchPoints { get; set; }
     }
 }

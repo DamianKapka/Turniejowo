@@ -48,6 +48,26 @@ namespace Turniejowo.API.Controllers
             }
         }
 
+        [AllowAnonymous]
+        [HttpGet("{id:int}/points")]
+        public async Task<IActionResult> GetPointsForPlayers([FromRoute] int id)
+        {
+            try
+            {
+                var points = await playerService.GetPointsForPlayer(id);
+
+                return Ok(mapper.Map<List<PointsResponse>>(points));
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddNewPlayer([FromBody] Player player)
         {
