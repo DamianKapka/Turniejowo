@@ -106,6 +106,7 @@ namespace Turniejowo.API.IntegrationTests
 
             var tmResponse = await TestClient.PostAsJsonAsync("api/team", new Team()
             {
+                TeamId = 1,
                 TournamentId = 1,
                 Name = "testteam1",
                 Points = 0,
@@ -116,6 +117,7 @@ namespace Turniejowo.API.IntegrationTests
 
             var tm2Response = await TestClient.PostAsJsonAsync("api/team", new Team()
             {
+                TeamId = 2,
                 TournamentId = 1,
                 Name = "testteam2",
                 Points = 0,
@@ -126,6 +128,7 @@ namespace Turniejowo.API.IntegrationTests
 
             var tm3Response = await TestClient.PostAsJsonAsync("api/team", new Team()
             {
+                TeamId = 3,
                 TournamentId = 1,
                 Name = "testteam3",
                 Points = 0,
@@ -136,6 +139,7 @@ namespace Turniejowo.API.IntegrationTests
 
             var plResponse = await TestClient.PostAsJsonAsync("api/player", new Player()
             {
+                PlayerId = 1,
                 FName = "testPlayerrr",
                 LName = "testPlayerrr",
                 TeamId = 1,
@@ -143,6 +147,7 @@ namespace Turniejowo.API.IntegrationTests
 
             var pl2Response = await TestClient.PostAsJsonAsync("api/player", new Player()
             {
+                PlayerId = 2,
                 FName = "testPlayerr",
                 LName = "testPlayerr",
                 TeamId = 2,
@@ -150,8 +155,9 @@ namespace Turniejowo.API.IntegrationTests
 
             var pl3Response = await TestClient.PostAsJsonAsync("api/player", new Player()
             {
-                FName = "testPlayerr3",
-                LName = "testPlayerr3",
+                PlayerId = 3,
+                FName = "testPlayerrrrrr",
+                LName = "testPlayerrrrrr",
                 TeamId = 3,
             });
 

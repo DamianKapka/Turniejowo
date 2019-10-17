@@ -60,6 +60,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             //Act
             var response = await TestClient.PostAsJsonAsync("api/player", new Player()
             {
+                PlayerId = 4,
                 FName = "Damian",
                 LName = "Kapka",
                 TeamId = 1,
@@ -114,7 +115,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             await InsertDummyData();
 
             //Act
-            var response = await TestClient.DeleteAsync("/api/player/3");
+            var response = await TestClient.DeleteAsync("/api/player/5");
 
             //Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -344,7 +345,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             await InsertDummyData();
 
             //Act
-            var response = await TestClient.GetAsync("api/player/3/points");
+            var response = await TestClient.GetAsync("api/player/5/points");
 
             //Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);

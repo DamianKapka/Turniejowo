@@ -40,6 +40,10 @@ namespace Turniejowo.API.Controllers
 
                 return Accepted();
             }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
+            }
             catch (ArgumentException)
             {
                 return Conflict();
@@ -63,6 +67,10 @@ namespace Turniejowo.API.Controllers
                 await pointsService.EditPointsForMatchAsync(points);
 
                 return Accepted();
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
             }
             catch (ArgumentException)
             {

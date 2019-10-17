@@ -63,6 +63,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             //Act
             var response = await TestClient.PostAsJsonAsync("api/team", new Team()
             {
+                TeamId = 4,
                 Name = "testTeam",
                 Loses = 0,
                 Matches = 0,

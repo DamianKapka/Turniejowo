@@ -13,23 +13,22 @@ namespace Turniejowo.API.Services
     {
         private readonly IPointsRepository pointsRepository;
         private readonly IMatchRepository matchRepository;
+        private readonly IPlayerRepository playerRepository;
         private readonly IUnitOfWork unitOfWork;
 
-        public PointsService(IPointsRepository pointsRepository, IMatchRepository matchRepository, IUnitOfWork unitOfWork)
+        public PointsService(IPointsRepository pointsRepository, IMatchRepository matchRepository,IPlayerRepository playerRepository, IUnitOfWork unitOfWork)
         {
             this.pointsRepository = pointsRepository;
             this.matchRepository = matchRepository;
+            this.playerRepository = playerRepository;
             this.unitOfWork = unitOfWork;
         }
 
         public async Task AddPointsForMatchAsync(ICollection<Points> points)
         {
-            foreach (var p in points)
+            if (await ValidatePointsPropertiesRelations(points as List<Points>) == false)
             {
-                if (!ValidatePointsPropertiesRelations(p))
-                {
-                    throw new ArgumentException();
-                }
+                throw new ArgumentException();
             }
 
             foreach (var p in points)
@@ -44,7 +43,7 @@ namespace Turniejowo.API.Services
         {
             foreach (var p in points)
             {
-                if (!ValidatePointsPropertiesRelations(p))
+                if (await ValidatePointsPropertiesRelations(points as List<Points>) == false)
                 {
                     throw new ArgumentException();
                 }
@@ -72,11 +71,18 @@ namespace Turniejowo.API.Services
             await unitOfWork.CompleteAsync();
 ;        }
 
-        private bool ValidatePointsPropertiesRelations(Points points)
-        {
-            if ((points.Player.TeamId != points.Match.HomeTeamId) && (points.Player.TeamId != points.Match.GuestTeamId))
+        private async Task<bool> ValidatePointsPropertiesRelations(List<Points> points)
+        { 
+            var match = await matchRepository.FindSingleAsync(m => m.MatchId == points[0].MatchId) ?? throw new NotFoundInDatabaseException();
+
+            foreach (var p in points)
             {
-                return false;
+                var player = await playerRepository.FindSingleAsync(pl => pl.PlayerId == p.PlayerId) ?? throw new NotFoundInDatabaseException();
+
+                if ((player.TeamId != match.HomeTeamId) && (player.TeamId != match.GuestTeamId))
+                {
+                    return false;
+                } 
             }
 
             return true;
