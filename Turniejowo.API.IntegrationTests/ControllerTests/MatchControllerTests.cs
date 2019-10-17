@@ -15,6 +15,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
     {
         private readonly Match testMatch = new Match()
         {
+            MatchId = 3,
             GuestTeamId = 1,
             HomeTeamId = 2,
             HomeTeamPoints = 20,
@@ -69,7 +70,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             var responseContent = await response.Content.ReadAsAsync<List<MatchResponse>>();
 
             //Assert
-            Assert.Single(responseContent);
+            Assert.Equal(2,responseContent.Count);
         }
         #endregion
 

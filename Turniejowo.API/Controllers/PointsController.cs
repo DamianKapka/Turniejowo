@@ -82,7 +82,7 @@ namespace Turniejowo.API.Controllers
             }
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{matchId:int}")]
         public async Task<IActionResult> DeletePointsForMatch([FromRoute] int matchId)
         {
             try

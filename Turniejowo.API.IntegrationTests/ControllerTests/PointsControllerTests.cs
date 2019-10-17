@@ -140,11 +140,155 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
         #endregion
 
         #region EditPoints Test
+        [Fact]
+        public async Task EditPoints_NoToken_Returns401()
+        {
+            //Arrange
+            await InsertDummyData();
 
+            //Act
+            var response = await TestClient.PutAsJsonAsync("api/points/1", new List<Points>
+            {
+                new Points()
+                {
+                    MatchId = 1,
+                    PlayerId = 1,
+                    PointsId = 1,
+                    PointsQty = 3,
+                    TournamentId = 1
+                }
+            });
+
+            //Assert
+            Assert.Equal(HttpStatusCode.Unauthorized,response.StatusCode);
+        }
+
+        [Fact]
+        public async Task EditPoints_NotArray_Returns400()
+        {
+            //Arrange
+            await AuthenticateAsync();
+            await InsertDummyData();
+
+            //Act
+            var response = await TestClient.PutAsJsonAsync("api/points/1", new Points()
+                {
+                    MatchId = 1,
+                    PlayerId = 1,
+                    PointsId = 1,
+                    PointsQty = 3,
+                    TournamentId = 1
+                });
+
+            //Assert
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task EditPoints_ProperRequest_Returns202()
+        {
+            //Arrange
+            await AuthenticateAsync();
+            await InsertDummyData();
+
+            //Act
+            var response = await TestClient.PutAsJsonAsync("api/points/1", new List<Points>
+            {
+                new Points()
+                {
+                    MatchId = 1,
+                    PlayerId = 1,
+                    PointsId = 1,
+                    PointsQty = 3,
+                    TournamentId = 1
+                }
+            });
+
+            //Assert
+            Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task EditPoints_PlayerNotParticipant_Returns409()
+        {
+            //Arrange
+            await AuthenticateAsync();
+            await InsertDummyData();
+
+            //Act
+            var response = await TestClient.PutAsJsonAsync("api/points/1", new List<Points>
+            {
+                new Points()
+                {
+                    MatchId = 1,
+                    PlayerId = 3,
+                    PointsId = 1,
+                    PointsQty = 3,
+                    TournamentId = 1
+                }
+            });
+
+            //Assert
+            Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        }
         #endregion
 
         #region DeletePoints Tests
 
+        [Fact]
+        public async Task DeletePoints_NoToken_Returns401()
+        {
+            //Arrange
+            await InsertDummyData();
+
+            //Act
+            var response = await TestClient.DeleteAsync("api/points/1");
+
+            //Assert
+            Assert.Equal(HttpStatusCode.Unauthorized,response.StatusCode);
+        }
+
+        [Fact]
+        public async Task DeletePoints_NoMatch_Returns404()
+        {
+            //Arrange
+            await AuthenticateAsync();
+            await InsertDummyData();
+
+            //Act
+            var response = await TestClient.DeleteAsync("api/points/5");
+
+            //Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task DeletePoints_NoPointsForMatch_Returns404()
+        {
+            //Arrange
+            await AuthenticateAsync();
+            await InsertDummyData();
+
+            //Act
+            var response = await TestClient.DeleteAsync("api/points/3");
+
+            //Assert
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task DeletePoints_ValidRequest_Returns202()
+        {
+            //Arrange
+            await AuthenticateAsync();
+            await InsertDummyData();
+
+            //Act
+            var response = await TestClient.DeleteAsync("api/points/1");
+
+            //Assert
+            Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
+        }
         #endregion
     }
 }

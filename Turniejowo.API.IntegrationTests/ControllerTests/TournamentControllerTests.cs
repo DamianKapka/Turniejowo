@@ -516,8 +516,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
 
             //Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Single(responseContent);
-
+            Assert.NotEmpty(responseContent);
         }
 
         #endregion

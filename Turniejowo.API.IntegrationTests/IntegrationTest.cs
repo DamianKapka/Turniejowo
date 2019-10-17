@@ -163,10 +163,20 @@ namespace Turniejowo.API.IntegrationTests
 
             var mtResponse = await TestClient.PostAsJsonAsync("api/match", new Match()
             {
+                MatchId = 1,
                 HomeTeamId = 1,
                 GuestTeamId = 2,
                 GuestTeamPoints = 3,
                 HomeTeamPoints = 2,
+            });
+
+            var mtResponse2 = await TestClient.PostAsJsonAsync("api/match", new Match()
+            {
+                MatchId = 2,
+                HomeTeamId = 2,
+                GuestTeamId = 1,
+                GuestTeamPoints = 1,
+                HomeTeamPoints = 1,
             });
 
             var ptResponse = await TestClient.PostAsJsonAsync("api/points", new List<Points>()
