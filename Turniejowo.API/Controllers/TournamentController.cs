@@ -129,13 +129,13 @@ namespace Turniejowo.API.Controllers
 
         [AllowAnonymous]
         [HttpGet("{id:int}/points")]
-        public async Task<IActionResult> GetPointsForTournament([FromRoute] int id)
+        public async Task<IActionResult> GetTournamentPlayersPoints([FromRoute] int id)
         {
             try
             {
                 var points = await tournamentService.GetTournamentPoints(id);
 
-                return Ok(mapper.Map<List<PointsResponse>>(points));
+                return Ok(points);
             }
             catch (NotFoundInDatabaseException)
             {

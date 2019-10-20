@@ -242,14 +242,23 @@ namespace Turniejowo.API.Services
         }
 
 
-        public async Task<ICollection<Points>> GetTournamentPoints(int tournamentId)
+        public async Task<TournamentPlayersPointsHolder> GetTournamentPoints(int tournamentId)
         {
             var tournament = await tournamentRepository.FindSingleAsync(t => t.TournamentId == tournamentId)
                              ?? throw new NotFoundInDatabaseException();
 
             var points = await pointsRepository.FindAsync(p => p.TournamentId == tournamentId, new string[] { "Tournament", "Player", "Match" });
 
-            return points;
+            var pointsGroupedSorted = points.GroupBy(p => p.Player)
+                .Select(o => new TournamentPlayerPoints()
+                {
+                    PlayerId = o.Key.PlayerId,
+                    Player = mapper.Map<PlayerResponse>(o.Key),
+                    PointsQty = o.Sum(i => i.PointsQty)
+                }).OrderByDescending(n => n.PointsQty)
+                .ToList();
+
+            return new TournamentPlayersPointsHolder(pointsGroupedSorted);
         }
     }
 }

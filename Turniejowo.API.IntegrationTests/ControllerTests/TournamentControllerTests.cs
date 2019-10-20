@@ -568,7 +568,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
         //TODO
         #region GetTournamentPoints Tests
         [Fact]
-        public async Task GetTournamentPoints_NoToken_DoesntReturn401()
+        public async Task GetTournamentPoints_NoToken_Does_not_Return401()
         {
             //Arrange 
             await InsertDummyData();
