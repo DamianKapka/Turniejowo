@@ -249,6 +249,8 @@ namespace Turniejowo.API.Services
 
             var points = await pointsRepository.FindAsync(p => p.TournamentId == tournamentId, new string[] { "Tournament", "Player", "Match" });
 
+            var teams = await teamRepository.FindAsync(t => t.TournamentId == tournamentId);
+
             var pointsGroupedSorted = points.GroupBy(p => p.Player)
                 .Select(o => new TournamentPlayerPoints()
                 {
