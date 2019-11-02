@@ -44,9 +44,17 @@ namespace Turniejowo.API.Controllers
             {
                 return NotFound();
             }
-            catch (ArgumentException)
+            catch (AlreadyInDatabaseException)
             {
                 return Conflict();
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                return Forbid();
+            }
+            catch (ArgumentException)
+            {
+                return ValidationProblem();
             }
             catch (Exception)
             {
@@ -54,6 +62,7 @@ namespace Turniejowo.API.Controllers
             }
         }
 
+        [Obsolete]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> EditPointsForMatch([FromRoute] int matchId, [FromBody] ICollection<Points> points)
         {

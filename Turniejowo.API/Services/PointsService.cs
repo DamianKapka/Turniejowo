@@ -26,9 +26,33 @@ namespace Turniejowo.API.Services
 
         public async Task AddPointsForMatchAsync(ICollection<Points> points)
         {
-            if (await ValidatePointsPropertiesRelations(points as List<Points>) == false)
+            var pointsList = points as List<Points> ?? throw new InvalidCastException();
+
+            var matchPoints = await pointsRepository.FindAsync(p => p.MatchId == pointsList[0].MatchId, new string[] { "Player" });
+            var match = await matchRepository.FindSingleAsync(m => m.MatchId == pointsList[0].MatchId) ?? throw new NotFoundInDatabaseException();
+            var player = await playerRepository.FindSingleAsync(p => p.PlayerId == pointsList[0].PlayerId) ?? throw new NotFoundInDatabaseException();
+
+
+            if ((player.TeamId != match.HomeTeamId) && (player.TeamId != match.GuestTeamId))
             {
                 throw new ArgumentException();
+            }
+
+            if (matchPoints.SingleOrDefault(m => m.PlayerId == pointsList[0].PlayerId) != null)
+            {
+                throw new AlreadyInDatabaseException();
+            }
+
+            var teamsPoints = new
+            {
+                homeTeamPoints = matchPoints.Where(p => p.Player.TeamId == match.HomeTeamId).Sum(s => s.PointsQty),
+                guestTeamPoints = matchPoints.Where(p => p.Player.TeamId == match.GuestTeamId).Sum(s => s.PointsQty)
+            };
+
+            if (((player.TeamId == match.HomeTeamId) && ((pointsList[0].PointsQty + teamsPoints.homeTeamPoints) > match.HomeTeamPoints)) 
+                || ((player.TeamId == match.GuestTeamId) && ((pointsList[0].PointsQty + teamsPoints.guestTeamPoints) > match.GuestTeamPoints)))
+            {
+                throw new ArgumentOutOfRangeException();
             }
 
             foreach (var p in points)
@@ -39,16 +63,9 @@ namespace Turniejowo.API.Services
             await unitOfWork.CompleteAsync();
         }
 
+        [Obsolete]
         public async Task EditPointsForMatchAsync(ICollection<Points> points)
         {
-            foreach (var p in points)
-            {
-                if (await ValidatePointsPropertiesRelations(points as List<Points>) == false)
-                {
-                    throw new ArgumentException();
-                }
-            }
-
             foreach (var p in points)
             {
                 pointsRepository.Update(p);
@@ -70,22 +87,5 @@ namespace Turniejowo.API.Services
 
             await unitOfWork.CompleteAsync();
 ;        }
-
-        private async Task<bool> ValidatePointsPropertiesRelations(List<Points> points)
-        { 
-            var match = await matchRepository.FindSingleAsync(m => m.MatchId == points[0].MatchId) ?? throw new NotFoundInDatabaseException();
-
-            foreach (var p in points)
-            {
-                var player = await playerRepository.FindSingleAsync(pl => pl.PlayerId == p.PlayerId) ?? throw new NotFoundInDatabaseException();
-
-                if ((player.TeamId != match.HomeTeamId) && (player.TeamId != match.GuestTeamId))
-                {
-                    return false;
-                } 
-            }
-
-            return true;
-        }
     }
 }
