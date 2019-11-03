@@ -103,7 +103,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             });
 
             //Assert
-            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+            Assert.Equal(HttpStatusCode.NotAcceptable, response.StatusCode);
         }
 
         [Fact]
