@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Turniejowo.API.Exceptions;
 using Turniejowo.API.Models;
@@ -58,9 +61,19 @@ namespace Turniejowo.API.Services
 
         public async Task AddNewMatchAsync(Match match)
         {
-            if (await teamRepository.FindSingleAsync(x => x.TeamId == match.HomeTeamId) == null || await teamRepository.FindSingleAsync(y => y.TeamId == match.GuestTeamId) == null)
+            if (await teamRepository.FindSingleAsync(x => x.TeamId == match.HomeTeamId) == null || 
+                await teamRepository.FindSingleAsync(y => y.TeamId == match.GuestTeamId) == null)
             {
                 throw new NotFoundInDatabaseException();
+            }
+
+            var matches = await matchRepository.FindAsync(m => m.MatchDateTime == match.MatchDateTime);
+
+            var isAnyTeamAlreadyPlaying = matches.Select(y => new[] {y.HomeTeamId, y.GuestTeamId}).Any(o => o.Contains(match.HomeTeamId) || o.Contains(match.GuestTeamId));
+
+            if (isAnyTeamAlreadyPlaying)
+            {
+                throw new AlreadyInDatabaseException();
             }
 
             matchRepository.Add(match);

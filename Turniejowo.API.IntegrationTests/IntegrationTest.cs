@@ -184,6 +184,7 @@ namespace Turniejowo.API.IntegrationTests
                 GuestTeamId = 2,
                 HomeTeamPoints = 3,
                 GuestTeamPoints = 2,
+                MatchDateTime = new DateTime(2012,9,11,12,00,00)
             });
 
             var mtResponse2 = await TestClient.PostAsJsonAsync("api/match", new Match()
@@ -193,6 +194,7 @@ namespace Turniejowo.API.IntegrationTests
                 GuestTeamId = 1,
                 GuestTeamPoints = 1,
                 HomeTeamPoints = 1,
+                MatchDateTime = new DateTime(2012, 9, 11, 14, 00, 00)
             });
 
             var ptResponse = await TestClient.PostAsJsonAsync("api/points", new List<Points>()

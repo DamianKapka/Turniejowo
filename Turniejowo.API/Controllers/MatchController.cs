@@ -104,6 +104,10 @@ namespace Turniejowo.API.Controllers
 
                 return CreatedAtAction("Get", new {id = match.MatchId}, match);
             }
+            catch (AlreadyInDatabaseException)
+            {
+                return StatusCode(406);
+            }
             catch (NotFoundInDatabaseException)
             {
                 return NotFound();

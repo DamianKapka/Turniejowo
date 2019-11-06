@@ -260,6 +260,54 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             //Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
+
+        [Fact]
+        public async Task Add_TeamAlreadyHasMatchAtThatTime_Returns406()
+        {
+            //Arrange
+            await AuthenticateAsync();
+            await InsertDummyData();
+
+            //Act
+            var response1 = await TestClient.PostAsJsonAsync("api/match",new Match()
+            {
+                 MatchId = 3,
+                 HomeTeamId = 3,
+                 GuestTeamId = 1,
+                 MatchDateTime = new DateTime(2012,9,11,14,0,0)
+            });
+
+            var response2 = await TestClient.PostAsJsonAsync("api/match", new Match()
+            {
+                MatchId = 4,
+                HomeTeamId = 2,
+                GuestTeamId = 3,
+                MatchDateTime = new DateTime(2012, 9, 11, 12, 0, 0)
+            });
+
+            var response3 = await TestClient.PostAsJsonAsync("api/match", new Match()
+            {
+                MatchId = 5,
+                HomeTeamId = 3,
+                GuestTeamId = 1,
+                MatchDateTime = new DateTime(2012, 9, 11, 16, 0, 0)
+            });
+
+            var response4 = await TestClient.PostAsJsonAsync("api/match", new Match()
+            {
+                MatchId = 6,
+                HomeTeamId = 2,
+                GuestTeamId = 3,
+                MatchDateTime = new DateTime(2012, 9, 11, 18, 0, 0)
+            });
+
+            //Assert
+            Assert.Equal(HttpStatusCode.NotAcceptable, response1.StatusCode);
+            Assert.Equal(HttpStatusCode.NotAcceptable, response2.StatusCode);
+            Assert.Equal(HttpStatusCode.Created, response3.StatusCode);
+            Assert.Equal(HttpStatusCode.Created, response4.StatusCode);
+
+        }
         #endregion
 
         #region Edit Tests
