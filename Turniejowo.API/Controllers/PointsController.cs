@@ -26,7 +26,7 @@ namespace Turniejowo.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddPointsForMatch([FromBody] ICollection<Points> points)
+        public async Task<IActionResult> AddPointsForMatch([FromBody] Points points)
         {
             try
             {

@@ -197,25 +197,25 @@ namespace Turniejowo.API.IntegrationTests
                 MatchDateTime = new DateTime(2012, 9, 11, 14, 00, 00)
             });
 
-            var ptResponse = await TestClient.PostAsJsonAsync("api/points", new List<Points>()
-            {
+            var ptResponse = await TestClient.PostAsJsonAsync("api/points",
                 new Points()
-                    {
-                        PointsId = 1,
-                        MatchId = 1,
-                        PlayerId = 1,
-                        PointsQty = 2,
-                        TournamentId = 1,
-                    },
+                {
+                    PointsId = 1,
+                    MatchId = 1,
+                    PlayerId = 1,
+                    PointsQty = 2,
+                    TournamentId = 1,
+                });
+
+            var ptResponse2 = await TestClient.PostAsJsonAsync("api/points",
                 new Points()
-                    {
-                        PointsId = 2,
-                        MatchId = 1,
-                        PlayerId = 2,
-                        PointsQty = 2,
-                        TournamentId = 1,
-                    }
-            });
+                {
+                    PointsId = 2,
+                    MatchId = 1,
+                    PlayerId = 2,
+                    PointsQty = 2,
+                    TournamentId = 1,
+                });
         }
     }
 }

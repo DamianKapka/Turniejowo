@@ -35,27 +35,6 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
         }
 
         [Fact]
-        public async Task AddPoints_NotArray_Returns400()
-        {
-            //Arrange 
-            await AuthenticateAsync();
-            await InsertDummyData();
-
-            //Act
-            var response = await TestClient.PostAsJsonAsync("api/points", new Points()
-                {
-                    PointsId = 3,
-                    MatchId = 1,
-                    PlayerId = 1,
-                    PointsQty = 3,
-                }
-            );
-
-            //Assert
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-        }
-
-        [Fact]
         public async Task AddPoints_ValidRequest_Returns202()
         {
             //Arrange 
@@ -63,16 +42,13 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             await InsertDummyData();
 
             //Act
-            var response = await TestClient.PostAsJsonAsync("api/points", new List<Points>
+            var response = await TestClient.PostAsJsonAsync("api/points", new Points()
             {
-                new Points()
-                {
-                    PointsId = 3,
-                    MatchId = 1,
-                    PlayerId = 6,
-                    PointsQty = 1,
-                    TournamentId = 1,
-                }
+                PointsId = 3,
+                MatchId = 1,
+                PlayerId = 6,
+                PointsQty = 1,
+                TournamentId = 1,
             });
 
             //Assert
@@ -87,16 +63,13 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             await InsertDummyData();
 
             //Act
-            var response = await TestClient.PostAsJsonAsync("api/points", new List<Points>
+            var response = await TestClient.PostAsJsonAsync("api/points", new Points()
             {
-                new Points()
-                {
-                    PointsId = 3,
-                    MatchId = 1,
-                    PlayerId = 6,
-                    PointsQty = 2,
-                    TournamentId = 1,
-                }
+                PointsId = 3,
+                MatchId = 1,
+                PlayerId = 6,
+                PointsQty = 2,
+                TournamentId = 1,
             });
 
             //Assert
@@ -111,16 +84,13 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             await InsertDummyData();
 
             //Act
-            var response = await TestClient.PostAsJsonAsync("api/points", new List<Points>
+            var response = await TestClient.PostAsJsonAsync("api/points", new Points()
             {
-                new Points()
-                {
-                    PointsId = 3,
-                    MatchId = 1,
-                    PlayerId = 1,
-                    PointsQty = 1,
-                    TournamentId = 1,
-                }
+                PointsId = 3,
+                MatchId = 1,
+                PlayerId = 1,
+                PointsQty = 1,
+                TournamentId = 1,
             });
 
             //Assert
@@ -135,15 +105,12 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             await InsertDummyData();
 
             //Act
-            var response = await TestClient.PostAsJsonAsync("api/points", new List<Points>
+            var response = await TestClient.PostAsJsonAsync("api/points", new Points()
             {
-                new Points()
-                {
-                    PointsId = 3,
-                    MatchId = 1,
-                    PlayerId = 3,
-                    PointsQty = 3,
-                }
+                PointsId = 3,
+                MatchId = 1,
+                PlayerId = 3,
+                PointsQty = 3,
             });
 
             //Assert
@@ -158,16 +125,13 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
             await InsertDummyData();
 
             //Act
-            var response = await TestClient.PostAsJsonAsync("api/points", new List<Points>
+            var response = await TestClient.PostAsJsonAsync("api/points", new Points()
             {
-                new Points()
-                {
-                    PointsId = 3,
-                    MatchId = 1,
-                    PlayerId = 6,
-                    PointsQty = 1,
-                    TournamentId = 1,
-                },
+                PointsId = 3,
+                MatchId = 1,
+                PlayerId = 6,
+                PointsQty = 1,
+                TournamentId = 1,
             });
 
             var points = await TestClient.GetAsync("api/tournament/1/points");

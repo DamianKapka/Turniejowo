@@ -24,13 +24,12 @@ namespace Turniejowo.API.Services
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task AddPointsForMatchAsync(ICollection<Points> points)
+        public async Task AddPointsForMatchAsync(Points points)
         {
-            var pointsList = points as List<Points> ?? throw new InvalidCastException();
 
-            var matchPoints = await pointsRepository.FindAsync(p => p.MatchId == pointsList[0].MatchId, new string[] { "Player" });
-            var match = await matchRepository.FindSingleAsync(m => m.MatchId == pointsList[0].MatchId) ?? throw new NotFoundInDatabaseException();
-            var player = await playerRepository.FindSingleAsync(p => p.PlayerId == pointsList[0].PlayerId) ?? throw new NotFoundInDatabaseException();
+            var matchPoints = await pointsRepository.FindAsync(p => p.MatchId == points.MatchId, new string[] { "Player" });
+            var match = await matchRepository.FindSingleAsync(m => m.MatchId == points.MatchId) ?? throw new NotFoundInDatabaseException();
+            var player = await playerRepository.FindSingleAsync(p => p.PlayerId == points.PlayerId) ?? throw new NotFoundInDatabaseException();
 
 
             if ((player.TeamId != match.HomeTeamId) && (player.TeamId != match.GuestTeamId))
@@ -38,7 +37,7 @@ namespace Turniejowo.API.Services
                 throw new ArgumentException();
             }
 
-            if (matchPoints.SingleOrDefault(m => m.PlayerId == pointsList[0].PlayerId) != null)
+            if (matchPoints.SingleOrDefault(m => m.PlayerId == points.PlayerId) != null)
             {
                 throw new AlreadyInDatabaseException();
             }
@@ -49,16 +48,13 @@ namespace Turniejowo.API.Services
                 guestTeamPoints = matchPoints.Where(p => p.Player.TeamId == match.GuestTeamId).Sum(s => s.PointsQty)
             };
 
-            if (((player.TeamId == match.HomeTeamId) && ((pointsList[0].PointsQty + teamsPoints.homeTeamPoints) > match.HomeTeamPoints)) 
-                || ((player.TeamId == match.GuestTeamId) && ((pointsList[0].PointsQty + teamsPoints.guestTeamPoints) > match.GuestTeamPoints)))
+            if (((player.TeamId == match.HomeTeamId) && ((points.PointsQty + teamsPoints.homeTeamPoints) > match.HomeTeamPoints)) 
+                || ((player.TeamId == match.GuestTeamId) && ((points.PointsQty + teamsPoints.guestTeamPoints) > match.GuestTeamPoints)))
             {
                 throw new ArgumentOutOfRangeException();
             }
 
-            foreach (var p in points)
-            {
-                pointsRepository.Add(p);
-            }
+            pointsRepository.Add(points);
 
             await unitOfWork.CompleteAsync();
         }

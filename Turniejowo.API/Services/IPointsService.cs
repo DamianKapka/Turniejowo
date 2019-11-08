@@ -8,7 +8,7 @@ namespace Turniejowo.API.Services
 {
     public interface IPointsService
     {
-        Task AddPointsForMatchAsync(ICollection<Points> points);
+        Task AddPointsForMatchAsync(Points points);
         Task EditPointsForMatchAsync(ICollection<Points> points);
         Task DeletePointsForMatchAsync(int matchId);
     }
