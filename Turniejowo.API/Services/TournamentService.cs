@@ -43,12 +43,8 @@ namespace Turniejowo.API.Services
 
         public async Task<Tournament> GetTournamentByIdAsync(int id)
         {
-            var tournament = await tournamentRepository.FindSingleAsync(t => t.TournamentId == id,new string[]{"Discipline", "Creator"});
-
-            if (tournament == null)
-            {
-                throw new NotFoundInDatabaseException();
-            }
+            var tournament = await tournamentRepository.FindSingleAsync(t => t.TournamentId == id,new string[]{"Discipline", "Creator"})
+                             ?? throw new NotFoundInDatabaseException();
 
             return tournament;
         }
@@ -111,10 +107,8 @@ namespace Turniejowo.API.Services
 
         public async Task AddNewTournamentAsync(Tournament tournament)
         {
-            if (await userRepository.GetByIdAsync(tournament.CreatorId) == null)
-            {
-                throw new NotFoundInDatabaseException();
-            }
+            var user = await userRepository.GetByIdAsync(tournament.CreatorId) ??
+                       throw new NotFoundInDatabaseException();
 
             var tournamentToAdd = await tournamentRepository.FindSingleAsync(x => x.Name == tournament.Name);
 
@@ -129,17 +123,9 @@ namespace Turniejowo.API.Services
 
         public async Task EditTournamentAsync(Tournament tournament)
         {
-            if (await userRepository.GetByIdAsync(tournament.CreatorId) == null)
-            {
-                throw new NotFoundInDatabaseException();
-            }
+            var user = await userRepository.GetByIdAsync(tournament.CreatorId) ?? throw new NotFoundInDatabaseException();
 
-            var tournamentToEdit = await tournamentRepository.FindSingleAsync(x => x.TournamentId == tournament.TournamentId);
-
-            if (tournamentToEdit == null)
-            {
-                throw new NotFoundInDatabaseException();
-            }
+            var tournamentToEdit = await tournamentRepository.FindSingleAsync(x => x.TournamentId == tournament.TournamentId) ?? throw new NotFoundInDatabaseException();
 
             tournamentRepository.ClearEntryState(tournamentToEdit);
 
@@ -150,12 +136,7 @@ namespace Turniejowo.API.Services
         public async Task DeleteTournamentAsync(int id)
         {
             await teamService.DeleteTeamsRelatedToTheTournamentAsync(id);
-            var tournamentToDelete = await tournamentRepository.GetByIdAsync(id);
-
-            if (tournamentToDelete == null)
-            {
-                throw new NotFoundInDatabaseException();
-            }
+            var tournamentToDelete = await tournamentRepository.GetByIdAsync(id) ?? throw new NotFoundInDatabaseException();
 
             tournamentRepository.Delete(tournamentToDelete);
             await unitOfWork.CompleteAsync();
@@ -163,12 +144,7 @@ namespace Turniejowo.API.Services
 
         public async Task<ICollection<Team>> GetTournamentTeamsAsync(int id)
         {
-            var tournament = await tournamentRepository.GetByIdAsync(id);
-
-            if (tournament == null)
-            {
-                throw new NotFoundInDatabaseException();
-            }
+            var tournament = await tournamentRepository.GetByIdAsync(id) ?? throw new NotFoundInDatabaseException(); ;
 
             var teams = await teamRepository.FindAsync(team => team.TournamentId == id);
 

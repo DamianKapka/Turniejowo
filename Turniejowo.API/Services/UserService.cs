@@ -34,12 +34,7 @@ namespace Turniejowo.API.Services
 
         public async Task<User> GetUserByIdAsync(int id)
         {
-            var user = await userRepository.GetByIdAsync(id);
-
-            if (user == null)
-            {
-                throw new NotFoundInDatabaseException();
-            }
+            var user = await userRepository.GetByIdAsync(id) ?? throw new NotFoundInDatabaseException(); ;
 
             return user;
         }
@@ -70,12 +65,7 @@ namespace Turniejowo.API.Services
         public async Task<User> AuthenticateCredentialsAsync(Credentials credentials)
         {
             var user = await userRepository.FindSingleAsync(
-                u => u.Email == credentials.Login && u.Password == credentials.Password);
-
-            if (user == null)
-            {
-                throw new NotFoundInDatabaseException();
-            }
+                u => u.Email == credentials.Login && u.Password == credentials.Password) ?? throw new NotFoundInDatabaseException(); ;
 
             return user;
         }

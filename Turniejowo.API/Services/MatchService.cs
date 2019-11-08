@@ -39,7 +39,8 @@ namespace Turniejowo.API.Services
 
         public async Task<Match> GetMatchByIdAsync(int id)
         {
-            var match = await matchRepository.FindSingleAsync(m => m.MatchId == id,new string[]{"HomeTeam","GuestTeam"});
+            var match = await matchRepository.FindSingleAsync(m => m.MatchId == id,new string[]{"HomeTeam","GuestTeam"})
+                        ?? throw new NotFoundInDatabaseException();
 
             if (match == null)
             {
@@ -82,12 +83,7 @@ namespace Turniejowo.API.Services
 
         public async Task EditMatchAsync(Match match)
         {
-            var matchToEdit = await matchRepository.FindSingleAsync(x => x.MatchId == match.MatchId);
-
-            if (matchToEdit == null)
-            {
-                throw new NotFoundInDatabaseException();
-            }
+            var matchToEdit = await matchRepository.FindSingleAsync(x => x.MatchId == match.MatchId) ?? throw new NotFoundInDatabaseException(); ;
 
             if (await teamRepository.FindSingleAsync(x => x.TeamId == match.HomeTeamId) == null || await teamRepository.FindSingleAsync(y => y.TeamId == match.GuestTeamId) == null)
             {
@@ -102,12 +98,7 @@ namespace Turniejowo.API.Services
 
         public async Task DeleteMatchAsync(int id)
         {
-            var matchToDel = await matchRepository.FindSingleAsync(x => x.MatchId == id);
-
-            if (matchToDel == null)
-            {
-                throw new NotFoundInDatabaseException();
-            }
+            var matchToDel = await matchRepository.FindSingleAsync(x => x.MatchId == id) ?? throw new NotFoundInDatabaseException();
 
             matchRepository.Delete(matchToDel);
             await unitOfWork.CompleteAsync();

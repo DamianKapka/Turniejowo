@@ -26,12 +26,7 @@ namespace Turniejowo.API.Services
 
         public async Task<Player> GetPlayerByIdAsync(int id)
         {
-            var player = await playerRepository.FindSingleAsync(p => p.PlayerId == id,new string[]{"Team"});
-
-            if (player == null)
-            {
-                throw new NotFoundInDatabaseException();
-            }
+            var player = await playerRepository.FindSingleAsync(p => p.PlayerId == id,new string[]{"Team"}) ?? throw new NotFoundInDatabaseException();
 
             return player;
         }
@@ -48,12 +43,7 @@ namespace Turniejowo.API.Services
 
         public async Task AddNewPlayerAsync(Player player)
         {
-            var teamForPlayer = await teamRepository.GetByIdAsync(player.TeamId);
-
-            if (teamForPlayer == null)
-            {
-                throw new NotFoundInDatabaseException();
-            }
+            var teamForPlayer = await teamRepository.GetByIdAsync(player.TeamId) ?? throw new NotFoundInDatabaseException(); ;
 
             var playerNameExistsForTeam =
                 await playerRepository.FindSingleAsync(p => p.TeamId == player.TeamId && p.FName == player.FName && p.LName == player.LName);
@@ -69,19 +59,9 @@ namespace Turniejowo.API.Services
 
         public async Task EditPlayerAsync(Player player)
         {
-            var playerTeam = await teamRepository.GetByIdAsync(player.TeamId);
+            var playerTeam = await teamRepository.GetByIdAsync(player.TeamId) ?? throw new NotFoundInDatabaseException(); ;
 
-            if (playerTeam == null)
-            {
-                throw new NotFoundInDatabaseException();
-            }
-
-            var playerToEdit = await playerRepository.GetByIdAsync(player.PlayerId);
-
-            if (playerToEdit == null)
-            {
-                throw new NotFoundInDatabaseException();
-            }
+            var playerToEdit = await playerRepository.GetByIdAsync(player.PlayerId) ?? throw new NotFoundInDatabaseException(); ;
 
             playerRepository.ClearEntryState(playerToEdit);
 
@@ -91,12 +71,7 @@ namespace Turniejowo.API.Services
 
         public async Task DeletePlayerAsync(int id)
         {
-            var playerToDelete = await playerRepository.GetByIdAsync(id);
-
-            if (playerToDelete == null)
-            {
-                throw new NotFoundInDatabaseException();
-            }
+            var playerToDelete = await playerRepository.GetByIdAsync(id) ?? throw new NotFoundInDatabaseException(); ;
 
             playerRepository.Delete(playerToDelete);
             await unitOfWork.CompleteAsync();

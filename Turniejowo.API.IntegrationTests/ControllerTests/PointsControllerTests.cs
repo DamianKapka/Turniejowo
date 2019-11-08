@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Razor.Language.Intermediate;
 using Turniejowo.API.Contracts.Responses;
 using Turniejowo.API.Models;
 using Xunit;
@@ -54,7 +51,7 @@ namespace Turniejowo.API.IntegrationTests.ControllerTests
                 }
             );
 
-                //Assert
+            //Assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
