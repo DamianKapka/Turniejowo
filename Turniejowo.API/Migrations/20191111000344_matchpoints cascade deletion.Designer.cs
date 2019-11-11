@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Turniejowo.API.Models;
 
 namespace Turniejowo.API.Migrations
 {
     [DbContext(typeof(TurniejowoDbContext))]
-    partial class TurniejowoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191111000344_matchpoints cascade deletion")]
+    partial class matchpointscascadedeletion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

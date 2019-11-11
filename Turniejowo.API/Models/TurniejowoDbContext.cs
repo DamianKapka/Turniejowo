@@ -41,7 +41,7 @@ namespace Turniejowo.API.Models
                 entity.HasOne(e => e.Match)
                     .WithMany(m => m.MatchPoints)
                     .HasForeignKey(p => p.MatchId)
-                    .OnDelete(DeleteBehavior.Restrict)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_Points_Match");
 
                 entity.HasOne(e => e.Player)
