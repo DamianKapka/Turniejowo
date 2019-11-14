@@ -224,6 +224,7 @@ namespace Turniejowo.API.Services
                              ?? throw new NotFoundInDatabaseException();
 
             var points = await pointsRepository.FindAsync(p => p.TournamentId == tournamentId, new string[] { "Tournament", "Player", "Match" });
+            var teams = await teamRepository.FindAsync(t => t.TournamentId == tournamentId);
 
             if (points.Any())
             {
