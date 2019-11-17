@@ -16,7 +16,7 @@ namespace Turniejowo.API.Installers
                 x.SwaggerDoc("turniejowo", new Swashbuckle.AspNetCore.Swagger.Info
                 {
                     Title = "Turniejowo API",
-                    Version = "v1.59"
+                    Version = "v1.6"
                 });
             });
         }
