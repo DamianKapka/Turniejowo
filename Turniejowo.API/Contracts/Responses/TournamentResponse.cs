@@ -31,5 +31,7 @@ namespace Turniejowo.API.Contracts.Responses
         public int EntryFee { get; set; }
 
         public string Localization { get; set; }
+
+        public bool IsBracket { get; set; }
     }
 }
