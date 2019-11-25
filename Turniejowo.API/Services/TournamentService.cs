@@ -4,9 +4,12 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Turniejowo.API.Contracts.Responses;
 using Turniejowo.API.Exceptions;
+using Turniejowo.API.Helpers.Factory;
+using Turniejowo.API.Helpers.Manager;
 using Turniejowo.API.MappingProfiles;
 using Turniejowo.API.Models;
 using Turniejowo.API.Repositories;
@@ -24,10 +27,11 @@ namespace Turniejowo.API.Services
         private readonly IMatchRepository matchRepository;
         private readonly IDisciplineRepository disciplineRepository;
         private readonly IPointsRepository pointsRepository;
+        private readonly IBracketManager bracketManager; 
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
 
-        public TournamentService(ITournamentRepository tournamentRepository, ITeamRepository teamRepository, ITeamService teamService, IPlayerRepository playerRepository, IUserRepository userRepository, IMatchRepository matchRepository, IDisciplineRepository disciplineRepository, IUnitOfWork unitOfWork, IPointsRepository pointsRepository, IMapper mapper)
+        public TournamentService(ITournamentRepository tournamentRepository, ITeamRepository teamRepository, ITeamService teamService, IPlayerRepository playerRepository, IUserRepository userRepository, IMatchRepository matchRepository, IDisciplineRepository disciplineRepository, IUnitOfWork unitOfWork, IPointsRepository pointsRepository, IMapper mapper, IBracketManager bracketManager)
         {
             this.tournamentRepository = tournamentRepository;
             this.teamRepository = teamRepository;
@@ -39,6 +43,7 @@ namespace Turniejowo.API.Services
             this.pointsRepository = pointsRepository;
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
+            this.bracketManager = bracketManager;
         }
 
         public async Task<Tournament> GetTournamentByIdAsync(int id)
@@ -49,7 +54,7 @@ namespace Turniejowo.API.Services
             return tournament;
         }
 
-        public async Task<Table> GetTournamentTable(int id)
+        public async Task<Table> GetTournamentTableAsync(int id)
         {
             var tournamentTeams = await GetTournamentTeamsAsync(id) ?? throw new NotFoundInDatabaseException();
             var tournamentMatches = await GetTournamentMatchesAsync(id);
@@ -103,6 +108,29 @@ namespace Turniejowo.API.Services
             {
                 TableData = tableEntries.ToList()
             };
+        }
+
+        public async Task<BracketData> GetTournamentBracketAsync(int id)
+        {
+            var tournament = await tournamentRepository.FindSingleAsync(t => t.TournamentId == id) ??
+                             throw new NotFoundInDatabaseException();
+
+            if (!tournament.IsBracket || !new[] { 4, 8, 16 }.Contains(tournament.AmountOfTeams))
+            {
+                throw new ArgumentException();
+            }
+
+            var bracketTemplate = await BracketDataFactory.CreateBracketTemplate(tournament.AmountOfTeams);
+
+            var matches = await GetTournamentMatchesAsync(id) ?? new List<Match>();
+
+            if (!matches.Any())
+            {
+                var bracketData = await bracketManager.FillInBracketWithBlankData(bracketTemplate);
+                return bracketData;
+            }
+
+            return await bracketManager.FillInBracketWithData(bracketTemplate, matches.ToList());
         }
 
         public async Task AddNewTournamentAsync(Tournament tournament)
@@ -191,11 +219,6 @@ namespace Turniejowo.API.Services
             var matches =
                 await matchRepository.FindAsync(m => m.HomeTeam.TournamentId == id && m.GuestTeam.TournamentId == id,new string[] {"HomeTeam","GuestTeam"});
 
-            if (matches.Count == 0)
-            {
-                throw new NotFoundInDatabaseException();
-            }
-
             return matches;
         }
 
@@ -218,7 +241,7 @@ namespace Turniejowo.API.Services
         }
 
 
-        public async Task<TournamentPlayersPointsHolder> GetTournamentPoints(int tournamentId)
+        public async Task<TournamentPlayersPointsHolder> GetTournamentPointsAsync(int tournamentId)
         {
             var tournament = await tournamentRepository.FindSingleAsync(t => t.TournamentId == tournamentId)
                              ?? throw new NotFoundInDatabaseException();

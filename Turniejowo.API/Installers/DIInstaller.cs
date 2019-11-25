@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Turniejowo.API.Helpers.Factory;
+using Turniejowo.API.Helpers.Manager;
 using Turniejowo.API.MappingProfiles;
 using Turniejowo.API.Repositories;
 using Turniejowo.API.Services;
@@ -27,6 +29,8 @@ namespace Turniejowo.API.Installers
             services.AddScoped<IMatchService, MatchService>();
             services.AddScoped<IDisciplineService, DisciplineService>();
             services.AddScoped<IPointsService,PointsService>();
+
+            services.AddTransient<IBracketManager, BracketManager>();
         }
     }
 }

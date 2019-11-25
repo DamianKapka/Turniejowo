@@ -115,11 +115,12 @@ namespace Turniejowo.API.Controllers
 
                 var matches = await tournamentService.GetTournamentMatchesAsync(id);
 
+                if (!matches.Any())
+                {
+                    return NotFound();
+                }
+
                 return Ok(mapper.Map<List<MatchResponse>>(matches));
-            }
-            catch (NotFoundInDatabaseException)
-            {
-                return NotFound();
             }
             catch (Exception e)
             {
@@ -133,7 +134,7 @@ namespace Turniejowo.API.Controllers
         {
             try
             {
-                var points = await tournamentService.GetTournamentPoints(id);
+                var points = await tournamentService.GetTournamentPointsAsync(id);
 
                 return Ok(points);
             }
@@ -150,11 +151,11 @@ namespace Turniejowo.API.Controllers
         [AllowAnonymous]
         [HttpGet]
         [Route("{id}/table")]
-        public async Task<IActionResult> GetTournamentTable([FromRoute] int id)
+        public async Task<IActionResult> GetTournamentTableAsync([FromRoute] int id)
         {
             try
             {
-                var table = await tournamentService.GetTournamentTable(id);
+                var table = await tournamentService.GetTournamentTableAsync(id);
 
                 return Ok(table);
 
@@ -168,6 +169,31 @@ namespace Turniejowo.API.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route(("{id}/bracket"))]
+        public async Task<IActionResult> GetTournamentBracket(int id)
+        {
+            try
+            {
+                var bracket = await tournamentService.GetTournamentBracketAsync(id);
+                return Ok(bracket);
+            }
+            catch (ArgumentException)
+            {
+                return Conflict();
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return NotFound();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> AddNewTournament([FromBody] Tournament tournament)
