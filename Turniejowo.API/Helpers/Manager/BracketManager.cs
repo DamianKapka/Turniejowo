@@ -22,8 +22,9 @@ namespace Turniejowo.API.Helpers.Manager
                 for (int i = 1; i <= data.Rounds.Count; i++)
                 {
                     var numOfIterationDivide = (int) Math.Pow(2, i);
+                    var iterationQty = data.NumberOfTeams / numOfIterationDivide;
                     data.Rounds[i - 1].Matches = new List<MatchResponse>();
-                    Parallel.For(0, data.NumberOfTeams / numOfIterationDivide,
+                    Parallel.For(0, iterationQty,
                         (index) => { data.Rounds[i - 1].Matches.Add(new MatchResponse());});
                 }
 

@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using FluentAssertions;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Turniejowo.API.Helpers.Manager;
 using Turniejowo.API.Models;
 using Turniejowo.API.Repositories;
@@ -45,25 +45,29 @@ namespace Turniejowo.UnitTests.Service
             unitOfWorkMock = new Mock<IUnitOfWork>();
             mapperMock = new Mock<IMapper>();
 
-            tournamentService = new TournamentService(tournamentRepositoryMock.Object, teamRepositoryMock.Object, teamServiceMock.Object, playerRepositoryMock.Object, userRepositoryMock.Object,
-                matchRepositoryMock.Object, disciplineRepositoryMock.Object, unitOfWorkMock.Object, pointsRepositoryMock.Object, mapperMock.Object, bracketManager);
+            tournamentService = new TournamentService(tournamentRepositoryMock.Object, teamRepositoryMock.Object,
+                teamServiceMock.Object, playerRepositoryMock.Object, userRepositoryMock.Object,
+                matchRepositoryMock.Object, disciplineRepositoryMock.Object, unitOfWorkMock.Object,
+                pointsRepositoryMock.Object, mapperMock.Object, bracketManager);
         }
 
         [Fact]
         public async Task GetTournamentBracketAsync_WhenThereAreNoMatchesYet_ShouldFillWithBlanks()
         {
-            tournamentRepositoryMock.Setup(t => t.FindSingleAsync(It.IsAny<Expression<Func<Tournament, bool>>>(), It.IsAny<string[]>())).ReturnsAsync(new Tournament
-            {
-                AmountOfTeams = 16,
-                IsBracket = true
-            });
+            tournamentRepositoryMock
+                .Setup(t => t.FindSingleAsync(It.IsAny<Expression<Func<Tournament, bool>>>(), It.IsAny<string[]>()))
+                .ReturnsAsync(new Tournament
+                {
+                    AmountOfTeams = 16,
+                    IsBracket = true
+                });
 
             var bracket = await tournamentService.GetTournamentBracketAsync(1);
 
-            bracket.Should().NotBeNull();
+            bracket.Rounds[0].Matches.Should().HaveCount(8);
+            bracket.Rounds[1].Matches.Should().HaveCount(4);
+            bracket.Rounds[2].Matches.Should().HaveCount(2);
+            bracket.Rounds[3].Matches.Should().HaveCount(1);
         }
-
-
-
     }
 }
