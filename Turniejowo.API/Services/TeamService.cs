@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Turniejowo.API.Exceptions;
 using Turniejowo.API.Models;
@@ -57,10 +59,15 @@ namespace Turniejowo.API.Services
         {
             var tournamentForTeam = await tournamentRepository.GetByIdAsync(team.TournamentId) ?? throw new NotFoundInDatabaseException(); ;
 
-            var teamNameExistsForTournament =
-                await teamRepository.FindSingleAsync(t => t.TournamentId == team.TournamentId && t.Name == team.Name);
+            var tournamentTeams = await teamRepository.FindAsync(t => t.TournamentId == team.TournamentId);
 
-            if (teamNameExistsForTournament != null)
+            if (tournamentTeams.Count == tournamentForTeam.AmountOfTeams)
+            {
+                throw new ApplicationException();
+                //TODO: TESTY DO TEGO!
+            }
+
+            if (tournamentTeams.First(t => t.Name == team.Name) != null)
             {
                 throw new AlreadyInDatabaseException();
             }

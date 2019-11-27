@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -104,6 +105,10 @@ namespace Turniejowo.API.Controllers
                 await teamService.AddNewTeamAsync(team);
 
                 return CreatedAtAction("GetById", new {id = team.TeamId}, team);
+            }
+            catch (ApplicationException)
+            {
+                return StatusCode(406);
             }
             catch (NotFoundInDatabaseException)
             {
