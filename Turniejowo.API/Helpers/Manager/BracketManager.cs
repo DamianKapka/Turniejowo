@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore.Internal;
 using Turniejowo.API.Contracts.Responses;
 using Turniejowo.API.Models;
 
@@ -24,18 +25,26 @@ namespace Turniejowo.API.Helpers.Manager
             {
                 int[] eachRoundMatchQty = ComputeMatchQtyForTournamentRounds(data.Rounds.Count,data.NumberOfTeams);
 
+                int[] eachRoundMaxIndex = ComputeRoundMaxIndex(eachRoundMatchQty,data.NumberOfTeams);
+
                 data.Rounds.ForEach(r => r.Matches = new List<MatchResponse>());
 
-                foreach (var match in matches)
+                for (int i = 1; i <= data.NumberOfTeams; i++)
                 {
-                    data.Rounds[0].Matches.Add(mapper.Map<MatchResponse>(match));
-                }
-
-                for (int i = 0; i < eachRoundMatchQty.Length; i++)
-                {
-                    while (data.Rounds[i].Matches.Count < eachRoundMatchQty[i])
+                    foreach (var t in eachRoundMaxIndex)
                     {
-                        data.Rounds[i].Matches.Add(new MatchResponse());
+                        if(i > t){ continue;}
+
+                        var match = matches.FirstOrDefault(m => m.BracketIndex == i);
+
+                        if (match == null)
+                        {
+                            data.Rounds[eachRoundMaxIndex.IndexOf(t)].Matches.Add(new MatchResponse());
+                            break;
+                        }
+
+                        data.Rounds[eachRoundMaxIndex.IndexOf(t)].Matches.Add(mapper.Map<MatchResponse>(match));
+                        break;
                     }
                 }
 
@@ -60,6 +69,9 @@ namespace Turniejowo.API.Helpers.Manager
             });
         }
 
+        /*
+         * TODO: DO OSOBNEGO INTERFACEU + TESTY
+         */
         private int[] ComputeMatchQtyForTournamentRounds(int roundsQty, int teamQty)
         {
             int[] roundMatchesQty = new int[roundsQty];
@@ -70,6 +82,28 @@ namespace Turniejowo.API.Helpers.Manager
             }
 
             return roundMatchesQty;
+        }
+
+        /*
+         * TODO: DO OSOBNEGO INTERFACEU + TESTY
+         */
+        private int[] ComputeRoundMaxIndex(int[] eachRoundMatchQty, int teamQty)
+        {
+            var roundMaxIndexArray = new int[eachRoundMatchQty.Length];
+
+            for (int j = 0; j < eachRoundMatchQty.Length; j++)
+            {
+                int max = 0;
+
+                for (int i = 0; i < j+1; i++)
+                {
+                    max += eachRoundMatchQty[i];
+                }
+
+                roundMaxIndexArray[j] = max;
+            }
+
+            return roundMaxIndexArray;
         }
     }
 }

@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper.Configuration;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
 using Turniejowo.API.Helpers.Manager;
 using Turniejowo.API.Models;
 using Turniejowo.API.Repositories;
@@ -41,7 +43,7 @@ namespace Turniejowo.UnitTests.Service
             matchRepositoryMock = new Mock<IMatchRepository>();
             disciplineRepositoryMock = new Mock<IDisciplineRepository>();
             pointsRepositoryMock = new Mock<IPointsRepository>();
-            bracketManager = new BracketManager();
+            bracketManager = new BracketManager(new Mapper(new MapperConfiguration(new MapperConfigurationExpression())));
             unitOfWorkMock = new Mock<IUnitOfWork>();
             mapperMock = new Mock<IMapper>();
 
