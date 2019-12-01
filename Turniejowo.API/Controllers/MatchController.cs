@@ -104,6 +104,14 @@ namespace Turniejowo.API.Controllers
 
                 return CreatedAtAction("Get", new {id = match.MatchId}, match);
             }
+            catch (ArgumentOutOfRangeException)
+            {
+                return StatusCode(427);
+            }
+            catch (ArgumentException)
+            {
+                return StatusCode(418);
+            }
             catch (AlreadyInDatabaseException)
             {
                 return StatusCode(406);

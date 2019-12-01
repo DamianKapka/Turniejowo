@@ -26,5 +26,7 @@ namespace Turniejowo.API.Contracts.Responses
         public int HomeTeamPoints { get; set; }
 
         public int GuestTeamPoints { get; set; }
+
+        public int BracketIndex { get; set; }
     }
 }

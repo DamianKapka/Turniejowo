@@ -57,7 +57,7 @@ namespace Turniejowo.API.Services
 
         public async Task AddNewTeamAsync(Team team)
         {
-            var tournamentForTeam = await tournamentRepository.GetByIdAsync(team.TournamentId) ?? throw new NotFoundInDatabaseException(); ;
+            var tournamentForTeam = await tournamentRepository.GetByIdAsync(team.TournamentId) ?? throw new NotFoundInDatabaseException();
 
             var tournamentTeams = await teamRepository.FindAsync(t => t.TournamentId == team.TournamentId);
 
@@ -67,7 +67,7 @@ namespace Turniejowo.API.Services
                 //TODO: TESTY DO TEGO!
             }
 
-            if (tournamentTeams.First(t => t.Name == team.Name) != null)
+            if (tournamentTeams.FirstOrDefault(t => t.Name == team.Name) != null)
             {
                 throw new AlreadyInDatabaseException();
             }
