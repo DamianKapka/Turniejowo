@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Helpers\ExtensionMethods\**" />
+    <Content Remove="Helpers\ExtensionMethods\**" />
+    <EmbeddedResource Remove="Helpers\ExtensionMethods\**" />
+    <None Remove="Helpers\ExtensionMethods\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
@@ -22,10 +29,6 @@
     <Reference Include="System.Private.Xml.Linq">
       <HintPath>..\..\..\..\..\Program Files\dotnet\shared\Microsoft.NETCore.App\2.2.0\System.Private.Xml.Linq.dll</HintPath>
     </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Helpers\ExtensionMethods\" />
   </ItemGroup>
 
 </Project>

@@ -10,5 +10,7 @@ namespace Turniejowo.API.Helpers.Manager
     {
         Task<BracketData> FillInBracketWithData(BracketData data, List<Match> matches);
         Task<BracketData> FillInBracketWithBlankData(BracketData data);
+        Task<int> FindFirstEmptyBracketSlot(ICollection<Match> matches, int teamsQty);
+        Task<Match> AutoGenerateBracketMatch();
     }
 }

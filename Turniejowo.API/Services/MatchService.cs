@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Turniejowo.API.Exceptions;
+using Turniejowo.API.Helpers.Manager;
 using Turniejowo.API.Models;
 using Turniejowo.API.Repositories;
 using Turniejowo.API.UnitOfWork;
@@ -17,14 +18,16 @@ namespace Turniejowo.API.Services
         private readonly IPointsRepository pointsRepository;
         private readonly ITournamentRepository tournamentRepository;
         private readonly IUnitOfWork unitOfWork;
+        private readonly IBracketManager bracketManager;
 
-        public MatchService(IMatchRepository matchRepository, ITeamRepository teamRepository, IPointsRepository pointsRepository, IUnitOfWork unitOfWork, ITournamentRepository tournamentRepository)
+        public MatchService(IMatchRepository matchRepository, ITeamRepository teamRepository, IPointsRepository pointsRepository, IUnitOfWork unitOfWork, ITournamentRepository tournamentRepository, IBracketManager bracketManager)
         {
             this.matchRepository = matchRepository;
             this.teamRepository = teamRepository;
             this.pointsRepository = pointsRepository;
             this.unitOfWork = unitOfWork;
             this.tournamentRepository = tournamentRepository;
+            this.bracketManager = bracketManager;
         }
 
         public async Task<ICollection<Match>> GetAllMatchesAsync()
@@ -101,7 +104,7 @@ namespace Turniejowo.API.Services
                     throw new ArgumentOutOfRangeException();
                 }
 
-                int bracketIndexForMatch = FindFirstEmptyBracketSlot(matchesBracket, tournament.AmountOfTeams);
+                int bracketIndexForMatch = await bracketManager.FindFirstEmptyBracketSlot(matchesBracket, tournament.AmountOfTeams);
                 match.BracketIndex = bracketIndexForMatch;
             }
 
@@ -121,6 +124,9 @@ namespace Turniejowo.API.Services
             matchRepository.ClearEntryState(matchToEdit);
 
             matchRepository.Update(match);
+
+
+
             await unitOfWork.CompleteAsync();
         }
 
@@ -142,19 +148,6 @@ namespace Turniejowo.API.Services
             }
 
             await unitOfWork.CompleteAsync();
-        }
-
-        private int FindFirstEmptyBracketSlot(ICollection<Match> matches, int teamsQty)
-        {
-            for (int i = 1; i < teamsQty; i++)
-            {
-                if (matches.FirstOrDefault(m => m.BracketIndex == i) == null)
-                {
-                    return i;
-                }
-            }
-
-            throw new ArgumentOutOfRangeException();
         }
     }
 }

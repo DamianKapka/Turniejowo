@@ -69,6 +69,27 @@ namespace Turniejowo.API.Helpers.Manager
             });
         }
 
+        public Task<int> FindFirstEmptyBracketSlot(ICollection<Match> matches, int teamsQty)
+        {
+            return Task.Run(() =>
+            {
+                for (int i = 1; i < teamsQty; i++)
+                {
+                    if (matches.FirstOrDefault(m => m.BracketIndex == i) == null)
+                    {
+                        return i;
+                    }
+                }
+
+                throw new ArgumentOutOfRangeException();
+            });
+        }
+
+        public Task<Match> AutoGenerateBracketMatch()
+        {
+            throw new NotImplementedException();
+        }
+
         /*
          * TODO: DO OSOBNEGO INTERFACEU + TESTY
          */
