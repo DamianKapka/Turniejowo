@@ -8,9 +8,9 @@ namespace Turniejowo.API.Helpers.Manager
 {
     public interface IBracketManager
     {
-        Task<BracketData> FillInBracketWithData(BracketData data, List<Match> matches);
-        Task<BracketData> FillInBracketWithBlankData(BracketData data);
-        Task<int> FindFirstEmptyBracketSlot(ICollection<Match> matches, int teamsQty);
-        Task<Match> AutoGenerateBracketMatch();
+        Task<BracketData> FillInBracketWithDataAsync(BracketData data, List<Match> matches);
+        Task<BracketData> FillInBracketWithBlankDataAsync(BracketData data);
+        Task<int> FindFirstEmptyBracketSlotAsync(ICollection<Match> matches, int teamsQty);
+        Task<Match> AutoGenerateBracketMatchAsync(Match correspondingBracketMatch, Match currentlyAddedMatch);
     }
 }

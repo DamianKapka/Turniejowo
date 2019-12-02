@@ -126,11 +126,11 @@ namespace Turniejowo.API.Services
 
             if (!matches.Any())
             {
-                var bracketData = await bracketManager.FillInBracketWithBlankData(bracketTemplate);
+                var bracketData = await bracketManager.FillInBracketWithBlankDataAsync(bracketTemplate);
                 return bracketData;
             }
 
-            return await bracketManager.FillInBracketWithData(bracketTemplate, matches.ToList());
+            return await bracketManager.FillInBracketWithDataAsync(bracketTemplate, matches.ToList());
         }
 
         public async Task AddNewTournamentAsync(Tournament tournament)

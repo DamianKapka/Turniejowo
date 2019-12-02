@@ -19,7 +19,7 @@ namespace Turniejowo.API.Helpers.Manager
             this.mapper = mapper;
         }
 
-        public async Task<BracketData> FillInBracketWithData(BracketData data, List<Match> matches)
+        public async Task<BracketData> FillInBracketWithDataAsync(BracketData data, List<Match> matches)
         {
             return await Task.Run(() =>
             {
@@ -52,7 +52,7 @@ namespace Turniejowo.API.Helpers.Manager
             });
         }
 
-        public async Task<BracketData> FillInBracketWithBlankData(BracketData data)
+        public async Task<BracketData> FillInBracketWithBlankDataAsync(BracketData data)
         {
             return await Task.Run(() =>
             {
@@ -69,7 +69,7 @@ namespace Turniejowo.API.Helpers.Manager
             });
         }
 
-        public Task<int> FindFirstEmptyBracketSlot(ICollection<Match> matches, int teamsQty)
+        public Task<int> FindFirstEmptyBracketSlotAsync(ICollection<Match> matches, int teamsQty)
         {
             return Task.Run(() =>
             {
@@ -85,7 +85,7 @@ namespace Turniejowo.API.Helpers.Manager
             });
         }
 
-        public Task<Match> AutoGenerateBracketMatch()
+        public Task<Match> AutoGenerateBracketMatchAsync(Match correspondingBracketMatch, Match currentlyAddedMatch)
         {
             throw new NotImplementedException();
         }
