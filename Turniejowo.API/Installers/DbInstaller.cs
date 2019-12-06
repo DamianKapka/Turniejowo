@@ -14,7 +14,7 @@ namespace Turniejowo.API.Installers
         public void Install(IServiceCollection services, IConfiguration config)
         {
             services.AddDbContext<TurniejowoDbContext>(opt =>
-                opt.UseSqlServer(config.GetConnectionString("TurniejowoDirectDB")));
+                opt.UseSqlServer(config.GetConnectionString("TurniejowoDB")));
         }
     }
 }
