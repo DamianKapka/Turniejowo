@@ -110,7 +110,7 @@ namespace Turniejowo.API.Controllers
                 if (groupedByDateTime)
                 {
                     var groupedMatches = await tournamentService.GetTournamentMatchesGroupedByDateAsync(id);
-                    return Ok(groupedMatches);
+                    return Ok(groupedMatches.OrderBy(g => g.DateTime));
                 }
 
                 var matches = await tournamentService.GetTournamentMatchesAsync(id);

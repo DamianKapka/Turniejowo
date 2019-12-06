@@ -155,9 +155,13 @@ namespace Turniejowo.API.Controllers
 
                 return Accepted();
             }
-            catch (AmbiguousMatchException)
+            catch (ArgumentException)
             {
                 return StatusCode(429);
+            }
+            catch (AmbiguousMatchException)
+            {
+                return StatusCode(431);
             }
             catch (NotFoundInDatabaseException)
             {
@@ -177,6 +181,10 @@ namespace Turniejowo.API.Controllers
                 await matchService.DeleteMatchAsync(id);
 
                 return Accepted();
+            }
+            catch (AmbiguousMatchException)
+            {
+                return StatusCode(431);
             }
             catch (NotFoundInDatabaseException)
             {
