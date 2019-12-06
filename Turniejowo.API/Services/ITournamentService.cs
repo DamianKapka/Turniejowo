@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Turniejowo.API.Contracts.Responses;
+using Turniejowo.API.Helpers.Factory;
 using Turniejowo.API.Models;
 
 namespace Turniejowo.API.Services
@@ -27,8 +28,10 @@ namespace Turniejowo.API.Services
 
         Task<List<DateWithMatches>> GetTournamentMatchesGroupedByDateAsync(int id);
 
-        Task<TournamentPlayersPointsHolder> GetTournamentPoints(int tournamentId);
+        Task<TournamentPlayersPointsHolder> GetTournamentPointsAsync(int tournamentId);
 
-        Task<Table> GetTournamentTable(int id);
+        Task<Table> GetTournamentTableAsync(int id);
+
+        Task<BracketData> GetTournamentBracketAsync(int id);
     }
 }

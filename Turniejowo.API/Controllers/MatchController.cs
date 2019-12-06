@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Reflection;
 using System.Threading.Tasks;
 using AutoMapper;
 using Turniejowo.API.Contracts.Responses;
@@ -104,6 +106,22 @@ namespace Turniejowo.API.Controllers
 
                 return CreatedAtAction("Get", new {id = match.MatchId}, match);
             }
+            catch (ConstraintException)
+            {
+                return StatusCode(431);
+            }
+            catch (AmbiguousMatchException)
+            {
+                return StatusCode(429);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                return StatusCode(427);
+            }
+            catch (ArgumentException)
+            {
+                return StatusCode(418);
+            }
             catch (AlreadyInDatabaseException)
             {
                 return StatusCode(406);
@@ -137,6 +155,14 @@ namespace Turniejowo.API.Controllers
 
                 return Accepted();
             }
+            catch (ArgumentException)
+            {
+                return StatusCode(429);
+            }
+            catch (AmbiguousMatchException)
+            {
+                return StatusCode(431);
+            }
             catch (NotFoundInDatabaseException)
             {
                 return NotFound();
@@ -155,6 +181,10 @@ namespace Turniejowo.API.Controllers
                 await matchService.DeleteMatchAsync(id);
 
                 return Accepted();
+            }
+            catch (AmbiguousMatchException)
+            {
+                return StatusCode(431);
             }
             catch (NotFoundInDatabaseException)
             {

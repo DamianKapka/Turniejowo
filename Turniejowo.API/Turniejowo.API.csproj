@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Helpers\ExtensionMethods\**" />
+    <Content Remove="Helpers\ExtensionMethods\**" />
+    <EmbeddedResource Remove="Helpers\ExtensionMethods\**" />
+    <None Remove="Helpers\ExtensionMethods\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
