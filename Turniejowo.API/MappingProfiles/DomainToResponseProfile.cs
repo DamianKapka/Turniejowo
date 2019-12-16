@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Turniejowo.API.Contracts.Requests;
 using Turniejowo.API.Contracts.Responses;
 using Turniejowo.API.Models;
 
@@ -21,6 +22,8 @@ namespace Turniejowo.API.MappingProfiles
                 .ForMember(dest => dest.CreatorName, opt => opt.MapFrom(src => src.Creator.FullName))
                 .ForMember(dest => dest.CreatorContact, opt => opt.MapFrom(src => src.Creator.Phone));
             CreateMap<Points, PointsResponse>();
+            CreateMap<ScheduleGeneratorRequest, GeneratorScheduleOutlines>();
+
         }
     }
 }
