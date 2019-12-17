@@ -9,6 +9,7 @@ namespace Turniejowo.API.Helpers.Manager
     public interface IScheduleGeneratorManager
     {
         Task<List<DateTime>> GetPossibleMatchDateTimesAsync(GeneratorScheduleOutlines outlines);
-        Task<List<Match>> GetPossibleMatchScenarios(List<Team> teams);
+        Task<Dictionary<int, List<int>>> GetPossibleMatchMatrix(List<Team> teams);
+        Task<List<Match>> GenerateSchedule(bool isBracket,List<DateTime> dateTimes, Dictionary<int, List<int>> matchMatrix);
     }
 }

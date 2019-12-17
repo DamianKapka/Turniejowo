@@ -12,11 +12,13 @@ namespace Turniejowo.API.Services
     {
         private readonly IScheduleGeneratorManager scheduleGeneratorManager;
         private readonly ITeamRepository teamRepository;
+        private readonly ITournamentRepository tournamentRepository;
 
-        public ScheduleGeneratorService(IScheduleGeneratorManager scheduleGeneratorManager, ITeamRepository teamRepository)
+        public ScheduleGeneratorService(IScheduleGeneratorManager scheduleGeneratorManager, ITeamRepository teamRepository, ITournamentRepository tournamentRepository)
         {
             this.scheduleGeneratorManager = scheduleGeneratorManager;
             this.teamRepository = teamRepository;
+            this.tournamentRepository = tournamentRepository;
         }
 
         public async Task GenerateScheduleAsync(GeneratorScheduleOutlines outlines)
@@ -30,14 +32,13 @@ namespace Turniejowo.API.Services
 
             var teams = await teamRepository.FindAsync(t => t.TournamentId == outlines.TournamentId);
 
-            var possibleMatches = await scheduleGeneratorManager.GetPossibleMatchScenarios(teams.ToList());
+            var matchDict = await scheduleGeneratorManager.GetPossibleMatchMatrix(teams.ToList());
 
-            if (possibleMatches.Count > possibleMatchDateTimes.Count)
-            {
-                throw new DataMisalignedException();
-            }
+            var tournament = await tournamentRepository.FindSingleAsync(t => t.TournamentId == outlines.TournamentId);
 
-
+            var generatedMatchesList =
+                await scheduleGeneratorManager.GenerateSchedule(tournament.IsBracket, possibleMatchDateTimes,
+                    matchDict);
         }
     }
 }

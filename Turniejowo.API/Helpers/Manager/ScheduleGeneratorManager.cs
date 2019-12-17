@@ -42,9 +42,33 @@ namespace Turniejowo.API.Helpers.Manager
             });
         }
 
-        public async Task<List<Match>> GetPossibleMatchScenarios(List<Team> teams)
+        public async Task<Dictionary<int,List<int>>> GetPossibleMatchMatrix(List<Team> teams)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() =>
+            {
+                var matchDict = new Dictionary<int,List<int>>();
+
+                var teamIdArray = teams.Select(t => t.TeamId).ToArray();
+
+                for (int i = 0; i < teamIdArray.Length - 1; i++)
+                {
+                    var opponents = new List<int>();
+
+                    for (int j = i + 1; j < teamIdArray.Length; j++)
+                    {
+                        opponents.Add(teamIdArray[j]);
+                    }
+
+                    matchDict.Add(teamIdArray[i],opponents);
+                }
+
+                return matchDict;
+            });
+        }
+
+        public  Task<List<Match>> GenerateSchedule(bool isBracket,List<DateTime> dateTimes, Dictionary<int, List<int>> matchMatrix)
+        {
+            return null;
         }
     }
 }
