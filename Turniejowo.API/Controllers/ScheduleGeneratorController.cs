@@ -39,7 +39,7 @@ namespace Turniejowo.API.Controllers
 
                 await scheduleGeneratorService.GenerateScheduleAsync(mapper.Map<GeneratorScheduleOutlines>(request));
 
-                return Ok("dasdasdas");
+                return Ok();
             }
             catch (ArgumentOutOfRangeException)
             {

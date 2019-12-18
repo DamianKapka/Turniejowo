@@ -21,7 +21,7 @@ namespace Turniejowo.API.Helpers.Manager
                 while (startDateTime <= endDateTime)
                 {
                     {
-                        if (outlines.DaysOfWeek.Contains((int) startDateTime.DayOfWeek))
+                        if (outlines.DaysOfWeek.Contains((int)startDateTime.DayOfWeek))
                         {
                             for (int i = int.Parse(outlines.StartTime.Split(':')[0]);
                                 i <= int.Parse(outlines.EndTime.Split(':')[0]);
@@ -42,11 +42,11 @@ namespace Turniejowo.API.Helpers.Manager
             });
         }
 
-        public async Task<Dictionary<int,List<int>>> GetPossibleMatchMatrix(List<Team> teams)
+        public async Task<Dictionary<int, List<int>>> GetPossibleMatchMatrix(List<Team> teams)
         {
             return await Task.Run(() =>
             {
-                var matchDict = new Dictionary<int,List<int>>();
+                var matchDict = new Dictionary<int, List<int>>();
 
                 var teamIdArray = teams.Select(t => t.TeamId).ToArray();
 
@@ -59,16 +59,68 @@ namespace Turniejowo.API.Helpers.Manager
                         opponents.Add(teamIdArray[j]);
                     }
 
-                    matchDict.Add(teamIdArray[i],opponents);
+                    matchDict.Add(teamIdArray[i], opponents);
                 }
 
                 return matchDict;
             });
         }
 
-        public  Task<List<Match>> GenerateSchedule(bool isBracket,List<DateTime> dateTimes, Dictionary<int, List<int>> matchMatrix)
+        public async Task<List<Match>> GenerateSchedule(bool isBracket, List<DateTime> dateTimes, Dictionary<int, List<int>> matchMatrix)
         {
-            return null;
+            return await Task.Run(() =>
+            {
+                if (isBracket)
+                {
+                    var matchList = new List<Match>();
+
+                    for (int i = 0; i < matchMatrix.Count; i++)
+                    {
+                        var valueListLength = matchMatrix.ElementAt(i).Value.Count;
+
+                        var rnd = new Random((int) DateTime.Now.Ticks % 327 * i + 1);
+                        var rndOpponentRange = rnd.Next(valueListLength);
+
+                        var randomizedOpponent = matchMatrix.ElementAt(i).Value[rndOpponentRange];
+
+                        rnd = new Random((int) DateTime.Now.Ticks % 150 * i + 1);
+                        var rndDate = rnd.Next(dateTimes.Count);
+
+                        var date = dateTimes[rndDate];
+
+                        matchList.Add(new Match
+                        {
+                            MatchDateTime = date,
+                            HomeTeamId = matchMatrix.ElementAt(i).Key,
+                            GuestTeamId = randomizedOpponent,
+                            IsFinished = false,
+                            BracketIndex = i + 1
+                        });
+
+                        var kv = matchMatrix.FirstOrDefault(m => m.Key == randomizedOpponent);
+                        matchMatrix.Remove(kv.Key);
+
+                        for (int j = i + 1; j < matchMatrix.Count; j++)
+                        {
+                            int? opponentDuplicate = matchMatrix.ElementAt(j).Value
+                                .FirstOrDefault(m => m == randomizedOpponent);
+
+                            if (opponentDuplicate != null)
+                            {
+                                matchMatrix.ElementAt(j).Value.Remove((int) (opponentDuplicate));
+                            }
+                        }
+
+                        dateTimes.Remove(date);
+                    }
+
+                    return matchList;
+                }
+                else
+                {
+                    return null;
+                }
+            });
         }
     }
 }
