@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Turniejowo.API.Contracts.Requests;
+using Turniejowo.API.Exceptions;
 using Turniejowo.API.Models;
 using Turniejowo.API.Services;
 
@@ -45,9 +47,13 @@ namespace Turniejowo.API.Controllers
             {
                 return NotFound();
             }
-            catch (DataMisalignedException)
+            catch (NoNullAllowedException)
             {
                 return Conflict();
+            }
+            catch (NotFoundInDatabaseException)
+            {
+                return StatusCode(418);
             }
             catch (FormatException)
             {

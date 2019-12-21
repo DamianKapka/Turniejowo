@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Turniejowo.API.Exceptions;
 using Turniejowo.API.Helpers.Manager;
 using Turniejowo.API.Models;
 using Turniejowo.API.Repositories;
@@ -35,6 +36,11 @@ namespace Turniejowo.API.Services
             }
 
             var teams = await teamRepository.FindAsync(t => t.TournamentId == outlines.TournamentId);
+
+            if (teams.Count < 2)
+            {
+                throw new NotFoundInDatabaseException();
+            }
 
             var matchDict = await scheduleGeneratorManager.GetPossibleMatchMatrix(teams.ToList());
 
