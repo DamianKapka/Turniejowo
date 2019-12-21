@@ -29,7 +29,9 @@ namespace Turniejowo.API.Installers
             services.AddScoped<IMatchService, MatchService>();
             services.AddScoped<IDisciplineService, DisciplineService>();
             services.AddScoped<IPointsService,PointsService>();
+            services.AddScoped<IScheduleGeneratorService, ScheduleGeneratorService>();
 
+            services.AddTransient<IScheduleGeneratorManager, ScheduleGeneratorManager>();
             services.AddTransient<IBracketManager, BracketManager>();
         }
     }
