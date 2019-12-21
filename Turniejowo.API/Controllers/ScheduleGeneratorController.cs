@@ -27,8 +27,6 @@ namespace Turniejowo.API.Controllers
             this.scheduleGeneratorService = scheduleGeneratorService;
         }
 
-        //TO DEL
-        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> CreateSchedule([FromBody] ScheduleGeneratorRequest request)
         {
