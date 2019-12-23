@@ -28,6 +28,14 @@ namespace Turniejowo.API.Services
 
         public async Task GenerateScheduleAsync(GeneratorScheduleOutlines outlines)
         {
+            var matches =
+                await matchRepository.FindAsync(m => m.HomeTeam.TournamentId == outlines.TournamentId && m.GuestTeam.TournamentId == outlines.TournamentId);
+
+            foreach (var match in matches)
+            {
+                matchRepository.Delete(match);
+            }
+
             var possibleMatchDateTimes = await scheduleGeneratorManager.GetPossibleMatchDateTimesAsync(outlines);
 
             if (!possibleMatchDateTimes.Any())
