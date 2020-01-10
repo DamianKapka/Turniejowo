@@ -136,7 +136,7 @@ namespace Turniejowo.API.Services
             // TODO : TESTY
             if (match.BracketIndex != 0)
             {
-                if (match.GuestTeamPoints == match.HomeTeamPoints && matchToEdit.IsFinished)
+                if ((match.GuestTeamPoints == match.HomeTeamPoints) && matchToEdit.IsFinished)
                 {
                     throw new ArgumentException();
                 }
